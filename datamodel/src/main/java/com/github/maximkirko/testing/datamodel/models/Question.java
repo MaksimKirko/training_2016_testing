@@ -2,11 +2,9 @@ package com.github.maximkirko.testing.datamodel.models;
 
 import java.util.List;
 
-import com.github.maximkirko.testing.datamodel.AbstractModel;
-
 public class Question extends AbstractModel {
     private String text;
-    private List<String> answers;
+    private Answer answer;
 
     public String getText() {
         return text;
@@ -16,11 +14,11 @@ public class Question extends AbstractModel {
         this.text = text;
     }
 
-	public List<String> getAnswers() {
-		return answers;
+	public Answer getAnswer() {
+		return answer;
 	}
 
-	public void setAnswers(List<String> answers) {
-		this.answers = answers;
+	public void setAnswer(Answer answer) {
+		this.answer = answer;
 	}
 }

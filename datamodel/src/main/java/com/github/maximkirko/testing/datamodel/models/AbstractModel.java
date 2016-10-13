@@ -1,4 +1,4 @@
-package com.github.maximkirko.testing.datamodel;
+package com.github.maximkirko.testing.datamodel.models;
 
 public class AbstractModel {
 
