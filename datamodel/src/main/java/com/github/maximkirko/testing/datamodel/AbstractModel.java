@@ -1,4 +1,4 @@
-package com.epam.training.library.datamodel;
+package com.github.maximkirko.testing.datamodel;
 
 public class AbstractModel {
 
