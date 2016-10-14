@@ -1,38 +1,38 @@
-CREATE TABLE "book" (
+CREATE TABLE "test" (
 	"id" serial NOT NULL,
-	"title" character varying NOT NULL,
-	CONSTRAINT book_pk PRIMARY KEY ("id")
+	"title" character varying(128) NOT NULL UNIQUE,
+	"subject" character varying(128) UNIQUE,
+	CONSTRAINT test_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
 
 
 
-CREATE TABLE "author" (
+CREATE TABLE "question" (
 	"id" serial NOT NULL,
-	"firts_name" character varying NOT NULL,
-	"last_name" character varying NOT NULL,
-	CONSTRAINT author_pk PRIMARY KEY ("id")
+	"text" character varying(512) NOT NULL UNIQUE,
+	"answer_id" bigint NOT NULL,
+	CONSTRAINT question_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
 
 
 
-CREATE TABLE "book_2_author" (
-	"book_id" bigint NOT NULL,
-	"author_id" bigint NOT NULL
+CREATE TABLE "answer" (
+	"id" serial NOT NULL,
+	"text" character varying(512) NOT NULL UNIQUE,
+	CONSTRAINT answer_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
 
 
 
-CREATE TABLE "book_details" (
-	"id" bigint NOT NULL,
-	"pages_count" int NOT NULL,
-	"cover_color" character varying NOT NULL,
-	CONSTRAINT book_details_pk PRIMARY KEY ("id")
+CREATE TABLE "test_to_question" (
+	"test_id" bigint NOT NULL,
+	"question_id" bigint NOT NULL
 ) WITH (
   OIDS=FALSE
 );
@@ -40,9 +40,8 @@ CREATE TABLE "book_details" (
 
 
 
+ALTER TABLE "question" ADD CONSTRAINT "question_fk0" FOREIGN KEY ("answer_id") REFERENCES "answer"("id");
 
-ALTER TABLE "book_2_author" ADD CONSTRAINT "book_2_author_fk0" FOREIGN KEY ("book_id") REFERENCES "book"("id");
-ALTER TABLE "book_2_author" ADD CONSTRAINT "book_2_author_fk1" FOREIGN KEY ("author_id") REFERENCES "author"("id");
 
-ALTER TABLE "book_details" ADD CONSTRAINT "book_details_fk0" FOREIGN KEY ("id") REFERENCES "book"("id");
-
+ALTER TABLE "test_to_question" ADD CONSTRAINT "test_to_question_fk0" FOREIGN KEY ("test_id") REFERENCES "test"("id");
+ALTER TABLE "test_to_question" ADD CONSTRAINT "test_to_question_fk1" FOREIGN KEY ("question_id") REFERENCES "question"("id");
