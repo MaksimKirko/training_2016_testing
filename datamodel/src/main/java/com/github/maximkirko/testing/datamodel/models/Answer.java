@@ -10,4 +10,12 @@ public class Answer extends AbstractModel {
 	public void setText(String text) {
 		this.text = text;
 	}
+
+	public Answer() {
+
+	}
+
+	public Answer(String text) {
+		this.text = text;
+	}
 }

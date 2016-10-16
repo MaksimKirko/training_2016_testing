@@ -21,4 +21,13 @@ public class Question extends AbstractModel {
 	public void setAnswer(Answer answer) {
 		this.answer = answer;
 	}
+
+	public Question() {
+		
+	}
+
+	public Question(String text, Answer answer) {
+		this.text = text;
+		this.answer = answer;
+	}
 }

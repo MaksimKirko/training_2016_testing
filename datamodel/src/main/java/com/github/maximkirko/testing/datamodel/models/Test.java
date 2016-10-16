@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Test extends AbstractModel {
 	private String title;
-	private Subject subjectl;
+	private List<Subject> subject;
 	private List<Question> questions;
 	
 	public String getTitle() {
@@ -15,12 +15,12 @@ public class Test extends AbstractModel {
 		this.title = title;
 	}
 
-	public Subject getSubjectl() {
-		return subjectl;
+	public List<Subject> getSubject() {
+		return subject;
 	}
 
-	public void setSubjectl(Subject subjectl) {
-		this.subjectl = subjectl;
+	public void setSubject(List<Subject> subject) {
+		this.subject = subject;
 	}
 
 	public List<Question> getQuestions() {
@@ -28,6 +28,16 @@ public class Test extends AbstractModel {
 	}
 
 	public void setQuestions(List<Question> questions) {
+		this.questions = questions;
+	}
+
+	public Test() {
+
+	}
+
+	public Test(String title, List<Subject> subject, List<Question> questions) {
+		this.title = title;
+		this.subject = subject;
 		this.questions = questions;
 	}	
 }
