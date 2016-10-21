@@ -22,10 +22,6 @@ public class Question extends AbstractModel {
 		this.answer = answer;
 	}
 
-	public Question() {
-		
-	}
-
 	public Question(String text, Answer answer) {
 		this.text = text;
 		this.answer = answer;
