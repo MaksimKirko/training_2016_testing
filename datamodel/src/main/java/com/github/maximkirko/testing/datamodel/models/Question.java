@@ -1,10 +1,8 @@
 package com.github.maximkirko.testing.datamodel.models;
 
-import java.util.List;
-
 public class Question extends AbstractModel {
     private String text;
-    private Answer answer;
+    private String hint;
 
     public String getText() {
         return text;
@@ -14,16 +12,21 @@ public class Question extends AbstractModel {
         this.text = text;
     }
 
-	public Answer getAnswer() {
-		return answer;
+	public String getHint() {
+		return hint;
 	}
 
-	public void setAnswer(Answer answer) {
-		this.answer = answer;
+	public void setHint(String hint) {
+		this.hint = hint;
 	}
 
-	public Question(String text, Answer answer) {
+	@Override
+	public String toString() {
+		return "Question [text=" + text + ", hint=" + hint + "]";
+	}
+
+	public Question(String text, String hint) {
 		this.text = text;
-		this.answer = answer;
+		this.hint = hint;
 	}
 }

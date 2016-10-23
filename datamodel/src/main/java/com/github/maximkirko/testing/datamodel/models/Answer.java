@@ -11,6 +11,11 @@ public class Answer extends AbstractModel {
 		this.text = text;
 	}
 
+	@Override
+	public String toString() {
+		return "Answer [text=" + text + "]";
+	}
+
 	public Answer(String text) {
 		this.text = text;
 	}

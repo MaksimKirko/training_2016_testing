@@ -20,7 +20,13 @@ public class Subject extends AbstractModel {
 		this.description = description;
 	}
 
-	public Subject(String name) {
+	@Override
+	public String toString() {
+		return "Subject [name=" + name + ", description=" + description + "]";
+	}
+
+	public Subject(String name, String description) {
 		this.name = name;
+		this.description = description;
 	}
 }
