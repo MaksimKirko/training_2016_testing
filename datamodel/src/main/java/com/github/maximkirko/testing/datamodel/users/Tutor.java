@@ -31,4 +31,8 @@ public class Tutor {
 	public void deleteQuiz() {
 		
 	}
+	
+	public Tutor() {
+		
+	}
 }

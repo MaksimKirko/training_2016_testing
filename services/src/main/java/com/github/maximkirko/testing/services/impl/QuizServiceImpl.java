@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import com.github.maximkirko.testing.daodb.GenericDao;
+import com.github.maximkirko.testing.daodb.QuizDao;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.services.QuizService;
 
@@ -14,11 +14,11 @@ import com.github.maximkirko.testing.services.QuizService;
 public class QuizServiceImpl implements QuizService {
 
 	@Inject
-	private GenericDao<Quiz> quizDao;
+	private QuizDao quizDao;
 
 	@Override
 	public Quiz get(Long id) {
-		return quizDao.get(id);
+		return (Quiz) quizDao.get(id);
 	}
 
 	@Override

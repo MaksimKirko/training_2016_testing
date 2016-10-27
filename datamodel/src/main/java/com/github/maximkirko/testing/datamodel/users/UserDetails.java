@@ -45,10 +45,7 @@ public class UserDetails extends AbstractModel {
 		return "UserDetails [age=" + age + ", course=" + course + ", email=" + email + ", password=" + password + "]";
 	}
 
-	public UserDetails(Integer age, String course, String email, String password) {
-		this.age = age;
-		this.course = course;
-		this.email = email;
-		this.password = password;
+	public UserDetails() {
+
 	}
 }

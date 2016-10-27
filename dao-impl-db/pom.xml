@@ -10,7 +10,7 @@
 	<artifactId>dao-impl-db</artifactId>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>com.github.maximkirko.testing</groupId>
 			<artifactId>datamodel</artifactId>

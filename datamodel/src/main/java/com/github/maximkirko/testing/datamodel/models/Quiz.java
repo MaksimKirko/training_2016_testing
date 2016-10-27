@@ -3,7 +3,7 @@ package com.github.maximkirko.testing.datamodel.models;
 public class Quiz extends AbstractModel {
 	private String title;
 	private String description;
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -24,13 +24,8 @@ public class Quiz extends AbstractModel {
 	public String toString() {
 		return "Quiz [title=" + title + ", description=" + description + "]";
 	}
-	
+
 	public Quiz() {
 
-	}
-
-	public Quiz(String title, String description) {
-		this.title = title;
-		this.description = description;
 	}
 }

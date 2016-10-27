@@ -6,10 +6,10 @@ import com.github.maximkirko.testing.datamodel.models.Quiz;
 
 public interface QuizService {
 
-    void saveAll(List<Quiz> quizzes);
+	Quiz get(Long id);
 
-    void save(Quiz quiz);
+	void save(Quiz quiz);
 
-    Quiz get(Long id);
+	void saveAll(List<Quiz> quizzes);
 
 }

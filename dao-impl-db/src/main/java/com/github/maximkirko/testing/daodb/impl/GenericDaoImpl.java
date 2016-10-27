@@ -6,32 +6,34 @@ import javax.inject.Inject;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daodb.GenericDao;
-import com.github.maximkirko.testing.daodb.mapper.*;
-import com.github.maximkirko.testing.datamodel.models.AbstractModel;
-import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.daodb.util.Utils;
 
 @Repository
-public class GenericDaoImpl<T extends AbstractModel> implements GenericDao {
+public class GenericDaoImpl<T> implements GenericDao {
 
 	@Inject
 	private JdbcTemplate jdbcTemplate;
 	
+	private Class<T> entityClass;
+
 	private String tableName;
 	
-	private RowMapper rowMapper;
+	public GenericDaoImpl() {
+		
+	}
 
-	public GenericDaoImpl(RowMapper<T> rowMapper, String tableName) {
-		this.rowMapper = rowMapper;
-		this.tableName = tableName;
+	public GenericDaoImpl(Class<T> entityClass) {
+		this.entityClass = entityClass;
+		tableName = Utils.getTableNameByClass(entityClass);
 	}
 
 	@Override
 	public Object get(Long id) {
-		return jdbcTemplate.queryForObject("select * from" + tableName + "where id = ?", new Object[] { id }, rowMapper);
+		return jdbcTemplate.queryForObject("select * from " + tableName + " where id = ?",
+				new Object[] { id }, new BeanPropertyRowMapper<T>(entityClass));
 	}
 
 	@Override

@@ -42,7 +42,7 @@ CREATE TABLE "quiz_2_question" (
 
 CREATE TABLE "subject" (
 	"id" serial NOT NULL,
-	"name" character varying(128) NOT NULL UNIQUE,
+	"title" character varying(128) NOT NULL UNIQUE,
 	"description" character varying(512),
 	CONSTRAINT subject_pk PRIMARY KEY ("id")
 ) WITH (
@@ -76,9 +76,11 @@ CREATE TABLE "user_details" (
 
 
 CREATE TABLE "grade" (
+	"id" serial NOT NULL,
 	"user_id" bigint NOT NULL,
 	"quiz_id" bigint NOT NULL,
-	"mark" bigint NOT NULL
+	"mark" bigint NOT NULL,
+	CONSTRAINT grade_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );

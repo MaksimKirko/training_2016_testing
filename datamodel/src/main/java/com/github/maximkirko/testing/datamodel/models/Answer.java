@@ -16,7 +16,7 @@ public class Answer extends AbstractModel {
 		return "Answer [text=" + text + "]";
 	}
 
-	public Answer(String text) {
-		this.text = text;
+	public Answer() {
+		
 	}
 }

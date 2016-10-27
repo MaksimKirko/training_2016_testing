@@ -27,8 +27,7 @@ public class User extends AbstractModel {
 		return "User [firstName=" + firstName + ", lastName=" + lastName + "]";
 	}
 	
-	public User(String firstName, String lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public User() {
+		
 	}
 }
