@@ -1,5 +1,6 @@
 package com.github.maximkirko.testing.daodb.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,13 +17,13 @@ public class GenericDaoImpl<T> implements GenericDao {
 
 	@Inject
 	private JdbcTemplate jdbcTemplate;
-	
+
 	private Class<T> entityClass;
 
 	private String tableName;
-	
+
 	public GenericDaoImpl() {
-		
+
 	}
 
 	public GenericDaoImpl(Class<T> entityClass) {
@@ -32,31 +33,29 @@ public class GenericDaoImpl<T> implements GenericDao {
 
 	@Override
 	public Object get(Long id) {
-		return jdbcTemplate.queryForObject("select * from " + tableName + " where id = ?",
-				new Object[] { id }, new BeanPropertyRowMapper<T>(entityClass));
+		return jdbcTemplate.queryForObject("SELECT * FROM " + tableName + " WHERE id = ?", new Object[] { id },
+				new BeanPropertyRowMapper<T>(entityClass));
 	}
 
 	@Override
 	public void insert(Object entity) {
-		// TODO Auto-generated method stub
+		// jdbcTemplate.execute("INSERT INTO " + tableName + " VALUES (" + );
 
 	}
 
 	@Override
 	public void update(Object entity) {
-		// TODO Auto-generated method stub
-
+		// jdbcTemplate.execute("UPDATE " + tableName + " SET " + );
 	}
 
 	@Override
 	public void delete(Long id) {
-		// TODO Auto-generated method stub
-
+		jdbcTemplate.execute("DELETE FROM " + tableName + " WHERE id=" + id);
 	}
 
 	@Override
 	public List getAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return jdbcTemplate.query("SELECT * FROM " + tableName,
+				new BeanPropertyRowMapper<T>(entityClass));
 	}
 }

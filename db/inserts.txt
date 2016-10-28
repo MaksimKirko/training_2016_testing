@@ -1,0 +1,1 @@
+insert into quiz (subject_id, title) values (2, 'Дифференциальные уравнения');

@@ -22,6 +22,11 @@ public class QuizServiceImpl implements QuizService {
 	}
 
 	@Override
+	public List getAll() {
+		return quizDao.getAll();
+	}
+
+	@Override
 	public void saveAll(List<Quiz> quizzes) {
 		for (Quiz quiz : quizzes) {
 			save(quiz);
@@ -37,6 +42,11 @@ public class QuizServiceImpl implements QuizService {
 		} else {
 			quizDao.update(quiz);
 		}
+	}
+
+	@Override
+	public void delete(Long id) {
+		quizDao.delete(id);
 	}
 
 }
