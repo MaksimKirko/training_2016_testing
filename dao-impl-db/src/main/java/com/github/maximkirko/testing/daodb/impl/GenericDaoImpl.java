@@ -55,7 +55,6 @@ public class GenericDaoImpl<T> implements GenericDao {
 
 	@Override
 	public List getAll() {
-		return jdbcTemplate.query("SELECT * FROM " + tableName,
-				new BeanPropertyRowMapper<T>(entityClass));
+		return jdbcTemplate.query("SELECT * FROM " + tableName, new BeanPropertyRowMapper<T>(entityClass));
 	}
 }
