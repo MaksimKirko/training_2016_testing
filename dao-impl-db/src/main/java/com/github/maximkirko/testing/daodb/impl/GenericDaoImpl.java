@@ -1,5 +1,6 @@
 package com.github.maximkirko.testing.daodb.impl;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daodb.GenericDao;
 import com.github.maximkirko.testing.daodb.util.Utils;
+import com.github.maximkirko.testing.datamodel.users.UserDetails;
 
 @Repository
 public class GenericDaoImpl<T> implements GenericDao {
@@ -39,8 +41,33 @@ public class GenericDaoImpl<T> implements GenericDao {
 
 	@Override
 	public void insert(Object entity) {
-		// jdbcTemplate.execute("INSERT INTO " + tableName + " VALUES (" + );
+		
+		String types = "";
+		String values = "";
+		
+		for (Field field : entityClass.getDeclaredFields()) {
+			field.setAccessible(true);
+			
+			try {
+				if(field.get(entity) != null) {
+					types += String.format("%s, ", field.getName());
+				    values += String.format("'%s', ", field.get(entity));
+				}
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 	    
+		}
+		
+		types = types.substring(0, types.length() - 2);
+		values = values.substring(0, values.length() - 2);
 
+		String sql = String.format("INSERT INTO %s (%s) VALUES (%s);", tableName, types, values);
+		System.out.println(sql);
+		jdbcTemplate.execute(sql);
 	}
 
 	@Override
