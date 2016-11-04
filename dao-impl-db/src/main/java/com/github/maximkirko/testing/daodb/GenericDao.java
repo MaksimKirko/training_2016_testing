@@ -2,7 +2,9 @@ package com.github.maximkirko.testing.daodb;
 
 import java.util.List;
 
-public interface GenericDao<T> {
+import com.github.maximkirko.testing.datamodel.models.AbstractModel;
+
+public interface GenericDao<T extends AbstractModel> {
 	T get(Long id);
 
     void insert(T entity);

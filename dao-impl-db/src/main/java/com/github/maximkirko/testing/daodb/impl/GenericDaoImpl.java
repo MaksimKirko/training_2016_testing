@@ -33,15 +33,13 @@ public class GenericDaoImpl<T extends AbstractModel> implements GenericDao {
 	}
 
 	@Override
-	public Object get(Long id) {
-		return jdbcTemplate.queryForObject("SELECT * FROM " + tableName + " WHERE id = ?", new Object[] { id },
+	public AbstractModel get(Long id) {
+		return jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE id =%s", tableName, "?"), new Object[] { id },
 				new BeanPropertyRowMapper<T>(entityClass));
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void insert(Object entity) {
-
+	public void insert(AbstractModel entity) {
 		String types = "";
 		String values = "";
 
@@ -71,23 +69,14 @@ public class GenericDaoImpl<T extends AbstractModel> implements GenericDao {
 	}
 
 	@Override
-	public void update(Object entity) {
-//		UPDATE link_tmp
-//		SET rel = link.rel,
-//		 description = link.description,
-//		 last_update = link.last_update
-//		FROM
-//		 link
-//		WHERE
-//		 link_tmp.id = link.id;
-		
+	public void update(AbstractModel entity) {
 		String values = "";
-		
+
 		for (Field field : entityClass.getDeclaredFields()) {
 			field.setAccessible(true);
 
 			try {
-					values += String.format("%s=%s, ", field.getName(), field.get(entity));
+				values += String.format("%s=%s, ", field.getName(), field.get(entity));
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -98,20 +87,19 @@ public class GenericDaoImpl<T extends AbstractModel> implements GenericDao {
 		}
 
 		values = values.substring(0, values.length() - 2);
-		
-		String sql = String.format("UPDATE %s SET %s WHERE id=%s;", tableName, values, "?");
-		
+
+		String sql = String.format("UPDATE %s SET %s WHERE id=%s;", tableName, values, entity.getId());
+
 		jdbcTemplate.execute(sql);
-		
 	}
 
 	@Override
 	public void delete(Long id) {
-		jdbcTemplate.execute("DELETE FROM " + tableName + " WHERE id=" + id);
+		jdbcTemplate.execute(String.format("DELETE FROM %s WHERE id=%s", tableName, id));
 	}
 
 	@Override
 	public List getAll() {
-		return jdbcTemplate.query("SELECT * FROM " + tableName, new BeanPropertyRowMapper<T>(entityClass));
+		return jdbcTemplate.query(String.format("SELECT * FROM ", tableName), new BeanPropertyRowMapper<T>(entityClass));
 	}
 }
