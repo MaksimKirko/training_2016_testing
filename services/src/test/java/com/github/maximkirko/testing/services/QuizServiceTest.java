@@ -27,21 +27,19 @@ public class QuizServiceTest {
     @Test
     public void insertTest() throws IllegalArgumentException, IllegalAccessException {
     	
-    	Quiz quiz = new Quiz();
-    	quiz.setTitle("newTitle");
-    	quiz.setDescription("newDesc");
-//    	
-//    	for (Field field : quiz.getClass().getDeclaredFields()) {
-//    		field.setAccessible(true);
-//    	    System.out.format("Type: %s%n", field.getType().getSimpleName());
-//    	    System.out.format("Name: %s%n", field.getName());
-//    	    System.out.println(field.get(quiz));
-//    	    
-//    	}   
+    	Quiz quiz = quizService.get(2l);
+    	
+    	for (Field field : quiz.getClass().getSuperclass().getDeclaredFields()) {
+    		field.setAccessible(true);
+    	    System.out.format("Type: %s%n", field.getType().getSimpleName());
+    	    System.out.format("Name: %s%n", field.getName());
+    	    System.out.println(field.get(quiz));
+    	    
+    	}   
     	
     	//System.out.println(Quiz.class.getAnnotation(DBTable.class).name());
     	
-    	quizService.save(quiz);
+    	//quizService.save(quiz);
     	
 //    	List quizzes = quizService.getAll();
 //    	for (Object object : quizzes) {

@@ -1,7 +1,6 @@
 package com.github.maximkirko.testing.daodb.impl;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -12,10 +11,10 @@ import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daodb.GenericDao;
 import com.github.maximkirko.testing.daodb.util.Utils;
-import com.github.maximkirko.testing.datamodel.users.UserDetails;
+import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
 @Repository
-public class GenericDaoImpl<T> implements GenericDao {
+public class GenericDaoImpl<T extends AbstractModel> implements GenericDao {
 
 	@Inject
 	private JdbcTemplate jdbcTemplate;
@@ -40,18 +39,19 @@ public class GenericDaoImpl<T> implements GenericDao {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void insert(Object entity) {
-		
+
 		String types = "";
 		String values = "";
-		
+
 		for (Field field : entityClass.getDeclaredFields()) {
 			field.setAccessible(true);
-			
+
 			try {
-				if(field.get(entity) != null) {
+				if (field.get(entity) != null) {
 					types += String.format("%s, ", field.getName());
-				    values += String.format("'%s', ", field.get(entity));
+					values += String.format("'%s', ", field.get(entity));
 				}
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
@@ -59,9 +59,9 @@ public class GenericDaoImpl<T> implements GenericDao {
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 	    
+			}
 		}
-		
+
 		types = types.substring(0, types.length() - 2);
 		values = values.substring(0, values.length() - 2);
 
@@ -72,7 +72,37 @@ public class GenericDaoImpl<T> implements GenericDao {
 
 	@Override
 	public void update(Object entity) {
-		// jdbcTemplate.execute("UPDATE " + tableName + " SET " + );
+//		UPDATE link_tmp
+//		SET rel = link.rel,
+//		 description = link.description,
+//		 last_update = link.last_update
+//		FROM
+//		 link
+//		WHERE
+//		 link_tmp.id = link.id;
+		
+		String values = "";
+		
+		for (Field field : entityClass.getDeclaredFields()) {
+			field.setAccessible(true);
+
+			try {
+					values += String.format("%s=%s, ", field.getName(), field.get(entity));
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		values = values.substring(0, values.length() - 2);
+		
+		String sql = String.format("UPDATE %s SET %s WHERE id=%s;", tableName, values, "?");
+		
+		jdbcTemplate.execute(sql);
+		
 	}
 
 	@Override
