@@ -1,20 +1,27 @@
 package com.github.maximkirko.testing.daodb.impl;
 
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import com.github.maximkirko.testing.daodb.GenericDao;
-import com.github.maximkirko.testing.daodb.util.Utils;
+import com.github.maximkirko.testing.daodb.IGenericDao;
+import com.github.maximkirko.testing.daodb.util.DBTableNameAware;
+import com.github.maximkirko.testing.daodb.util.GenericTypeInfo;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
 @Repository
-public class GenericDaoImpl<T extends AbstractModel> implements GenericDao {
+public class GenericDaoImpl<T extends AbstractModel> implements IGenericDao {
 
 	@Inject
 	private JdbcTemplate jdbcTemplate;
@@ -29,43 +36,35 @@ public class GenericDaoImpl<T extends AbstractModel> implements GenericDao {
 
 	public GenericDaoImpl(Class<T> entityClass) {
 		this.entityClass = entityClass;
-		tableName = Utils.getTableNameByClass(entityClass);
+		tableName = DBTableNameAware.getTableNameByClass(entityClass);
 	}
 
 	@Override
 	public AbstractModel get(Long id) {
-		return jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE id =%s", tableName, "?"), new Object[] { id },
-				new BeanPropertyRowMapper<T>(entityClass));
+		return jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE id =%s", tableName, "?"),
+				new Object[] { id }, new BeanPropertyRowMapper<T>(entityClass));
 	}
 
 	@Override
-	public void insert(AbstractModel entity) {
-		String types = "";
-		String values = "";
+	public Long insert(AbstractModel entity) {
 
-		for (Field field : entityClass.getDeclaredFields()) {
-			field.setAccessible(true);
+		final String INSERT_SQL = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName,
+				GenericTypeInfo.getFields(entityClass, entity), GenericTypeInfo.getFieldsValues(entityClass, entity));
 
-			try {
-				if (field.get(entity) != null) {
-					types += String.format("%s, ", field.getName());
-					values += String.format("'%s', ", field.get(entity));
-				}
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] { "id" });
+				System.out.println(ps.toString());
+				return ps;
 			}
-		}
+		}, keyHolder);
 
-		types = types.substring(0, types.length() - 2);
-		values = values.substring(0, values.length() - 2);
+		entity.setId(keyHolder.getKey().longValue());
 
-		String sql = String.format("INSERT INTO %s (%s) VALUES (%s);", tableName, types, values);
-		System.out.println(sql);
-		jdbcTemplate.execute(sql);
+		return entity.getId();
 	}
 
 	@Override
@@ -100,6 +99,7 @@ public class GenericDaoImpl<T extends AbstractModel> implements GenericDao {
 
 	@Override
 	public List getAll() {
-		return jdbcTemplate.query(String.format("SELECT * FROM ", tableName), new BeanPropertyRowMapper<T>(entityClass));
+		return jdbcTemplate.query(String.format("SELECT * FROM ", tableName),
+				new BeanPropertyRowMapper<T>(entityClass));
 	}
 }

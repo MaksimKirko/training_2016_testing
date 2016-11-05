@@ -1,5 +1,8 @@
 package com.github.maximkirko.testing.datamodel.models;
 
+import com.github.maximkirko.testing.datamodel.annotations.DBTable;
+
+@DBTable(name = "answer")
 public class Answer extends AbstractModel {
 	private String text;
 

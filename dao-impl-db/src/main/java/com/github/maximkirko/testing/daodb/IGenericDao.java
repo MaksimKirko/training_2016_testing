@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
-public interface GenericDao<T extends AbstractModel> {
+public interface IGenericDao<T extends AbstractModel> {
 	T get(Long id);
 
-    void insert(T entity);
+    Long insert(T entity);
 
     void update(T entity);
 

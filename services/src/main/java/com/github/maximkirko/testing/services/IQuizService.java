@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 
-public interface QuizService {
+public interface IQuizService {
 
 	Quiz get(Long id);
-	
+
 	List getAll();
 
-	void save(Quiz quiz);
+	Long save(Quiz quiz);
 
 	void saveAll(List<Quiz> quizzes);
 

@@ -1,6 +1,7 @@
 package com.github.maximkirko.testing.datamodel.users;
 
 public class Tutor {
+	
 	private String password;
 
 	public String getPassword() {

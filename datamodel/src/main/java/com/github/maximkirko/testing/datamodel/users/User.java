@@ -3,6 +3,7 @@ package com.github.maximkirko.testing.datamodel.users;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
 public class User extends AbstractModel {
+	
 	private String firstName;
 	private String lastName;
 	

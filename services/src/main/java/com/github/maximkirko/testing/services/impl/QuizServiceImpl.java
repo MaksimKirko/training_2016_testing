@@ -6,15 +6,15 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import com.github.maximkirko.testing.daodb.QuizDao;
+import com.github.maximkirko.testing.daodb.IQuizDao;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.services.QuizService;
+import com.github.maximkirko.testing.services.IQuizService;
 
 @Service
-public class QuizServiceImpl implements QuizService {
+public class QuizServiceImpl implements IQuizService {
 
 	@Inject
-	private QuizDao quizDao;
+	private IQuizDao quizDao;
 
 	@Override
 	public Quiz get(Long id) {
@@ -27,21 +27,23 @@ public class QuizServiceImpl implements QuizService {
 	}
 
 	@Override
+	public Long save(Quiz quiz) {
+
+		if (quiz.getId() == null) {
+			Long id = quizDao.insert(quiz);
+			return id;
+		} else {
+			quizDao.update(quiz);
+		}
+		return quiz.getId();
+	}
+
+	@Override
 	public void saveAll(List<Quiz> quizzes) {
 		for (Quiz quiz : quizzes) {
 			save(quiz);
 		}
 
-	}
-
-	@Override
-	public void save(Quiz quiz) {
-
-		if (quiz.getId() == null) {
-			quizDao.insert(quiz);
-		} else {
-			quizDao.update(quiz);
-		}
 	}
 
 	@Override
