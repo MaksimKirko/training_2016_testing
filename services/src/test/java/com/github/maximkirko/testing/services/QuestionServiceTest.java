@@ -19,6 +19,7 @@ public class QuestionServiceTest {
 	private IQuestionService questionService;
 
 	@Test
+	@Ignore
 	public void getByIdTest() {
 		Long id = 1l;
 
@@ -28,8 +29,7 @@ public class QuestionServiceTest {
 		Assert.assertEquals(id, question.getId());
 	}
 
-	@Test
-	@Ignore
+	@Test	
 	public void insertTest() {
 
 		Question question = new Question();

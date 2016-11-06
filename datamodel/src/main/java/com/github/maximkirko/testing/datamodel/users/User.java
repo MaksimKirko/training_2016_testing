@@ -1,7 +1,9 @@
 package com.github.maximkirko.testing.datamodel.users;
 
+import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
+@DBTable(name = "user")
 public class User extends AbstractModel {
 	
 	private String firstName;

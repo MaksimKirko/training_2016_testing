@@ -3,8 +3,6 @@ package com.github.maximkirko.testing.daodb.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -14,27 +12,35 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import com.github.maximkirko.testing.daodb.IQuizDao;
+import com.github.maximkirko.testing.daodb.IGenericManyToManyDao;
+import com.github.maximkirko.testing.daodb.util.DBTableNameAware;
 import com.github.maximkirko.testing.daodb.util.GenericTypeInfo;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
-import com.github.maximkirko.testing.datamodel.models.Quiz;
 
 @Repository
-public class QuizDaoImpl extends GenericDaoImpl<Quiz> implements IQuizDao {
+public class GenericManyToManyDaoImpl<T, PK1, PK2> implements IGenericManyToManyDao {
 
 	@Inject
 	private JdbcTemplate jdbcTemplate;
 
-	public QuizDaoImpl() {
-		super(Quiz.class);
-	}
-	
-	@Override
-	public Long insert(AbstractModel entity) {
+	private Class<T> entityClass;
 
-		final String INSERT_SQL = String.format("INSERT INTO %s (%s, subject_id) VALUES (%s, %s)", super.tableName,
-				GenericTypeInfo.getFields(Quiz.class, entity), GenericTypeInfo.getFieldsValues(Quiz.class, entity),
-				((Quiz) entity).getSubject().getId());
+	protected String tableName;
+	
+	public GenericManyToManyDaoImpl() {
+
+	}
+
+	public GenericManyToManyDaoImpl(Class<T> entityClass) {
+		this.entityClass = entityClass;
+		tableName = DBTableNameAware.getTableNameByClass(entityClass);
+	}
+
+	@Override
+	public void insert(AbstractModel entity) {
+		
+		final String INSERT_SQL = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName,
+				GenericTypeInfo.getFields(entityClass, entity), GenericTypeInfo.getFieldsValues(entityClass, entity));
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -48,7 +54,19 @@ public class QuizDaoImpl extends GenericDaoImpl<Quiz> implements IQuizDao {
 		}, keyHolder);
 
 		entity.setId(keyHolder.getKey().longValue());
-
-		return entity.getId();
 	}
+
+	@Override
+	public void deleteByFirstId(Object id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteBySecondId(Object id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }

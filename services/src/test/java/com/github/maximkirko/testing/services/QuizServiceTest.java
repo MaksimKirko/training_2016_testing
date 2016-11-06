@@ -1,5 +1,6 @@
 package com.github.maximkirko.testing.services;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.Subject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:service-context.xml")
@@ -21,41 +24,28 @@ public class QuizServiceTest {
 	@Inject
 	private IQuizService quizService;
 
+	@Inject
+	private ISubjectService subjService;
+	
 	@Test
-	public void getByIdTest() {
+	@Ignore
+	public void getByIdTest() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, InstantiationException {
 		Long id = 2l;
 		
 		Quiz quiz = quizService.get(id);
-
+		
 		Assert.assertNotNull("quiz for id=%s should not be null", quiz);
 		Assert.assertEquals(id, quiz.getId());
 	}
 	
-	@Test
-	@Ignore
+	@Test	
 	public void insertTest() {
-
+		
 		Quiz quiz = new Quiz();
-		quiz.setTitle("Some test");
+		quiz.setTitle("test quiz");
+		quiz.setSubject(subjService.get(1l));
 
 		Long id = quizService.save(quiz);
-
-		// for (Field field :
-		// quiz.getClass().getSuperclass().getDeclaredFields()) {
-		// field.setAccessible(true);
-		// System.out.format("Type: %s%n", field.getType().getSimpleName());
-		// System.out.format("Name: %s%n", field.getName());
-		// System.out.println(field.get(quiz));
-		//
-		// }
-
-		// System.out.println(Quiz.class.getAnnotation(DBTable.class).name());
-
-		// List quizzes = quizService.getAll();
-		// for (Object object : quizzes) {
-		// System.out.println(object.toString());
-		// }
-
 	}
 
 	@Test

@@ -1,6 +1,5 @@
 package com.github.maximkirko.testing.daodb.impl;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -28,7 +27,7 @@ public class GenericDaoImpl<T extends AbstractModel> implements IGenericDao {
 
 	private Class<T> entityClass;
 
-	private String tableName;
+	protected String tableName;
 
 	public GenericDaoImpl() {
 
@@ -69,32 +68,16 @@ public class GenericDaoImpl<T extends AbstractModel> implements IGenericDao {
 
 	@Override
 	public void update(AbstractModel entity) {
-		String values = "";
 
-		for (Field field : entityClass.getDeclaredFields()) {
-			field.setAccessible(true);
+		final String sql = String.format("UPDATE %s SET %s WHERE id=?", tableName,
+				GenericTypeInfo.getValuesForUpdate(entityClass, entity));
 
-			try {
-				values += String.format("%s=%s, ", field.getName(), field.get(entity));
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		values = values.substring(0, values.length() - 2);
-
-		String sql = String.format("UPDATE %s SET %s WHERE id=%s;", tableName, values, entity.getId());
-
-		jdbcTemplate.execute(sql);
+		jdbcTemplate.update(sql, entity.getId());
 	}
 
 	@Override
 	public void delete(Long id) {
-		jdbcTemplate.execute(String.format("DELETE FROM %s WHERE id=%s", tableName, id));
+		jdbcTemplate.update(String.format("DELETE FROM %s WHERE id=?", tableName, id));
 	}
 
 	@Override

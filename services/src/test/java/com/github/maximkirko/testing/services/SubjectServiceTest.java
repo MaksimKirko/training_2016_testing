@@ -19,6 +19,7 @@ public class SubjectServiceTest {
 	private ISubjectService subjectService;
 
 	@Test	
+	@Ignore
 	public void getByIdTest() {
 		Long id = 1l;
 
@@ -28,13 +29,15 @@ public class SubjectServiceTest {
 		Assert.assertEquals(id, subject.getId());
 	}
 
-	@Test	
-	@Ignore
+	@Test		
 	public void insertTest() {
 
-		Subject subject = new Subject();
-		subject.setTitle("Математика");
-		subject.setDescription("some desc");
+//		Subject subject = new Subject();
+//		subject.setTitle("Математика");
+//		subject.setDescription("some desc");
+		
+		Subject subject = subjectService.get(1l);
+		subject.setTitle("Физика");
 
 		Long id = subjectService.save(subject);
 	}

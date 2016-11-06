@@ -1,0 +1,2 @@
+insert into quiz (subject_id, title) values (2, 'Дифференциальные уравнения');
+select * from quiz q left join subject s on q.subject_id=s.id;

@@ -19,6 +19,7 @@ public class AnswerServiceTest {
 	private IAnswerService answerService;
 
 	@Test
+	@Ignore
 	public void getByIdTest() {
 		Long id = 1l;
 
@@ -29,11 +30,10 @@ public class AnswerServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void insertTest() {
 
 		Answer answer = new Answer();
-		answer.setText("some question");
+		answer.setText("some answer");
 
 		Long id = answerService.save(answer);
 	}
