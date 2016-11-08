@@ -9,43 +9,41 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.maximkirko.testing.datamodel.models.Subject;
+import com.github.maximkirko.testing.datamodel.users.Student;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:service-context.xml")
-public class SubjectServiceTest {
+public class StudentServiceTest {
 
 	@Inject
-	private ISubjectService subjectService;
+	private IStudentService studentService;
 
 	@Test
 	@Ignore
 	public void getByIdTest() {
 		Long id = 1l;
 
-		Subject subject = subjectService.get(id);
+		Student user = studentService.get(id);
 
-		Assert.assertNotNull("subject for id=%s should not be null", subject);
-		Assert.assertEquals(id, subject.getId());
+		Assert.assertNotNull("user for id=%s should not be null", user);
+		Assert.assertEquals(id, user.getId());
 	}
 
-	@Test	
+	@Test
 	public void insertTest() {
 
-		Subject subject = new Subject();
-		subject.setTitle("Английский язык");
+		Student student = new Student();
+		student.setFirstName("Bill");
+		student.setLastName("Gates");
 
-		// Subject subject = subjectService.get(1l);
-		// subject.setTitle("Физика");
-
-		Long id = subjectService.save(subject);
+		Long id = studentService.save(student);
 	}
 
 	@Test
 	@Ignore
 	public void deleteTest() {
-		Long id = 9l;
+		Long id = 1l;
 
-		subjectService.delete(id);
+		studentService.delete(id);
 	}
 }

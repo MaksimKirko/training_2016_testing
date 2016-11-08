@@ -1,5 +1,7 @@
 package com.github.maximkirko.testing.daodb;
 
-public interface IQuizDao extends IGenericDao {
+import com.github.maximkirko.testing.datamodel.models.Quiz;
+
+public interface IQuizDao extends IGenericDao<Quiz, Long> {
 
 }

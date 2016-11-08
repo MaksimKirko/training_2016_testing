@@ -1,6 +1,5 @@
 package com.github.maximkirko.testing.services;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +12,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.maximkirko.testing.datamodel.models.AbstractModel;
+import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.datamodel.models.Subject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:service-context.xml")
@@ -25,25 +23,29 @@ public class QuizServiceTest {
 	private IQuizService quizService;
 
 	@Inject
-	private ISubjectService subjService;
+	private ISubjectService subjectService;
 	
 	@Test
-	@Ignore
 	public void getByIdTest() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, InstantiationException {
-		Long id = 2l;
+		Long id = 1l;
 		
 		Quiz quiz = quizService.get(id);
+		
+		for (Question question : quiz.getQuestions()) {
+			System.out.println(question.toString());
+		}
 		
 		Assert.assertNotNull("quiz for id=%s should not be null", quiz);
 		Assert.assertEquals(id, quiz.getId());
 	}
 	
 	@Test	
+	@Ignore
 	public void insertTest() {
 		
 		Quiz quiz = new Quiz();
-		quiz.setTitle("test quiz");
-		quiz.setSubject(subjService.get(1l));
+		quiz.setTitle("Present Simple");
+		quiz.setSubject(subjectService.get(1l));
 
 		Long id = quizService.save(quiz);
 	}

@@ -1,15 +1,18 @@
 package com.github.maximkirko.testing.daodb.impl;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -20,12 +23,12 @@ import com.github.maximkirko.testing.daodb.util.GenericTypeInfo;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
 @Repository
-public class GenericDaoImpl<T extends AbstractModel> implements IGenericDao {
+public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Serializable> implements IGenericDao<T, PK> {
 
 	@Inject
-	private JdbcTemplate jdbcTemplate;
+	protected JdbcTemplate jdbcTemplate;
 
-	private Class<T> entityClass;
+	protected Class<T> entityClass;
 
 	protected String tableName;
 
@@ -39,35 +42,39 @@ public class GenericDaoImpl<T extends AbstractModel> implements IGenericDao {
 	}
 
 	@Override
-	public AbstractModel get(Long id) {
-		return jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE id =%s", tableName, "?"),
+	public Map entityToMap(T entity) {
+		return null;
+	}
+
+	@Override
+	public T get(PK id) {
+		return jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE id = ?", tableName),
 				new Object[] { id }, new BeanPropertyRowMapper<T>(entityClass));
 	}
 
 	@Override
-	public Long insert(AbstractModel entity) {
-
-		final String INSERT_SQL = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName,
-				GenericTypeInfo.getFields(entityClass, entity), GenericTypeInfo.getFieldsValues(entityClass, entity));
-
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-
-		jdbcTemplate.update(new PreparedStatementCreator() {
-			@Override
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] { "id" });
-				System.out.println(ps.toString());
-				return ps;
-			}
-		}, keyHolder);
-
-		entity.setId(keyHolder.getKey().longValue());
-
-		return entity.getId();
+	public List getAll() {
+		return jdbcTemplate.query(String.format("SELECT * FROM %s", tableName),
+				new BeanPropertyRowMapper<T>(entityClass));
 	}
 
 	@Override
-	public void update(AbstractModel entity) {
+	@SuppressWarnings("unchecked")
+	public PK insert(T entity) {
+
+		SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
+		insert.withTableName(tableName);
+		insert.usingGeneratedKeyColumns("id");
+
+		Map params = entityToMap(entity);
+		
+		Long id = insert.executeAndReturnKey(params).longValue();
+		
+		return (PK) id;
+	}
+
+	@Override
+	public void update(T entity) {
 
 		final String sql = String.format("UPDATE %s SET %s WHERE id=?", tableName,
 				GenericTypeInfo.getValuesForUpdate(entityClass, entity));
@@ -76,13 +83,7 @@ public class GenericDaoImpl<T extends AbstractModel> implements IGenericDao {
 	}
 
 	@Override
-	public void delete(Long id) {
-		jdbcTemplate.update(String.format("DELETE FROM %s WHERE id=?", tableName, id));
-	}
-
-	@Override
-	public List getAll() {
-		return jdbcTemplate.query(String.format("SELECT * FROM ", tableName),
-				new BeanPropertyRowMapper<T>(entityClass));
+	public void delete(PK id) {
+		jdbcTemplate.update(String.format("DELETE FROM %s WHERE id = ?", tableName), id);
 	}
 }

@@ -1,5 +1,7 @@
 package com.github.maximkirko.testing.datamodel.models;
 
+import java.util.List;
+
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 
 @DBTable(name = "quiz")
@@ -8,6 +10,7 @@ public class Quiz extends AbstractModel {
 	private String title;
 	private String description;
 	private Subject subject;
+	private List<Question> questions;
 
 	public String getTitle() {
 		return title;
@@ -31,6 +34,14 @@ public class Quiz extends AbstractModel {
 
 	public void setSubject(Subject subject) {
 		this.subject = subject;
+	}
+
+	public List<Question> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<Question> questions) {
+		this.questions = questions;
 	}
 
 	@Override

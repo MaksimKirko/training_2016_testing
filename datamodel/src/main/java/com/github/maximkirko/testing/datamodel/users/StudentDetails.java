@@ -3,8 +3,8 @@ package com.github.maximkirko.testing.datamodel.users;
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
-@DBTable(name = "user_details")
-public class UserDetails extends AbstractModel {
+@DBTable(name = "student_details")
+public class StudentDetails extends AbstractModel {
 	
 	private Integer age;
 	private String course;
@@ -45,10 +45,10 @@ public class UserDetails extends AbstractModel {
 
 	@Override
 	public String toString() {
-		return "UserDetails [age=" + age + ", course=" + course + ", email=" + email + ", password=" + password + "]";
+		return "StudentDetails [age=" + age + ", course=" + course + ", email=" + email + ", password=" + password + "]";
 	}
 
-	public UserDetails() {
+	public StudentDetails() {
 
 	}
 }

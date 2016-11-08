@@ -1,12 +1,16 @@
 package com.github.maximkirko.testing.datamodel.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 
 @DBTable(name = "question")
 public class Question extends AbstractModel {
 	private String text;
 	private String hint;
-
+	private List<Answer> answers;
+	
 	public String getText() {
 		return text;
 	}
@@ -22,6 +26,14 @@ public class Question extends AbstractModel {
 	public void setHint(String hint) {
 		this.hint = hint;
 	}
+	
+	public List<Answer> getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(List<Answer> answers) {
+		this.answers = answers;
+	}
 
 	@Override
 	public String toString() {
@@ -29,6 +41,6 @@ public class Question extends AbstractModel {
 	}
 
 	public Question() {
-
+		answers = new ArrayList<Answer>();
 	}
 }

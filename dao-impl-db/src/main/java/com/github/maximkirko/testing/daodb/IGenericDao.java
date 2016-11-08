@@ -1,17 +1,22 @@
 package com.github.maximkirko.testing.daodb;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
-public interface IGenericDao<T extends AbstractModel> {
-	T get(Long id);
+public interface IGenericDao<T extends AbstractModel, PK extends Serializable> {
 
-    Long insert(T entity);
+	Map entityToMap(T entity);
+	
+	T get(PK id);
 
-    void update(T entity);
+	PK insert(T entity);
 
-    void delete(Long id);
+	void update(T entity);
 
-    List<T> getAll();
+	void delete(PK id);
+
+	List<T> getAll();
 }

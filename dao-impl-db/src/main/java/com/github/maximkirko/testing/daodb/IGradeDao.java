@@ -1,5 +1,7 @@
 package com.github.maximkirko.testing.daodb;
 
-public interface IGradeDao extends IGenericDao {
+import com.github.maximkirko.testing.datamodel.models.Grade;
+
+public interface IGradeDao extends IGenericDao<Grade, Long> {
 
 }

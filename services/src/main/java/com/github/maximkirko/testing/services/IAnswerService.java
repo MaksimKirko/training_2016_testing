@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 
 public interface IAnswerService {
+	
 	Answer get(Long id);
 
 	List getAll();

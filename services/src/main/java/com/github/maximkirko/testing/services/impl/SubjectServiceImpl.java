@@ -22,7 +22,7 @@ public class SubjectServiceImpl implements ISubjectService {
 	}
 
 	@Override
-	public List getAll() {
+	public List<Subject> getAll() {
 		return subjectDao.getAll();
 	}
 

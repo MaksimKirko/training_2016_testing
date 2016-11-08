@@ -1,72 +1,63 @@
 package com.github.maximkirko.testing.daodb.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daodb.IGenericManyToManyDao;
 import com.github.maximkirko.testing.daodb.util.DBTableNameAware;
-import com.github.maximkirko.testing.daodb.util.GenericTypeInfo;
-import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
 @Repository
-public class GenericManyToManyDaoImpl<T, PK1, PK2> implements IGenericManyToManyDao {
+public class GenericManyToManyDaoImpl<T1, T2, PK1, PK2> implements IGenericManyToManyDao<T1, T2, PK1, PK2> {
 
 	@Inject
-	private JdbcTemplate jdbcTemplate;
+	protected JdbcTemplate jdbcTemplate;
 
-	private Class<T> entityClass;
+	protected Class<T1> entityClass1;
+	
+	protected Class<T2> entityClass2;
 
 	protected String tableName;
-	
+
 	public GenericManyToManyDaoImpl() {
 
 	}
 
-	public GenericManyToManyDaoImpl(Class<T> entityClass) {
-		this.entityClass = entityClass;
-		tableName = DBTableNameAware.getTableNameByClass(entityClass);
+	public GenericManyToManyDaoImpl(Class<T1> entityClass1, Class<T2> entityClass2) {
+		this.entityClass1 = entityClass1;
+		this.entityClass2 = entityClass2;
+		tableName = DBTableNameAware.getTableNameByClass(entityClass1, entityClass2);
 	}
 
 	@Override
-	public void insert(AbstractModel entity) {
+	public List<Map> entityToMap(Object entity1) {
+		return null;
+	}
+
+	@Override
+	public void insert(Object entity1) {
+		SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
+		insert.withTableName(tableName);
+
+		List<Map> paramsList = entityToMap(entity1);
 		
-		final String INSERT_SQL = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName,
-				GenericTypeInfo.getFields(entityClass, entity), GenericTypeInfo.getFieldsValues(entityClass, entity));
-
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-
-		jdbcTemplate.update(new PreparedStatementCreator() {
-			@Override
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] { "id" });
-				System.out.println(ps.toString());
-				return ps;
-			}
-		}, keyHolder);
-
-		entity.setId(keyHolder.getKey().longValue());
+		for (Map params : paramsList) {
+			insert.execute(params);
+		}
 	}
 
 	@Override
 	public void deleteByFirstId(Object id) {
-		// TODO Auto-generated method stub
-		
+		jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s_id = ?", tableName, entityClass1.getSimpleName().toLowerCase()), id);
 	}
 
 	@Override
 	public void deleteBySecondId(Object id) {
-		// TODO Auto-generated method stub
-		
+		jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s_id = ?", tableName, entityClass2.getSimpleName().toLowerCase()), id);
 	}
-
-	
 }

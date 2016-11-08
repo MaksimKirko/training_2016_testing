@@ -1,10 +1,13 @@
 package com.github.maximkirko.testing.daodb;
 
-import com.github.maximkirko.testing.datamodel.models.AbstractModel;
+import java.util.List;
+import java.util.Map;
 
-public interface IGenericManyToManyDao<T, PK1, PK2> {
+public interface IGenericManyToManyDao<T1, T2, PK1, PK2> {
 	
-	void insert(AbstractModel entity);
+	List<Map> entityToMap(T1 entity);
+	
+	void insert(T1 entity);
 	
 	void deleteByFirstId(PK1 id);
 
