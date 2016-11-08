@@ -30,11 +30,22 @@ public class AnswerServiceTest {
 	}
 
 	@Test
+	
 	public void insertTest() {
 
 		Answer answer = new Answer();
 		answer.setText("some answer");
 
 		Long id = answerService.save(answer);
+	}
+	
+	@Test
+	@Ignore
+	public void deleteTest() {
+		Long id = 2l;
+		
+		answerService.delete(id);
+		
+		Assert.assertNull("answer for id=%s should not be null", answerService.get(id));
 	}
 }

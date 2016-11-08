@@ -1,12 +1,21 @@
 package com.github.maximkirko.testing.services;
 
-import com.github.maximkirko.testing.datamodel.models.Question;
+import java.util.List;
+
+import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
 
 public interface IQuestionToAnswerService {
 
-	void save(Question question);
-
-	void deleteByQuizId(Long id);
+	List<QuestionToAnswer> getByQuestion(Long id);
+	
+	List<QuestionToAnswer> getByAnswer(Long id);
+	
+	void save(QuestionToAnswer questionToAnswer);
+	
+	void saveAll(List<QuestionToAnswer> questionToAnswers);
 
 	void deleteByQuestionId(Long id);
+	
+	void deleteByAnswerId(Long id);
+	
 }

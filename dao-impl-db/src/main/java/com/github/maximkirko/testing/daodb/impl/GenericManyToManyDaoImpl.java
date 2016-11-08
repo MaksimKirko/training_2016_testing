@@ -6,58 +6,82 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daodb.IGenericManyToManyDao;
+import com.github.maximkirko.testing.daodb.mapper.ManyToManyMapper;
 import com.github.maximkirko.testing.daodb.util.DBTableNameAware;
+import com.github.maximkirko.testing.daodb.util.GenericTypeFieldsAware;
 
 @Repository
-public class GenericManyToManyDaoImpl<T1, T2, PK1, PK2> implements IGenericManyToManyDao<T1, T2, PK1, PK2> {
+public class GenericManyToManyDaoImpl<T, PK1, PK2> implements IGenericManyToManyDao<T, PK1, PK2> {
 
 	@Inject
 	protected JdbcTemplate jdbcTemplate;
 
-	protected Class<T1> entityClass1;
-	
-	protected Class<T2> entityClass2;
+	protected Class<T> entityClass;
+
+	protected List<String> dbFields;
 
 	protected String tableName;
+	
+	protected RowMapper<T> mapper;
 
 	public GenericManyToManyDaoImpl() {
 
 	}
 
-	public GenericManyToManyDaoImpl(Class<T1> entityClass1, Class<T2> entityClass2) {
-		this.entityClass1 = entityClass1;
-		this.entityClass2 = entityClass2;
-		tableName = DBTableNameAware.getTableNameByClass(entityClass1, entityClass2);
+	public GenericManyToManyDaoImpl(Class<T> entityClass, RowMapper<T> mapper) {
+		this.entityClass = entityClass;
+		tableName = DBTableNameAware.getTableNameByClass(entityClass);
+		dbFields = DBTableNameAware.getManyToManyTableFields(tableName);
+		this.mapper = mapper;
+	}
+
+	// @Override
+	// public List<Map> entityToMap(Object entity) {
+	// return null;
+	// }
+
+	@Override
+	public List<T> getByFirstId(PK1 id) {
+		return jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", tableName, dbFields.get(0)),
+				new Object[] { id }, mapper);
 	}
 
 	@Override
-	public List<Map> entityToMap(Object entity1) {
-		return null;
+	public List<T> getBySecondId(PK2 id) {
+		return jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", tableName, dbFields.get(1)),
+				new Object[] { id }, new ManyToManyMapper<T>());
 	}
 
 	@Override
-	public void insert(Object entity1) {
+	@SuppressWarnings("unchecked")
+	public void insert(Object entity) {
 		SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
 		insert.withTableName(tableName);
 
-		List<Map> paramsList = entityToMap(entity1);
-		
-		for (Map params : paramsList) {
-			insert.execute(params);
-		}
+		Map<String, Object> params = GenericTypeFieldsAware.getManyToManyFieldsMap(entityClass, entity);
+
+		insert.execute(params);
+		// List<Map> paramsList = entityToMap(entity);
+		//
+		// for (Map params : paramsList) {
+		// insert.execute(params);
+		// }
 	}
 
 	@Override
 	public void deleteByFirstId(Object id) {
-		jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s_id = ?", tableName, entityClass1.getSimpleName().toLowerCase()), id);
+
+		jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = ?", tableName, dbFields.get(0)), id);
 	}
 
 	@Override
 	public void deleteBySecondId(Object id) {
-		jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s_id = ?", tableName, entityClass2.getSimpleName().toLowerCase()), id);
+		jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = ?", tableName, dbFields.get(1)), id);
 	}
+
 }

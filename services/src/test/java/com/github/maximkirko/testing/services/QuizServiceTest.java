@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 
@@ -25,28 +26,40 @@ public class QuizServiceTest {
 	@Inject
 	private ISubjectService subjectService;
 	
+	@Inject
+	private IQuestionService questionService;
+	
 	@Test
-	public void getByIdTest() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, InstantiationException {
+	@Ignore
+	public void getByIdTest() {
 		Long id = 1l;
 		
 		Quiz quiz = quizService.get(id);
 		
-		for (Question question : quiz.getQuestions()) {
-			System.out.println(question.toString());
-		}
+		System.out.println(quiz.getSubject());
+		
+//		for (Question question : quiz.getQuestions()) {
+//			System.out.println(question.toString());
+//		}
 		
 		Assert.assertNotNull("quiz for id=%s should not be null", quiz);
 		Assert.assertEquals(id, quiz.getId());
 	}
 	
 	@Test	
-	@Ignore
+	
 	public void insertTest() {
 		
 		Quiz quiz = new Quiz();
-		quiz.setTitle("Present Simple");
+		quiz.setTitle("Past Simple");
 		quiz.setSubject(subjectService.get(1l));
 
+		List<Question> questions = new ArrayList<Question>();
+		Question question = questionService.get(1l);
+		questions.add(question);
+		
+		quiz.setQuestions(questions);
+		
 		Long id = quizService.save(quiz);
 	}
 
@@ -72,11 +85,20 @@ public class QuizServiceTest {
 
 		for (int i = 0; i < 10; i++) {
 			Quiz quiz = new Quiz();
-			quiz.setTitle("test title" + i);
+			quiz.setTitle("test title #" + i);
 			quizzes.add(quiz);
 		}
 
 		quizService.saveAll(quizzes);
 	}
 
+	@Test
+	@Ignore
+	public void deleteTest() {
+		Long id = 1l;
+		
+		quizService.delete(id);
+		
+		Assert.assertNull("quiz for id=%s should be null", quizService.get(id));
+	}
 }

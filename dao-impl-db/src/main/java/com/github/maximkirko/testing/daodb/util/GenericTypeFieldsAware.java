@@ -1,38 +1,46 @@
 package com.github.maximkirko.testing.daodb.util;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
-public class GenericTypeInfo {
-	
-	public static String getFields(Class<?> entityClass, Object entity) {
+public class GenericTypeFieldsAware {
 
-		String types = "";
+	public static List<String> getManyToManyFieldsNames(Class<?> entityClass) {
+
+		List<String> types = new ArrayList<String>();
+
+		for (Field field : entityClass.getDeclaredFields()) {
+			field.setAccessible(true);
+			types.add(String.format("%s_id", field.getName()));
+		}
+
+		return types;
+	}
+
+	public static Map getManyToManyFieldsMap(Class<?> entityClass, Object entity) {
+
+		Map<String, Object> fields = new HashMap<String, Object>();
 
 		for (Field field : entityClass.getDeclaredFields()) {
 			field.setAccessible(true);
 
 			try {
-				if(field.getType().getSuperclass().equals(AbstractModel.class)) {
-					continue;
-				}
-				if (field.get(entity) != null) {
-					types += String.format("%s", field.getName());
-				}
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
+				fields.put(String.format("%s_id", field.getName()), ((AbstractModel) field.get(entity)).getId());
+			} catch (IllegalArgumentException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
 
-		return types.substring(0, types.length() - 2);
+		}
+		return fields;
 	}
 
-	public static String getFieldsValues(Class<?> entityClass, Object entity) {
+	public static String getStringForUpdate(Class<?> entityClass, Object entity) {
 
 		String values = "";
 
@@ -40,36 +48,36 @@ public class GenericTypeInfo {
 			field.setAccessible(true);
 
 			try {
-				if(field.getType().getSuperclass().equals(AbstractModel.class)) {
-					continue;
-				}
-				if (field.get(entity) != null) {
-					values += String.format("'%s', ", field.get(entity));
-				}
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return values.substring(0, values.length() - 2);
-	}
-	
-	public static String getValuesForUpdate(Class<?> entityClass, Object entity) {
-		
-		String values = "";
-		
-		for (Field field : entityClass.getDeclaredFields()) {
-			field.setAccessible(true);
 
-			try {
-				values += String.format("%s='%s', ", field.getName(), field.get(entity));
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
+				if (field.getType().getSimpleName().toString().equals("List")) {
+
+					continue;
+
+				}
+
+				if (field.getType().getSuperclass() != null) {
+
+					if (field.getType().getSuperclass().equals(AbstractModel.class)) {
+
+						values += String.format("%s_id='%s', ", field.getName(),
+								((AbstractModel) field.get(entity)).getId());
+						continue;
+
+					}
+
+				}
+				
+				if (field.getType().getSimpleName().equals("String")) {
+
+					values += String.format("%s='%s', ", field.getName(), field.get(entity));
+
+				} else {
+
+					values += String.format("%s=%s, ", field.getName(), field.get(entity));
+
+				}
+
+			} catch (IllegalArgumentException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

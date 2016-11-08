@@ -6,15 +6,15 @@ import com.github.maximkirko.testing.datamodel.users.Student;
 @DBTable(name = "grade")
 public class Grade extends AbstractModel {
 	
-	private double mark;
+	private float mark;
 	private Student student;
 	private Quiz quiz;
 
-	public double getMark() {
+	public float getMark() {
 		return mark;
 	}
 
-	public void setMark(double mark) {
+	public void setMark(float mark) {
 		this.mark = mark;
 	}
 	

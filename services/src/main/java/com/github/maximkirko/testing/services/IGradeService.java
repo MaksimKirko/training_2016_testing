@@ -8,6 +8,10 @@ public interface IGradeService {
 
 	Grade get(Long id);
 
+	List<Grade> getByStudentId(Long id);
+
+	List<Grade> getByQuizId(Long id);
+	
 	List getAll();
 
 	Long save(Grade grade);

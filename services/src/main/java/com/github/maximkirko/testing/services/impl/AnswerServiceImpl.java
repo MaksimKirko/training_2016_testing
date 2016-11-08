@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.github.maximkirko.testing.daodb.IAnswerDao;
+import com.github.maximkirko.testing.daodb.IQuestionToAnswerDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.services.IAnswerService;
 
@@ -16,6 +17,9 @@ public class AnswerServiceImpl implements IAnswerService {
 	@Inject
 	private IAnswerDao answerDao;
 
+	@Inject
+	private IQuestionToAnswerDao questionToAnswerDao;
+	
 	@Override
 	public Answer get(Long id) {
 		return (Answer) answerDao.get(id);
@@ -46,6 +50,8 @@ public class AnswerServiceImpl implements IAnswerService {
 
 	@Override
 	public void delete(Long id) {
+		
+		questionToAnswerDao.deleteBySecondId(id);
 		answerDao.delete(id);
 	}
 

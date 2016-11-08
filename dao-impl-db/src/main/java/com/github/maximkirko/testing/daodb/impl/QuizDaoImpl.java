@@ -6,12 +6,13 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daodb.IQuizDao;
+import com.github.maximkirko.testing.daodb.mapper.QuizMapper;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 
 @Repository
 public class QuizDaoImpl extends GenericDaoImpl<Quiz, Long> implements IQuizDao {
 	public QuizDaoImpl() {
-		super(Quiz.class);
+		super(Quiz.class, new QuizMapper());
 	}
 
 	@Override

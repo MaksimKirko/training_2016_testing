@@ -1,9 +1,6 @@
 package com.github.maximkirko.testing.daodb.impl;
 
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,15 +8,13 @@ import javax.inject.Inject;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daodb.IGenericDao;
 import com.github.maximkirko.testing.daodb.util.DBTableNameAware;
-import com.github.maximkirko.testing.daodb.util.GenericTypeInfo;
+import com.github.maximkirko.testing.daodb.util.GenericTypeFieldsAware;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
 @Repository
@@ -32,6 +27,8 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 
 	protected String tableName;
 
+	protected RowMapper<T> mapper;
+	
 	public GenericDaoImpl() {
 
 	}
@@ -39,6 +36,13 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 	public GenericDaoImpl(Class<T> entityClass) {
 		this.entityClass = entityClass;
 		tableName = DBTableNameAware.getTableNameByClass(entityClass);
+		this.mapper = new BeanPropertyRowMapper<T>(entityClass);
+	}
+	
+	public GenericDaoImpl(Class<T> entityClass, RowMapper<T> mapper) {
+		this.entityClass = entityClass;
+		tableName = DBTableNameAware.getTableNameByClass(entityClass);
+		this.mapper = mapper;
 	}
 
 	@Override
@@ -49,7 +53,7 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 	@Override
 	public T get(PK id) {
 		return jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE id = ?", tableName),
-				new Object[] { id }, new BeanPropertyRowMapper<T>(entityClass));
+				new Object[] { id }, mapper);
 	}
 
 	@Override
@@ -77,7 +81,7 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 	public void update(T entity) {
 
 		final String sql = String.format("UPDATE %s SET %s WHERE id=?", tableName,
-				GenericTypeInfo.getValuesForUpdate(entityClass, entity));
+				GenericTypeFieldsAware.getStringForUpdate(entityClass, entity));
 
 		jdbcTemplate.update(sql, entity.getId());
 	}

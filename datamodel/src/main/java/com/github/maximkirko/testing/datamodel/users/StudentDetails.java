@@ -7,7 +7,7 @@ import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 public class StudentDetails extends AbstractModel {
 	
 	private Integer age;
-	private String course;
+	private Integer course;
 	private String email;
 	private String password;
 
@@ -19,11 +19,11 @@ public class StudentDetails extends AbstractModel {
 		this.age = age;
 	}
 
-	public String getCourse() {
+	public Integer getCourse() {
 		return course;
 	}
 
-	public void setCourse(String course) {
+	public void setCourse(Integer course) {
 		this.course = course;
 	}
 
