@@ -60,6 +60,9 @@ public class StudentServiceTest {
 		//student.setGrades(grades);
 		
 		Long id = studentService.save(student);
+		
+		Assert.assertNotNull("student for id=%s should not be null", id);
+		Assert.assertEquals(student, studentService.get(id));
 	}
 
 	@Test

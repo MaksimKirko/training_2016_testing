@@ -58,6 +58,7 @@ public class QuestionServiceTest {
 		Long id = questionService.save(question);
 		
 		Assert.assertNotNull("question for id=%s should not be null", id);
+		Assert.assertEquals(question, questionService.get(id));
 	}
 	
 	@Test

@@ -75,7 +75,8 @@ public class QuizServiceTest {
 
 		Quiz quizFromDb = quizService.get(id);
 
-		Assert.assertEquals(quiz.getTitle(), quizFromDb.getTitle());
+		Assert.assertNotNull("quiz for id=%s should not be null", id);
+		Assert.assertEquals(quiz, quizService.get(id));
 	}
 
 	@Test

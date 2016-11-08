@@ -37,6 +37,9 @@ public class AnswerServiceTest {
 		answer.setText("some answer");
 
 		Long id = answerService.save(answer);
+		
+		Assert.assertNotNull("answer for id=%s should not be null", id);
+		Assert.assertEquals(answer, answerService.get(id));
 	}
 	
 	@Test

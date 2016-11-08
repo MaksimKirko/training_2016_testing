@@ -39,6 +39,9 @@ public class SubjectServiceTest {
 		// subject.setTitle("Физика");
 
 		Long id = subjectService.save(subject);
+		
+		Assert.assertNotNull("subject for id=%s should not be null", id);
+		Assert.assertEquals(subject, subjectService.get(id));
 	}
 
 	@Test
