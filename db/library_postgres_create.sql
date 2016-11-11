@@ -56,20 +56,11 @@ CREATE TABLE "student" (
 	"id" serial NOT NULL,
 	"first_name" character varying(256) NOT NULL,
 	"last_name" character varying(256) NOT NULL,
-	CONSTRAINT student_pk PRIMARY KEY ("id")
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE "student_details" (
-	"id" serial NOT NULL,
-	"age" int NOT NULL,
-	"course" character varying(256) NOT NULL,
+	"age" int,
+	"course" character varying(256),
 	"email" character varying(256) NOT NULL UNIQUE,
-	"password" character varying(256) NOT NULL,
-	CONSTRAINT student_details_pk PRIMARY KEY ("id")
+	"password" character varying(128) NOT NULL,
+	CONSTRAINT student_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
@@ -106,8 +97,6 @@ ALTER TABLE "quiz_2_question" ADD CONSTRAINT "quiz_2_question_fk0" FOREIGN KEY (
 ALTER TABLE "quiz_2_question" ADD CONSTRAINT "quiz_2_question_fk1" FOREIGN KEY ("question_id") REFERENCES "question"("id");
 
 
-
-ALTER TABLE "student_details" ADD CONSTRAINT "student_details_fk0" FOREIGN KEY ("id") REFERENCES "student"("id");
 
 ALTER TABLE "grade" ADD CONSTRAINT "grade_fk0" FOREIGN KEY ("student_id") REFERENCES "student"("id");
 ALTER TABLE "grade" ADD CONSTRAINT "grade_fk1" FOREIGN KEY ("quiz_id") REFERENCES "quiz"("id");
