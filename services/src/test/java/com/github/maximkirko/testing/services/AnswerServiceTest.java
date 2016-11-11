@@ -30,7 +30,7 @@ public class AnswerServiceTest {
 	}
 
 	@Test
-	
+	@Ignore
 	public void insertTest() {
 
 		Answer answer = new Answer();
@@ -43,9 +43,9 @@ public class AnswerServiceTest {
 	}
 	
 	@Test
-	@Ignore
+	
 	public void deleteTest() {
-		Long id = 2l;
+		Long id = 1l;
 		
 		answerService.delete(id);
 		

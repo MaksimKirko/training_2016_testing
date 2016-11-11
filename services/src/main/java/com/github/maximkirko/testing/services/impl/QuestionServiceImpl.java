@@ -84,6 +84,12 @@ public class QuestionServiceImpl implements IQuestionService {
 	@Override
 	public void delete(Long id) {
 
+		Question question = get(id);
+		
+		for(Answer answer : question.getAnswers()) {
+			answerService.delete(answer.getId());
+		}
+		
 		questionToAnswerService.deleteByQuestionId(id);
 		questionDao.delete(id);
 	}

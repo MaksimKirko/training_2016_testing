@@ -90,6 +90,11 @@ public class QuizServiceImpl implements IQuizService {
 	@Override
 	public void delete(Long id) {
 
+		Quiz quiz = get(id);
+		for(Question question : quiz.getQuestions()) {
+			questionService.delete(question.getId());
+		}
+		
 		quizToQuestionService.deleteByQuizId(id);
 		quizDao.delete(id);
 	}

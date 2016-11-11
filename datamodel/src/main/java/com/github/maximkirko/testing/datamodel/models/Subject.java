@@ -1,12 +1,14 @@
 package com.github.maximkirko.testing.datamodel.models;
 
+import java.util.List;
+
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 
 @DBTable(name = "subject")
 public class Subject extends AbstractModel {
 	private String title;
 	private String description;
-
+	
 	public String getTitle() {
 		return title;
 	}
