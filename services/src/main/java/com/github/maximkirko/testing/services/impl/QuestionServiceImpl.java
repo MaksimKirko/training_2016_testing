@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daodb.IQuestionDao;
-import com.github.maximkirko.testing.daodb.customentity.CustomEntity;
 import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
+import com.github.maximkirko.testing.daodb.util.CustomEntityUtils;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.services.IAnswerService;
@@ -58,14 +58,14 @@ public class QuestionServiceImpl implements IQuestionService {
 			Long id = questionDao.insert(question);
 			question.setId(id);
 
-			List<QuestionToAnswer> questionToAnswers = CustomEntity.questionQTAList(question);
+			List<QuestionToAnswer> questionToAnswers = CustomEntityUtils.questionQTAList(question);
 			questionToAnswerService.saveAll(questionToAnswers);
 
 			return id;
 		} else {
 			questionDao.update(question);
 			
-			List<QuestionToAnswer> questionToAnswers = CustomEntity.questionQTAList(question);
+			List<QuestionToAnswer> questionToAnswers = CustomEntityUtils.questionQTAList(question);
 			questionToAnswerService.saveAll(questionToAnswers);
 			
 		}

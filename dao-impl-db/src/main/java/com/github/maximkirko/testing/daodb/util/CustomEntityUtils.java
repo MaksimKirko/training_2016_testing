@@ -1,13 +1,15 @@
-package com.github.maximkirko.testing.daodb.customentity;
+package com.github.maximkirko.testing.daodb.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
+import com.github.maximkirko.testing.daodb.customentity.QuizToQuestion;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 
-public class CustomEntity {
+public class CustomEntityUtils {
 
 	public static List<QuizToQuestion> quizToQTQList(Quiz quiz) {
 
@@ -40,4 +42,5 @@ public class CustomEntity {
 
 		return questionToAnswers;
 	}
+
 }

@@ -7,6 +7,8 @@ import com.github.maximkirko.testing.datamodel.models.Answer;
 public interface IAnswerService {
 	
 	Answer get(Long id);
+	
+	Answer getWithQuestions(Long id);
 
 	List getAll();
 

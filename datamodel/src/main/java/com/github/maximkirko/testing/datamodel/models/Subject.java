@@ -8,6 +8,7 @@ import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 public class Subject extends AbstractModel {
 	private String title;
 	private String description;
+	private List<Quiz> quizzes;
 	
 	public String getTitle() {
 		return title;
@@ -23,6 +24,14 @@ public class Subject extends AbstractModel {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public List<Quiz> getQuizzes() {
+		return quizzes;
+	}
+
+	public void setQuizzes(List<Quiz> quizzes) {
+		this.quizzes = quizzes;
 	}
 
 	@Override

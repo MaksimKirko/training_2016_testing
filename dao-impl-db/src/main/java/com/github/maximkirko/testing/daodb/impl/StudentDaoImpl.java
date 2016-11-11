@@ -20,6 +20,10 @@ public class StudentDaoImpl extends GenericDaoImpl<Student, Long> implements ISt
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("first_name", entity.getFirstName());
 		params.put("last_name", entity.getLastName());
+		params.put("age", entity.getAge());
+		params.put("course", entity.getCourse());
+		params.put("email", entity.getEmail());
+		params.put("password", entity.getPassword());
 		params.put("id", entity.getId());
 		
 		return params;

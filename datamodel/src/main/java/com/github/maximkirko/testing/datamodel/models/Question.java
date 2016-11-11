@@ -7,9 +7,11 @@ import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 
 @DBTable(name = "question")
 public class Question extends AbstractModel {
+	
 	private String text;
 	private String hint;
 	private List<Answer> answers;
+	private List<Quiz> quizzes;
 	
 	public String getText() {
 		return text;
@@ -33,6 +35,14 @@ public class Question extends AbstractModel {
 
 	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
+	}
+	
+	public List<Quiz> getQuizzes() {
+		return quizzes;
+	}
+
+	public void setQuizzes(List<Quiz> quizzes) {
+		this.quizzes = quizzes;
 	}
 
 	@Override

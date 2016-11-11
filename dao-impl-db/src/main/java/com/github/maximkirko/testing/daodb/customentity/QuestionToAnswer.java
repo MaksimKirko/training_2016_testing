@@ -1,8 +1,5 @@
 package com.github.maximkirko.testing.daodb.customentity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;

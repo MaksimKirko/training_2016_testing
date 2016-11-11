@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daodb.IQuizDao;
-import com.github.maximkirko.testing.daodb.customentity.CustomEntity;
 import com.github.maximkirko.testing.daodb.customentity.QuizToQuestion;
+import com.github.maximkirko.testing.daodb.util.CustomEntityUtils;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
@@ -64,14 +64,14 @@ public class QuizServiceImpl implements IQuizService {
 			Long id = quizDao.insert(quiz);
 			quiz.setId(id);
 
-			List<QuizToQuestion> quizToQuestions = CustomEntity.quizToQTQList(quiz);
+			List<QuizToQuestion> quizToQuestions = CustomEntityUtils.quizToQTQList(quiz);
 			quizToQuestionService.saveAll(quizToQuestions);
 
 			return id;
 		} else {
 			quizDao.update(quiz);
 
-			List<QuizToQuestion> quizToQuestions = CustomEntity.quizToQTQList(quiz);
+			List<QuizToQuestion> quizToQuestions = CustomEntityUtils.quizToQTQList(quiz);
 			quizToQuestionService.saveAll(quizToQuestions);
 
 		}
