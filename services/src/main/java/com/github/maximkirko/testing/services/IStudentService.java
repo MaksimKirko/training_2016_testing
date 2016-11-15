@@ -2,8 +2,8 @@ package com.github.maximkirko.testing.services;
 
 import java.util.List;
 
+import com.github.maximkirko.testing.datamodel.models.Student;
 import com.github.maximkirko.testing.datamodel.models.Subject;
-import com.github.maximkirko.testing.datamodel.users.Student;
 
 public interface IStudentService {
 

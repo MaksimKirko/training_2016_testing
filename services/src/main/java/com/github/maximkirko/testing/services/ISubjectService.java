@@ -1,18 +1,9 @@
 package com.github.maximkirko.testing.services;
 
-import java.util.List;
-
 import com.github.maximkirko.testing.datamodel.models.Subject;
 
-public interface ISubjectService {
-	
-	Subject get(Long id);
+public interface ISubjectService extends IGenericService<Subject, Long> {
 
-	List getAll();
+	Subject getWithQuizzes(Long id);
 
-	Long save(Subject subject);
-
-	void saveAll(List<Subject> subjects);
-
-	void delete(Long id);
 }

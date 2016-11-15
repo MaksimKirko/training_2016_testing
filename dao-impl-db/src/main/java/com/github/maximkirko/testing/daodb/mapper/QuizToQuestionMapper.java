@@ -9,7 +9,7 @@ import com.github.maximkirko.testing.daodb.customentity.QuizToQuestion;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 
-public class QuizToQuestionMapper extends ManyToManyMapper<QuizToQuestion> {
+public class QuizToQuestionMapper implements RowMapper<QuizToQuestion> {
 	@Override
 	public QuizToQuestion mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -22,7 +22,7 @@ public class QuizToQuestionMapper extends ManyToManyMapper<QuizToQuestion> {
 		QuizToQuestion quizToQuestion = new QuizToQuestion();
 		quizToQuestion.setQuiz(quiz);
 		quizToQuestion.setQuestion(question);
-		
+
 		return quizToQuestion;
 	}
 }

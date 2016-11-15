@@ -9,7 +9,7 @@ import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 
-public class QuestionToAnswerMapper extends ManyToManyMapper<QuestionToAnswer> {
+public class QuestionToAnswerMapper implements RowMapper<QuestionToAnswer> {
 	
 	@Override
 	public QuestionToAnswer mapRow(ResultSet rs, int rowNum) throws SQLException {

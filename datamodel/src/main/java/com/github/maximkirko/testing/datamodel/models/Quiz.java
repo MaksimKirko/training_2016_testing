@@ -11,6 +11,7 @@ public class Quiz extends AbstractModel {
 	private String description;
 	private Subject subject;
 	private List<Question> questions;
+	private List<Grade> grades;
 
 	public String getTitle() {
 		return title;
@@ -27,7 +28,7 @@ public class Quiz extends AbstractModel {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public Subject getSubject() {
 		return subject;
 	}
@@ -44,12 +45,17 @@ public class Quiz extends AbstractModel {
 		this.questions = questions;
 	}
 
+	public List<Grade> getGrades() {
+		return grades;
+	}
+
+	public void setGrades(List<Grade> grades) {
+		this.grades = grades;
+	}
+
 	@Override
 	public String toString() {
-		return "Quiz [title=" + title + ", description=" + description + "]";
+		return "Quiz [title=" + title + ", description=" + description + ", subject=" + subject + "]";
 	}
 
-	public Quiz() {
-
-	}
 }

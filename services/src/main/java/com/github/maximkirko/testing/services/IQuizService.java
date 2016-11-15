@@ -3,16 +3,11 @@ package com.github.maximkirko.testing.services;
 import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.Subject;
 
-public interface IQuizService {
+public interface IQuizService extends IGenericService<Quiz, Long> {
 
-	Quiz get(Long id);
+	Quiz getWithSubject(Long id);
 
-	List getAll();
-
-	Long save(Quiz quiz);
-
-	void saveAll(List<Quiz> quizzes);
-
-	void delete(Long id);
+	List<Quiz> getBySubject(Subject subject);
 }

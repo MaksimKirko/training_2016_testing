@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import com.github.maximkirko.testing.datamodel.models.Grade;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.datamodel.users.Student;
+import com.github.maximkirko.testing.datamodel.models.Student;
 
 public class GradeMapper implements RowMapper<Grade> {
 	@Override

@@ -6,6 +6,7 @@ import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 
 @DBTable(name = "answer")
 public class Answer extends AbstractModel {
+	
 	private String text;
 	private List<Question> questions;
 
@@ -24,7 +25,7 @@ public class Answer extends AbstractModel {
 	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Answer [text=" + text + "]";

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daodb.IStudentDao;
-import com.github.maximkirko.testing.datamodel.users.Student;
+import com.github.maximkirko.testing.datamodel.models.Student;
 
 @Repository
 public class StudentDaoImpl extends GenericDaoImpl<Student, Long> implements IStudentDao {

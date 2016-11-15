@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daodb.IStudentDao;
 import com.github.maximkirko.testing.datamodel.models.Grade;
-import com.github.maximkirko.testing.datamodel.users.Student;
+import com.github.maximkirko.testing.datamodel.models.Student;
 import com.github.maximkirko.testing.services.IGradeService;
 import com.github.maximkirko.testing.services.IStudentService;
 

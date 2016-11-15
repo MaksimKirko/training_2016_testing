@@ -28,7 +28,7 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 	protected String tableName;
 
 	protected RowMapper<T> mapper;
-	
+
 	public GenericDaoImpl() {
 
 	}
@@ -38,7 +38,7 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 		tableName = DBTableNameAware.getTableNameByClass(entityClass);
 		this.mapper = new BeanPropertyRowMapper<T>(entityClass);
 	}
-	
+
 	public GenericDaoImpl(Class<T> entityClass, RowMapper<T> mapper) {
 		this.entityClass = entityClass;
 		tableName = DBTableNameAware.getTableNameByClass(entityClass);
@@ -46,7 +46,7 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 	}
 
 	@Override
-	public Map entityToMap(T entity) {
+	public Map<String, Object> entityToMap(T entity) {
 		return null;
 	}
 
@@ -57,9 +57,8 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 	}
 
 	@Override
-	public List getAll() {
-		return jdbcTemplate.query(String.format("SELECT * FROM %s", tableName),
-				new BeanPropertyRowMapper<T>(entityClass));
+	public List<T> getAll() {
+		return jdbcTemplate.query(String.format("SELECT * FROM %s", tableName), mapper);
 	}
 
 	@Override
@@ -70,10 +69,10 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 		insert.withTableName(tableName);
 		insert.usingGeneratedKeyColumns("id");
 
-		Map params = entityToMap(entity);
-		
+		Map<String, Object> params = entityToMap(entity);
+
 		Long id = insert.executeAndReturnKey(params).longValue();
-		
+
 		return (PK) id;
 	}
 
@@ -90,4 +89,5 @@ public abstract class GenericDaoImpl<T extends AbstractModel, PK extends Seriali
 	public void delete(PK id) {
 		jdbcTemplate.update(String.format("DELETE FROM %s WHERE id = ?", tableName), id);
 	}
+
 }

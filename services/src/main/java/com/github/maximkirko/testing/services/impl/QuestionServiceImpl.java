@@ -10,13 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daodb.IQuestionDao;
 import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
-import com.github.maximkirko.testing.daodb.util.CustomEntityUtils;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.services.IAnswerService;
 import com.github.maximkirko.testing.services.IQuestionService;
 import com.github.maximkirko.testing.services.IQuestionToAnswerService;
-import com.github.maximkirko.testing.services.ISubjectService;
 
 @Service
 public class QuestionServiceImpl implements IQuestionService {
@@ -26,49 +24,57 @@ public class QuestionServiceImpl implements IQuestionService {
 
 	@Inject
 	private IAnswerService answerService;
-	
+
 	@Inject
 	private IQuestionToAnswerService questionToAnswerService;
 
 	@Override
 	public Question get(Long id) {
-		
-		Question question = (Question) questionDao.get(id);
-		
+		return questionDao.get(id);
+	}
+
+	@Override
+	public Question getWithAnswers(Long id) {
+
+		Question question = questionDao.get(id);
+
 		List<QuestionToAnswer> qta = questionToAnswerService.getByQuestion(id);
 		List<Answer> answers = new ArrayList<Answer>();
+
 		for (QuestionToAnswer questionToAnswer : qta) {
+
 			Answer answer = answerService.get(questionToAnswer.getAnswer().getId());
 			answers.add(answer);
+
 		}
 		question.setAnswers(answers);
-				
+
 		return question;
 	}
 
 	@Override
-	public List getAll() {
+	public List<Question> getAll() {
 		return questionDao.getAll();
 	}
 
 	@Transactional
 	@Override
 	public Long save(Question question) {
+
 		if (question.getId() == null) {
+
 			Long id = questionDao.insert(question);
 			question.setId(id);
 
-			List<QuestionToAnswer> questionToAnswers = CustomEntityUtils.questionQTAList(question);
-			questionToAnswerService.saveAll(questionToAnswers);
-
-			return id;
 		} else {
+
 			questionDao.update(question);
-			
-			List<QuestionToAnswer> questionToAnswers = CustomEntityUtils.questionQTAList(question);
-			questionToAnswerService.saveAll(questionToAnswers);
-			
+			questionToAnswerService.deleteByQuestionId(question.getId());
+
 		}
+		List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.questionQTAList(question);
+		questionToAnswerService.saveAll(questionToAnswers);
+
 		return question.getId();
 	}
 
@@ -84,12 +90,6 @@ public class QuestionServiceImpl implements IQuestionService {
 	@Override
 	public void delete(Long id) {
 
-		Question question = get(id);
-		
-		for(Answer answer : question.getAnswers()) {
-			answerService.delete(answer.getId());
-		}
-		
 		questionToAnswerService.deleteByQuestionId(id);
 		questionDao.delete(id);
 	}

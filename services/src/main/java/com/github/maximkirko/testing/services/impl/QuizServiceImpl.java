@@ -14,6 +14,7 @@ import com.github.maximkirko.testing.daodb.util.CustomEntityUtils;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.Subject;
 import com.github.maximkirko.testing.services.IQuestionService;
 import com.github.maximkirko.testing.services.IQuizService;
 import com.github.maximkirko.testing.services.IQuizToQuestionService;
@@ -51,15 +52,26 @@ public class QuizServiceImpl implements IQuizService {
 
 		return quiz;
 	}
+	
+	@Override
+	public Quiz getWithSubject(Long id) {
+		return quizDao.getWithSubject(id);
+	}
+	
+	@Override
+	public List<Quiz> getBySubject(Subject subject) {
+		return quizDao.getBySubject(subject);
+	}
 
 	@Override
-	public List getAll() {
+	public List<Quiz> getAll() {
 		return quizDao.getAll();
 	}
 
 	@Transactional
 	@Override
 	public Long save(Quiz quiz) {
+		
 		if (quiz.getId() == null) {
 			Long id = quizDao.insert(quiz);
 			quiz.setId(id);
@@ -68,6 +80,7 @@ public class QuizServiceImpl implements IQuizService {
 			quizToQuestionService.saveAll(quizToQuestions);
 
 			return id;
+			
 		} else {
 			quizDao.update(quiz);
 
@@ -81,6 +94,7 @@ public class QuizServiceImpl implements IQuizService {
 	@Transactional
 	@Override
 	public void saveAll(List<Quiz> quizzes) {
+		
 		for (Quiz quiz : quizzes) {
 			save(quiz);
 		}

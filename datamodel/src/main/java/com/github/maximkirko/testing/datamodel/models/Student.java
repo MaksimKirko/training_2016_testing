@@ -1,10 +1,8 @@
-package com.github.maximkirko.testing.datamodel.users;
+package com.github.maximkirko.testing.datamodel.models;
 
 import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
-import com.github.maximkirko.testing.datamodel.models.AbstractModel;
-import com.github.maximkirko.testing.datamodel.models.Grade;
 
 @DBTable(name = "student")
 public class Student extends AbstractModel {
@@ -16,6 +14,7 @@ public class Student extends AbstractModel {
 	private String email;
 	private String password;
 	private List<Grade> grades;
+	private Role role;
 
 	public String getFirstName() {
 		return firstName;
@@ -73,13 +72,18 @@ public class Student extends AbstractModel {
 		this.grades = grades;
 	}
 
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
 	@Override
 	public String toString() {
 		return "Student [firstName=" + firstName + ", lastName=" + lastName + ", age=" + age + ", course=" + course
-				+ ", email=" + email + ", password=" + password + "]";
+				+ ", email=" + email + ", password=" + password + ", grades=" + grades + ", role=" + role + "]";
 	}
 
-	public Student() {
-
-	}
 }

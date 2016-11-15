@@ -14,26 +14,4 @@ public class QuestionToAnswerDaoImpl extends GenericManyToManyDaoImpl<QuestionTo
 		super(QuestionToAnswer.class, new QuestionToAnswerMapper());
 	}
 
-//	@Override
-//	@SuppressWarnings("unchecked")
-//	public List<Map> entityToMap(QuestionToAnswer entity) {
-//		List<Map> paramsList = new ArrayList<Map>();
-//
-//		for (Answer answer : entity.getAnswers()) {
-//			Map<String, Long> params = new HashMap<String, Long>();
-//			params.put("question_id", entity.getId());
-//			params.put("answer_id", answer.getId());
-//
-//			paramsList.add(params);
-//		}
-//
-//		return paramsList;
-//	}
-//
-//	@Override
-//	public List<QuestionToAnswer> getByQuestionId(Long id) {
-//		return super.jdbcTemplate.query(String.format("SELECT * FROM %s WHERE quiz_id = ?", super.tableName),
-//				new Object[] { id }, new QuestionToAnswerMapper());
-//	}
-
 }

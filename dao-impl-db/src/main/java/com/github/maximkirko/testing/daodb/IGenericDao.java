@@ -8,7 +8,7 @@ import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
 public interface IGenericDao<T extends AbstractModel, PK extends Serializable> {
 
-	Map entityToMap(T entity);
+	Map<String, Object> entityToMap(T entity);
 	
 	T get(PK id);
 

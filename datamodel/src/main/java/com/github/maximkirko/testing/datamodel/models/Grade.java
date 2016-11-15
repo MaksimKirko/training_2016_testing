@@ -1,7 +1,6 @@
 package com.github.maximkirko.testing.datamodel.models;
 
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
-import com.github.maximkirko.testing.datamodel.users.Student;
 
 @DBTable(name = "grade")
 public class Grade extends AbstractModel {
@@ -36,7 +35,7 @@ public class Grade extends AbstractModel {
 
 	@Override
 	public String toString() {
-		return "Grade [mark=" + mark + "]";
+		return "Grade [mark=" + mark + ", student=" + student + ", quiz=" + quiz + "]";
 	}
 
 	public Grade() {

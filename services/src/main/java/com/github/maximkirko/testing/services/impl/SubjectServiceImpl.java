@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.maximkirko.testing.daodb.ISubjectDao;
 import com.github.maximkirko.testing.datamodel.models.Subject;
+import com.github.maximkirko.testing.services.IQuizService;
 import com.github.maximkirko.testing.services.ISubjectService;
 
 @Service
@@ -15,12 +16,25 @@ public class SubjectServiceImpl implements ISubjectService {
 
 	@Inject
 	private ISubjectDao subjectDao;
+	
+	@Inject
+	private IQuizService quizService;
 
 	@Override
 	public Subject get(Long id) {
-		return (Subject) subjectDao.get(id);
+		return subjectDao.get(id);
 	}
 
+	@Override
+	public Subject getWithQuizzes(Long id) {
+		
+		Subject subject = subjectDao.get(id);
+		subject.setQuizzes(quizService.getBySubject(subject));
+		
+		return subject;
+	}
+
+	
 	@Override
 	public List<Subject> getAll() {
 		return subjectDao.getAll();
@@ -30,9 +44,12 @@ public class SubjectServiceImpl implements ISubjectService {
 	public Long save(Subject subject) {
 
 		if (subject.getId() == null) {
+			
 			Long id = subjectDao.insert(subject);
+			
 			return id;
 		} else {
+			
 			subjectDao.update(subject);
 		}
 		return subject.getId();

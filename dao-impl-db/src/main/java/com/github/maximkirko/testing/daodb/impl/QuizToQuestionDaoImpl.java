@@ -14,25 +14,4 @@ public class QuizToQuestionDaoImpl extends GenericManyToManyDaoImpl<QuizToQuesti
 		super(QuizToQuestion.class, new QuizToQuestionMapper());
 	}
 
-//	@Override
-//	@SuppressWarnings("unchecked")
-//	public List<Map> entityToMap(QuizToQuestion entity) {
-//		List<Map> paramsList = new ArrayList<Map>();
-//
-//		for (Question question : entity.getQuestions()) {
-//			Map<String, Long> params = new HashMap<String, Long>();
-//			params.put("quiz_id", entity.getId());
-//			params.put("question_id", question.getId());
-//
-//			paramsList.add(params);
-//		}
-//
-//		return paramsList;
-//	}
-//
-//	@Override
-//	public List<QuizToQuestion> getByQuizId(Long id) {
-//		return super.jdbcTemplate.query(String.format("SELECT * FROM %s WHERE quiz_id = ?", super.tableName), new Object[] { id },
-//				new QuizToQuestionMapper());
-//	}
 }
