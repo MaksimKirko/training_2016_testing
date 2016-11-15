@@ -10,4 +10,6 @@ public interface IQuizService extends IGenericService<Quiz, Long> {
 	Quiz getWithSubject(Long id);
 
 	List<Quiz> getBySubject(Subject subject);
+
+	Quiz getWithQuestions(Long id);
 }

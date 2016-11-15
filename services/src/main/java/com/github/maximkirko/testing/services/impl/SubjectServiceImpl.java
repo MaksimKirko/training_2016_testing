@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.github.maximkirko.testing.daodb.ISubjectDao;
+import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.Subject;
 import com.github.maximkirko.testing.services.IQuizService;
 import com.github.maximkirko.testing.services.ISubjectService;
@@ -16,7 +17,7 @@ public class SubjectServiceImpl implements ISubjectService {
 
 	@Inject
 	private ISubjectDao subjectDao;
-	
+
 	@Inject
 	private IQuizService quizService;
 
@@ -27,14 +28,13 @@ public class SubjectServiceImpl implements ISubjectService {
 
 	@Override
 	public Subject getWithQuizzes(Long id) {
-		
+
 		Subject subject = subjectDao.get(id);
 		subject.setQuizzes(quizService.getBySubject(subject));
-		
+
 		return subject;
 	}
 
-	
 	@Override
 	public List<Subject> getAll() {
 		return subjectDao.getAll();
@@ -44,12 +44,12 @@ public class SubjectServiceImpl implements ISubjectService {
 	public Long save(Subject subject) {
 
 		if (subject.getId() == null) {
-			
+
 			Long id = subjectDao.insert(subject);
-			
+
 			return id;
 		} else {
-			
+
 			subjectDao.update(subject);
 		}
 		return subject.getId();
@@ -57,14 +57,21 @@ public class SubjectServiceImpl implements ISubjectService {
 
 	@Override
 	public void saveAll(List<Subject> subjects) {
+
 		for (Subject subject : subjects) {
 			save(subject);
 		}
-
 	}
 
 	@Override
 	public void delete(Long id) {
+
+		Subject subject = subjectDao.get(id);
+		for (Quiz quiz : subject.getQuizzes()) {
+
+			quizService.delete(quiz.getId());
+		}
+
 		subjectDao.delete(id);
 	}
 

@@ -70,15 +70,17 @@ public class AnswerServiceImpl implements IAnswerService {
 			questionToAnswerService.deleteByAnswerId(answer.getId());
 		}
 
-		List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.answerQTAList(answer);
-		questionToAnswerService.saveAll(questionToAnswers);
+		if (answer.getQuestions() != null) {
+			List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.answerQTAList(answer);
+			questionToAnswerService.saveAll(questionToAnswers);
+		}
 
 		return answer.getId();
 	}
 
 	@Override
 	public void saveAll(List<Answer> answers) {
-		
+
 		for (Answer answer : answers) {
 			save(answer);
 		}

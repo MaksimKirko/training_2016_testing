@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daodb.IQuizDao;
+import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.daodb.customentity.QuizToQuestion;
 import com.github.maximkirko.testing.daodb.util.CustomEntityUtils;
 import com.github.maximkirko.testing.datamodel.models.Answer;
@@ -27,9 +28,6 @@ public class QuizServiceImpl implements IQuizService {
 	private IQuizDao quizDao;
 
 	@Inject
-	private ISubjectService subjectService;
-	
-	@Inject
 	private IQuestionService questionService;
 
 	@Inject
@@ -37,30 +35,36 @@ public class QuizServiceImpl implements IQuizService {
 
 	@Override
 	public Quiz get(Long id) {
+		return quizDao.get(id);
+	}
 
-		Quiz quiz = (Quiz) quizDao.get(id);
-		
-		quiz.setSubject(subjectService.get(quiz.getSubject().getId()));
-		
+	@Override
+	public Quiz getWithSubject(Long id) {
+		return quizDao.getWithSubject(id);
+	}
+
+	@Override
+	public List<Quiz> getBySubject(Subject subject) {
+		return quizDao.getBySubject(subject);
+	}
+
+	@Override
+	public Quiz getWithQuestions(Long id) {
+
+		Quiz quiz = quizDao.get(id);
+
 		List<QuizToQuestion> qtq = quizToQuestionService.getByQuiz(id);
 		List<Question> questions = new ArrayList<Question>();
+		
 		for (QuizToQuestion quizToQuestion : qtq) {
+			
 			Question question = questionService.get(quizToQuestion.getQuestion().getId());
 			questions.add(question);
 		}
 		quiz.setQuestions(questions);
 
 		return quiz;
-	}
-	
-	@Override
-	public Quiz getWithSubject(Long id) {
-		return quizDao.getWithSubject(id);
-	}
-	
-	@Override
-	public List<Quiz> getBySubject(Subject subject) {
-		return quizDao.getBySubject(subject);
+
 	}
 
 	@Override
@@ -71,7 +75,7 @@ public class QuizServiceImpl implements IQuizService {
 	@Transactional
 	@Override
 	public Long save(Quiz quiz) {
-		
+
 		if (quiz.getId() == null) {
 			Long id = quizDao.insert(quiz);
 			quiz.setId(id);
@@ -80,7 +84,7 @@ public class QuizServiceImpl implements IQuizService {
 			quizToQuestionService.saveAll(quizToQuestions);
 
 			return id;
-			
+
 		} else {
 			quizDao.update(quiz);
 
@@ -94,7 +98,7 @@ public class QuizServiceImpl implements IQuizService {
 	@Transactional
 	@Override
 	public void saveAll(List<Quiz> quizzes) {
-		
+
 		for (Quiz quiz : quizzes) {
 			save(quiz);
 		}
@@ -105,10 +109,10 @@ public class QuizServiceImpl implements IQuizService {
 	public void delete(Long id) {
 
 		Quiz quiz = get(id);
-		for(Question question : quiz.getQuestions()) {
+		for (Question question : quiz.getQuestions()) {
 			questionService.delete(question.getId());
 		}
-		
+
 		quizToQuestionService.deleteByQuizId(id);
 		quizDao.delete(id);
 	}
