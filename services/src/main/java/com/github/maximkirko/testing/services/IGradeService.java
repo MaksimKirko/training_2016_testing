@@ -3,20 +3,15 @@ package com.github.maximkirko.testing.services;
 import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.models.Grade;
+import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.Student;
 
-public interface IGradeService {
-
-	Grade get(Long id);
-
-	List<Grade> getByStudentId(Long id);
-
-	List<Grade> getByQuizId(Long id);
+public interface IGradeService extends IGenericService<Grade, Long> {
 	
-	List getAll();
-
-	Long save(Grade grade);
-
-	void saveAll(List<Grade> grades);
-
-	void delete(Long id);
+	Grade getWithStudentAndQuiz(Long id);
+	
+	List<Grade> getByStudent(Student student);
+	
+	List<Grade> getByQuiz(Quiz quiz);
+	
 }

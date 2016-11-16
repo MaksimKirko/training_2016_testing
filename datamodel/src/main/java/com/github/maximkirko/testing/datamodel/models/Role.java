@@ -7,7 +7,7 @@ import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 @DBTable(name = "role")
 public class Role extends AbstractModel {
 
-	private enum RoleEnum {
+	public enum RoleEnum {
 		ADMIN, STUDENT, GUEST;
 	}
 

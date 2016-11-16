@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daodb.IGradeDao;
 import com.github.maximkirko.testing.datamodel.models.Grade;
+import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.Student;
 import com.github.maximkirko.testing.services.IGradeService;
-import com.github.maximkirko.testing.services.IQuizService;
-import com.github.maximkirko.testing.services.IStudentService;
 
 @Service
 public class GradeServiceImpl implements IGradeService {
@@ -19,37 +19,37 @@ public class GradeServiceImpl implements IGradeService {
 	@Inject
 	private IGradeDao gradeDao;
 
-	@Inject
-	private IQuizService quizService;
-
-	@Inject
-	private IStudentService studentService;
-
-	@Transactional
 	@Override
 	public Grade get(Long id) {
 
-		Grade grade = (Grade) gradeDao.get(id);
+		return gradeDao.get(id);
 
-		grade.setQuiz(quizService.get(grade.getQuiz().getId()));
-		grade.setStudent(studentService.get(grade.getStudent().getId()));
-
-		return grade;
 	}
 	
 	@Override
-	public List<Grade> getByStudentId(Long id) {
-		return gradeDao.getByStudentId(id);
+	public Grade getWithStudentAndQuiz(Long id) {
+		
+		return gradeDao.getWithStudentAndQuiz(id);
+		
+	}
+	
+	@Override
+	public List<Grade> getByStudent(Student student) {
+
+		return gradeDao.getByStudent(student);
+		
 	}
 
 	@Override
-	public List<Grade> getByQuizId(Long id) {
-		return gradeDao.getByQuizId(id);
+	public List<Grade> getByQuiz(Quiz quiz) {
+		
+		return gradeDao.getByQuiz(quiz);
+		
 	}
 
 	@Transactional
 	@Override
-	public List getAll() {
+	public List<Grade> getAll() {
 		return gradeDao.getAll();
 	}
 
@@ -59,16 +59,22 @@ public class GradeServiceImpl implements IGradeService {
 
 		if (grade.getId() == null) {
 			Long id = gradeDao.insert(grade);
+			
 			return id;
+			
 		} else {
+			
 			gradeDao.update(grade);
+			
 		}
+		
 		return grade.getId();
 	}
 
 	@Transactional
 	@Override
 	public void saveAll(List<Grade> grades) {
+		
 		for (Grade grade : grades) {
 			save(grade);
 		}
@@ -78,7 +84,9 @@ public class GradeServiceImpl implements IGradeService {
 	@Transactional
 	@Override
 	public void delete(Long id) {
+		
 		gradeDao.delete(id);
+		
 	}
 
 }

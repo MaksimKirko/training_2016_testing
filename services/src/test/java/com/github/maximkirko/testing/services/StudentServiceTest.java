@@ -45,7 +45,7 @@ public class StudentServiceTest {
 		student.setFirstName("Bill");
 		student.setLastName("Gates");
 		student.setAge(21);
-		student.setCourse(122);
+		student.setCourse("PM-31");
 		student.setEmail("microsoft@bing.com");
 		student.setPassword("windows");
 		// student.setGrades(grades);

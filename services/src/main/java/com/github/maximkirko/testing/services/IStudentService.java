@@ -2,18 +2,15 @@ package com.github.maximkirko.testing.services;
 
 import java.util.List;
 
+import com.github.maximkirko.testing.datamodel.models.Role;
 import com.github.maximkirko.testing.datamodel.models.Student;
-import com.github.maximkirko.testing.datamodel.models.Subject;
 
-public interface IStudentService {
+public interface IStudentService extends IGenericService<Student, Long> {
 
-	Student get(Long id);
-
-	List getAll();
-
-	Long save(Student user);
-
-	void saveAll(List<Student> users);
-
-	void delete(Long id);
+	Student getWithRole(Long id);
+	
+	List<Student> getByRole(Role role);
+	
+	Student getWithGrades(Long id);
+	
 }

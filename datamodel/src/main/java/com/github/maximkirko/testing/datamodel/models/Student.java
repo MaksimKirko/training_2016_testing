@@ -10,7 +10,7 @@ public class Student extends AbstractModel {
 	private String firstName;
 	private String lastName;
 	private Integer age;
-	private Integer course;
+	private String course;
 	private String email;
 	private String password;
 	private List<Grade> grades;
@@ -39,12 +39,12 @@ public class Student extends AbstractModel {
 	public void setAge(Integer age) {
 		this.age = age;
 	}
-
-	public Integer getCourse() {
+	
+	public String getCourse() {
 		return course;
 	}
 
-	public void setCourse(Integer course) {
+	public void setCourse(String course) {
 		this.course = course;
 	}
 

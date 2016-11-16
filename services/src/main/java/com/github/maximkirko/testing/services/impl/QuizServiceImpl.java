@@ -9,17 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daodb.IQuizDao;
-import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.daodb.customentity.QuizToQuestion;
-import com.github.maximkirko.testing.daodb.util.CustomEntityUtils;
-import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.Subject;
 import com.github.maximkirko.testing.services.IQuestionService;
 import com.github.maximkirko.testing.services.IQuizService;
 import com.github.maximkirko.testing.services.IQuizToQuestionService;
-import com.github.maximkirko.testing.services.ISubjectService;
 
 @Service
 public class QuizServiceImpl implements IQuizService {
@@ -55,9 +51,9 @@ public class QuizServiceImpl implements IQuizService {
 
 		List<QuizToQuestion> qtq = quizToQuestionService.getByQuiz(id);
 		List<Question> questions = new ArrayList<Question>();
-		
+
 		for (QuizToQuestion quizToQuestion : qtq) {
-			
+
 			Question question = questionService.get(quizToQuestion.getQuestion().getId());
 			questions.add(question);
 		}
@@ -77,21 +73,21 @@ public class QuizServiceImpl implements IQuizService {
 	public Long save(Quiz quiz) {
 
 		if (quiz.getId() == null) {
+
 			Long id = quizDao.insert(quiz);
 			quiz.setId(id);
 
-			List<QuizToQuestion> quizToQuestions = CustomEntityUtils.quizToQTQList(quiz);
-			quizToQuestionService.saveAll(quizToQuestions);
-
-			return id;
-
 		} else {
+
 			quizDao.update(quiz);
 
-			List<QuizToQuestion> quizToQuestions = CustomEntityUtils.quizToQTQList(quiz);
-			quizToQuestionService.saveAll(quizToQuestions);
-
 		}
+
+		if (quiz.getQuestions() != null) {
+			List<QuizToQuestion> quizToQuestions = QuizToQuestion.quizToQTQList(quiz);
+			quizToQuestionService.saveAll(quizToQuestions);
+		}
+
 		return quiz.getId();
 	}
 
