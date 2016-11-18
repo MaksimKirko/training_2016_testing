@@ -7,10 +7,10 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.maximkirko.testing.daodb.IQuestionToAnswerDao;
-import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
+import com.github.maximkirko.testing.daoapi.IQuestionToAnswerDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
+import com.github.maximkirko.testing.datamodel.models.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.services.IAnswerService;
 import com.github.maximkirko.testing.services.IQuestionService;
 import com.github.maximkirko.testing.services.IQuestionToAnswerService;
@@ -20,62 +20,64 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 
 	@Inject
 	private IQuestionToAnswerDao questionToAnswerDao;
-	
+
 	@Inject
 	private IQuestionService questionService;
-	
+
 	@Inject
 	private IAnswerService answerService;
 
 	@Override
-	public List<QuestionToAnswer> getByQuestion(Long id) {
-		return questionToAnswerDao.getByFirstId(id);
+	public List<QuestionToAnswer> getByQuestion(Question question) {
+		return questionToAnswerDao.getByQuestion(question);
 	}
 
 	@Override
-	public List<QuestionToAnswer> getByAnswer(Long id) {
-		return questionToAnswerDao.getBySecondId(id);
+	public List<QuestionToAnswer> getByAnswer(Answer answer) {
+		return questionToAnswerDao.getByAnswer(answer);
 	}
-	
+
 	@Override
 	public void save(QuestionToAnswer questionToAnswer) {
 		questionToAnswerDao.insert(questionToAnswer);
 	}
-	
+
 	@Transactional
 	@Override
 	public void saveAll(List<QuestionToAnswer> questionToAnswers) {
-		
+
 		for (QuestionToAnswer questionToAnswer : questionToAnswers) {
 			save(questionToAnswer);
 		}
-		
+
 	}
 
 	@Transactional
 	@Override
-	public void deleteByQuestionId(Long id) {
-		
-		questionToAnswerDao.deleteByFirstId(id);
-		
-		Question question = questionService.get(id);
-		for (Answer answer : question.getAnswers()) {
-			answerService.delete(answer.getId());
+	public void deleteByQuestion(Question question) {
+
+		questionToAnswerDao.deleteByQuestion(question);
+
+		if (!question.getAnswers().equals(null)) {
+			for (Answer answer : question.getAnswers()) {
+				answerService.delete(answer.getId());
+			}
 		}
-		
+
 	}
 
 	@Transactional
 	@Override
-	public void deleteByAnswerId(Long id) {
-		
-		questionToAnswerDao.deleteBySecondId(id);
-		
-		Answer answer = answerService.get(id);
-		for (Question question : answer.getQuestions()) {
-			questionService.delete(question.getId());
+	public void deleteByAnswer(Answer answer) {
+
+		questionToAnswerDao.deleteByAnswer(answer);
+
+		if (answer.getQuestions() != null) {
+			for (Question question : answer.getQuestions()) {
+				questionService.delete(question.getId());
+			}
 		}
-		
+
 	}
-	
+
 }

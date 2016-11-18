@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import com.github.maximkirko.testing.daodb.ISubjectDao;
+import com.github.maximkirko.testing.daoapi.ISubjectDao;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.Subject;
 import com.github.maximkirko.testing.services.IQuizService;

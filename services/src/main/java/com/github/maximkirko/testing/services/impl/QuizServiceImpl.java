@@ -8,11 +8,11 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.maximkirko.testing.daodb.IQuizDao;
-import com.github.maximkirko.testing.daodb.customentity.QuizToQuestion;
+import com.github.maximkirko.testing.daoapi.IQuizDao;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.Subject;
+import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
 import com.github.maximkirko.testing.services.IQuestionService;
 import com.github.maximkirko.testing.services.IQuizService;
 import com.github.maximkirko.testing.services.IQuizToQuestionService;
@@ -49,7 +49,7 @@ public class QuizServiceImpl implements IQuizService {
 
 		Quiz quiz = quizDao.get(id);
 
-		List<QuizToQuestion> qtq = quizToQuestionService.getByQuiz(id);
+		List<QuizToQuestion> qtq = quizToQuestionService.getByQuiz(quiz);
 		List<Question> questions = new ArrayList<Question>();
 
 		for (QuizToQuestion quizToQuestion : qtq) {
@@ -105,11 +105,12 @@ public class QuizServiceImpl implements IQuizService {
 	public void delete(Long id) {
 
 		Quiz quiz = get(id);
+
 		for (Question question : quiz.getQuestions()) {
 			questionService.delete(question.getId());
 		}
 
-		quizToQuestionService.deleteByQuizId(id);
+		quizToQuestionService.deleteByQuiz(quiz);
 		quizDao.delete(id);
 	}
 

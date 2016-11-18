@@ -40,6 +40,10 @@ public class GenericTypeFieldsAware {
 		return fields;
 	}
 
+	
+	/*
+	 * TODO: refactor to use the Map of endtity fields
+	 */
 	public static String getStringForUpdate(Class<?> entityClass, Object entity) {
 
 		String values = "";

@@ -7,8 +7,12 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.maximkirko.testing.daodb.IQuizToQuestionDao;
-import com.github.maximkirko.testing.daodb.customentity.QuizToQuestion;
+import com.github.maximkirko.testing.daoapi.IQuizToQuestionDao;
+import com.github.maximkirko.testing.datamodel.models.Question;
+import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
+import com.github.maximkirko.testing.services.IQuestionService;
+import com.github.maximkirko.testing.services.IQuizService;
 import com.github.maximkirko.testing.services.IQuizToQuestionService;
 
 @Service
@@ -17,40 +21,61 @@ public class QuizToQuestionServiceImpl implements IQuizToQuestionService {
 	@Inject
 	private IQuizToQuestionDao quizToQuestionDao;
 
+	@Inject
+	private IQuizService quizService;
+
+	@Inject
+	private IQuestionService questionService;
+
 	@Override
-	public List<QuizToQuestion> getByQuiz(Long id) {
-		return quizToQuestionDao.getByFirstId(id);
+	public List<QuizToQuestion> getByQuiz(Quiz quiz) {
+		return quizToQuestionDao.getByQuiz(quiz);
 	}
 
 	@Override
-	public List<QuizToQuestion> getByQuestion(Long id) {
-		return quizToQuestionDao.getBySecondId(id);
+	public List<QuizToQuestion> getByQuestion(Question question) {
+		return quizToQuestionDao.getByQuestion(question);
+	}
+
+	@Override
+	public void save(QuizToQuestion questionToQuiz) {
+		quizToQuestionDao.insert(questionToQuiz);
 	}
 
 	@Transactional
 	@Override
-	public void save(QuizToQuestion quizToQuestion) {
-		quizToQuestionDao.insert(quizToQuestion);
+	public void saveAll(List<QuizToQuestion> questionToQuizs) {
+
+		for (QuizToQuestion questionToQuiz : questionToQuizs) {
+			save(questionToQuiz);
+		}
+
 	}
 
 	@Transactional
 	@Override
-	public void saveAll(List<QuizToQuestion> quizToQuestions) {
-		for (QuizToQuestion quizToQuestion : quizToQuestions) {
-			save(quizToQuestion);
+	public void deleteByQuiz(Quiz quiz) {
+
+		quizToQuestionDao.deleteByQuiz(quiz);
+
+		if (quiz.getQuestions() != null) {
+			for (Question question : quiz.getQuestions()) {
+				questionService.delete(question.getId());
+			}
 		}
 	}
 
 	@Transactional
 	@Override
-	public void deleteByQuizId(Long id) {
-		quizToQuestionDao.deleteByFirstId(id);
-	}
+	public void deleteByQuestion(Question question) {
 
-	@Transactional
-	@Override
-	public void deleteByQuestionId(Long id) {
-		quizToQuestionDao.deleteBySecondId(id);
+		quizToQuestionDao.deleteByQuestion(question);
+
+		if (!question.getQuizzes().equals(null)) {
+			for (Quiz quiz : question.getQuizzes()) {
+				quizService.delete(quiz.getId());
+			}
+		}
 	}
 
 }

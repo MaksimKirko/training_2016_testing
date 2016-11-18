@@ -5,9 +5,9 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
+import com.github.maximkirko.testing.datamodel.models.customentity.QuestionToAnswer;
 
 public class QuestionToAnswerMapper implements RowMapper<QuestionToAnswer> {
 	

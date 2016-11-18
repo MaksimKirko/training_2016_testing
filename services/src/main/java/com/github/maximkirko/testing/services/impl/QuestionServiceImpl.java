@@ -8,10 +8,10 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.maximkirko.testing.daodb.IQuestionDao;
-import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
+import com.github.maximkirko.testing.daoapi.IQuestionDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
+import com.github.maximkirko.testing.datamodel.models.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.services.IAnswerService;
 import com.github.maximkirko.testing.services.IQuestionService;
 import com.github.maximkirko.testing.services.IQuestionToAnswerService;
@@ -38,7 +38,7 @@ public class QuestionServiceImpl implements IQuestionService {
 
 		Question question = questionDao.get(id);
 
-		List<QuestionToAnswer> qta = questionToAnswerService.getByQuestion(id);
+		List<QuestionToAnswer> qta = questionToAnswerService.getByQuestion(question);
 		List<Answer> answers = new ArrayList<Answer>();
 
 		for (QuestionToAnswer questionToAnswer : qta) {
@@ -69,7 +69,7 @@ public class QuestionServiceImpl implements IQuestionService {
 		} else {
 
 			questionDao.update(question);
-			questionToAnswerService.deleteByQuestionId(question.getId());
+			questionToAnswerService.deleteByQuestion(question);
 
 		}
 		List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.questionQTAList(question);
@@ -90,7 +90,9 @@ public class QuestionServiceImpl implements IQuestionService {
 	@Override
 	public void delete(Long id) {
 
-		questionToAnswerService.deleteByQuestionId(id);
+		Question question = get(id);
+
+		questionToAnswerService.deleteByQuestion(question);
 		questionDao.delete(id);
 	}
 

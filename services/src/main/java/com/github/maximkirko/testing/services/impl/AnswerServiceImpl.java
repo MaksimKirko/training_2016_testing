@@ -7,10 +7,10 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import com.github.maximkirko.testing.daodb.IAnswerDao;
-import com.github.maximkirko.testing.daodb.customentity.QuestionToAnswer;
+import com.github.maximkirko.testing.daoapi.IAnswerDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
+import com.github.maximkirko.testing.datamodel.models.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.services.IAnswerService;
 import com.github.maximkirko.testing.services.IQuestionService;
 import com.github.maximkirko.testing.services.IQuestionToAnswerService;
@@ -29,6 +29,7 @@ public class AnswerServiceImpl implements IAnswerService {
 
 	@Override
 	public Answer get(Long id) {
+
 		return answerDao.get(id);
 	}
 
@@ -37,7 +38,7 @@ public class AnswerServiceImpl implements IAnswerService {
 
 		Answer answer = get(id);
 
-		List<QuestionToAnswer> qta = questionToAnswerService.getByAnswer(id);
+		List<QuestionToAnswer> qta = questionToAnswerService.getByAnswer(answer);
 		List<Question> questions = new ArrayList<Question>();
 
 		for (QuestionToAnswer questionToAnswer : qta) {
@@ -67,7 +68,7 @@ public class AnswerServiceImpl implements IAnswerService {
 		} else {
 
 			answerDao.update(answer);
-			questionToAnswerService.deleteByAnswerId(answer.getId());
+			questionToAnswerService.deleteByAnswer(answer);
 		}
 
 		if (answer.getQuestions() != null) {
@@ -89,7 +90,13 @@ public class AnswerServiceImpl implements IAnswerService {
 	@Override
 	public void delete(Long id) {
 
-		questionToAnswerService.deleteByAnswerId(id);
+		Answer answer = get(id);
+		
+		if (answer.equals(null)) {
+			return;
+		}
+
+		questionToAnswerService.deleteByAnswer(answer);
 		answerDao.delete(id);
 	}
 

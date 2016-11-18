@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.maximkirko.testing.daodb.IStudentDao;
+import com.github.maximkirko.testing.daoapi.IStudentDao;
 import com.github.maximkirko.testing.datamodel.models.Grade;
 import com.github.maximkirko.testing.datamodel.models.Role;
 import com.github.maximkirko.testing.datamodel.models.Student;

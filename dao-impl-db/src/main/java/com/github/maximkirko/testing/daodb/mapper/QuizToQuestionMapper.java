@@ -5,9 +5,9 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.github.maximkirko.testing.daodb.customentity.QuizToQuestion;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
 
 public class QuizToQuestionMapper implements RowMapper<QuizToQuestion> {
 	@Override
