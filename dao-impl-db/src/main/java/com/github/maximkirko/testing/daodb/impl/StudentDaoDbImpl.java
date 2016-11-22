@@ -1,8 +1,6 @@
 package com.github.maximkirko.testing.daodb.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -21,20 +19,6 @@ public class StudentDaoDbImpl extends GenericDaoDbImpl<Student, Long> implements
 	public StudentDaoDbImpl() {
 		super(Student.class, new StudentMapper());
 		roleTableName = DBTableNameAware.getTableNameByClass(Role.class);
-	}
-
-	@Override
-	public Map<String, Object> entityToMap(Student entity) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("first_name", entity.getFirstName());
-		params.put("last_name", entity.getLastName());
-		params.put("age", entity.getAge());
-		params.put("course", entity.getCourse());
-		params.put("email", entity.getEmail());
-		params.put("password", entity.getPassword());
-		params.put("id", entity.getId());
-		
-		return params;
 	}
 
 	@Override

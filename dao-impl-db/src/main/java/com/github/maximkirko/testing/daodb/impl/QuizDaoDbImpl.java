@@ -1,8 +1,6 @@
 package com.github.maximkirko.testing.daodb.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -21,18 +19,6 @@ public class QuizDaoDbImpl extends GenericDaoDbImpl<Quiz, Long> implements IQuiz
 	public QuizDaoDbImpl() {
 		super(Quiz.class, new QuizMapper());
 		subjectTableName = DBTableNameAware.getTableNameByClass(Subject.class);
-	}
-
-	@Override
-	public Map<String, Object> entityToMap(Quiz entity) {
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("title", entity.getTitle());
-		params.put("description", entity.getDescription());
-		params.put("subject_id", entity.getSubject().getId());
-		params.put("id", entity.getId());
-
-		return params;
 	}
 
 	@Override

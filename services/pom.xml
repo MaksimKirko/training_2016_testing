@@ -23,6 +23,12 @@
 			<artifactId>dao-impl-db</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.github.maximkirko.testing</groupId>
+			<artifactId>dao-impl-xml</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 
 		<dependency>

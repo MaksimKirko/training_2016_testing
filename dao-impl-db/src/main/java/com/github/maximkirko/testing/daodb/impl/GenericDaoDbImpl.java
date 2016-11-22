@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IGenericDao;
+import com.github.maximkirko.testing.daodb.entitytomap.EntityToMap;
 import com.github.maximkirko.testing.daodb.util.GenericTypeFieldsAware;
 import com.github.maximkirko.testing.datamodel.annotations.anylizer.DBTableNameAware;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
@@ -29,6 +30,8 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 	protected String tableName;
 
 	protected RowMapper<T> mapper;
+	
+	protected EntityToMap<T> entityToMap;
 
 	public GenericDaoDbImpl() {
 
@@ -45,9 +48,6 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 		tableName = DBTableNameAware.getTableNameByClass(entityClass);
 		this.mapper = mapper;
 	}
-
-	@Override
-	public abstract Map<String, Object> entityToMap(T entity);
 
 	@Override
 	public T get(PK id) {
@@ -73,13 +73,13 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public PK insert(T entity) {
+	public PK insert(T newEntity) {
 
 		SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
 		insert.withTableName(tableName);
 		insert.usingGeneratedKeyColumns("id");
 
-		Map<String, Object> params = entityToMap(entity);
+		Map<String, Object> params = entityToMap.convert(newEntity);
 
 		Long id = insert.executeAndReturnKey(params).longValue();
 

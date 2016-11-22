@@ -1,8 +1,6 @@
 package com.github.maximkirko.testing.daodb.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -32,17 +30,6 @@ public class GradeDaoDbImpl extends GenericDaoDbImpl<Grade, Long> implements IGr
 		return jdbcTemplate.queryForObject(String.format(
 				"SELECT * FROM %s g LEFT JOIN %s s ON g.student_id=s.id LEFT JOIN %s q ON g.quiz_id=q.id WHERE g.id = ?",
 				super.tableName, studentTableName, quizTableName), new Object[] { id }, new GradeWithStudentAndQuizMapper());
-	}
-
-	@Override
-	public Map<String, Object> entityToMap(Grade entity) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("mark", entity.getMark());
-		params.put("student_id", entity.getStudent().getId());
-		params.put("quiz_id", entity.getQuiz().getId());
-		params.put("id", entity.getId());
-
-		return params;
 	}
 
 	@Override
