@@ -106,10 +106,10 @@ public abstract class GenericDaoXmlImpl<T extends AbstractModel, PK extends Seri
 		int i = 0;
 		for (T entity : entities) {
 
-			if (!entity.getId().equals(id)) {
+			if (entity.getId().equals(id)) {
 
 				entities.remove(i);
-				return;
+				break;
 			}
 			i++;
 		}

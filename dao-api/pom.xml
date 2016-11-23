@@ -15,7 +15,6 @@
 		<dependency>
 			<groupId>com.github.maximkirko.testing</groupId>
 			<artifactId>datamodel</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 
 	</dependencies>

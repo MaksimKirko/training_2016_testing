@@ -89,6 +89,6 @@ public class AnswerServiceTest {
 
 		answerService.delete(id);
 
-		Assert.assertNull(String.format("answer for id=%s should be null", id), id);
+		Assert.assertNull(String.format("answer for id=%s should be null", id), answerService.get(id));
 	}
 }
