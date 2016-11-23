@@ -1,8 +1,10 @@
 package com.github.maximkirko.testing.datamodel.models;
 
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
+import com.github.maximkirko.testing.datamodel.annotations.Filename;
 
-@DBTable(name = "grade")
+@DBTable("grade")
+@Filename("grade.xml")
 public class Grade extends AbstractModel {
 	
 	private float mark;

@@ -14,7 +14,6 @@ import com.github.maximkirko.testing.datamodel.models.Student;
 public class GradeDaoXmlImpl extends GenericDaoXmlImpl<Grade, Long> implements IGradeDao {
 
 	public GradeDaoXmlImpl() throws IOException {
-
 		super(Grade.class);
 	}
 

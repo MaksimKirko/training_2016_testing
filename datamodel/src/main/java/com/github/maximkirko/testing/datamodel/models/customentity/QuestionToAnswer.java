@@ -7,7 +7,7 @@ import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 
-@DBTable(name = "question_2_answer")
+@DBTable(value = "question_2_answer")
 public class QuestionToAnswer implements ICustomEntity {
 
 	private Question question;

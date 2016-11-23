@@ -3,10 +3,10 @@ package com.github.maximkirko.testing.datamodel.models;
 import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
-import com.github.maximkirko.testing.datamodel.annotations.FilePath;
+import com.github.maximkirko.testing.datamodel.annotations.Filename;
 
-@DBTable(name = "answer")
-@FilePath(name = "xml-data/answer.xml")
+@DBTable("answer")
+@Filename("answer.xml")
 public class Answer extends AbstractModel {
 	
 	private String text;
