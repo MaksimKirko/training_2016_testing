@@ -7,7 +7,7 @@ import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 
-@DBTable(name = "quiz_2_question")
+@DBTable(value = "quiz_2_question")
 public class QuizToQuestion {
 
 	private Quiz quiz;

@@ -75,7 +75,7 @@ public class AnswerServiceTest {
 			return;
 		}
 
-		Assert.assertNotNull("answer for id=%s should not be null", id);
+		Assert.assertNotNull(String.format("answer for id=%s should not be null", id), id);
 		Assert.assertEquals(answer, answerService.get(id));
 
 		answerService.delete(id);
@@ -89,6 +89,6 @@ public class AnswerServiceTest {
 
 		answerService.delete(id);
 
-		Assert.assertNull("answer for id=%s should not be null", answerService.get(id));
+		Assert.assertNull(String.format("answer for id=%s should be null", id), id);
 	}
 }

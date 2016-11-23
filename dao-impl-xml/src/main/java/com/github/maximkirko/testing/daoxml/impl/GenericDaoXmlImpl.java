@@ -8,9 +8,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IGenericDao;
+import com.github.maximkirko.testing.datamodel.annotations.anylizer.FilenameAware;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 import com.thoughtworks.xstream.XStream;
 
@@ -22,24 +26,32 @@ public abstract class GenericDaoXmlImpl<T extends AbstractModel, PK extends Seri
 
 	protected XStream xstream;
 
+	@Value("${basePath}")
+	protected String basePath;
+
+	protected String filename;
+	
 	protected File file;
 
-	protected String filePath;
-
 	public GenericDaoXmlImpl(Class<T> entityClass) throws IOException {
-
+		
 		this.entityClass = entityClass;
-
+		filename = FilenameAware.getFilenameByClass(entityClass);
+	}
+	
+	@PostConstruct
+    private void intialize() throws IOException {
+		
 		xstream = new XStream();
 		xstream.alias(entityClass.getSimpleName(), entityClass);
 
-		file = new File(filePath);
+		file = new File(basePath + filename);
 
 		if (!file.exists()) {
 			file.createNewFile();
 			xstream.toXML(new ArrayList<>(), new FileOutputStream(file));
 		}
-	}
+    }
 
 	@Override
 	public T get(PK id) {

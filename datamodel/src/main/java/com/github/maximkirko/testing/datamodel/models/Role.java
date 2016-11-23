@@ -3,8 +3,10 @@ package com.github.maximkirko.testing.datamodel.models;
 import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
+import com.github.maximkirko.testing.datamodel.annotations.Filename;
 
-@DBTable(name = "role")
+@DBTable("role")
+@Filename("role.xml")
 public class Role extends AbstractModel {
 
 	public enum RoleEnum {

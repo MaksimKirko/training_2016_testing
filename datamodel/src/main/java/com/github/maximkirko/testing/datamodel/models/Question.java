@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
+import com.github.maximkirko.testing.datamodel.annotations.Filename;
 
-@DBTable(name = "question")
+@DBTable("question")
+@Filename("question.xml")
 public class Question extends AbstractModel {
 	
 	private String text;
