@@ -6,7 +6,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daoapi.IQuestionDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
@@ -57,7 +56,6 @@ public class QuestionServiceImpl implements IQuestionService {
 		return questionDao.getAll();
 	}
 
-	@Transactional
 	@Override
 	public Long save(Question question) {
 
@@ -72,21 +70,31 @@ public class QuestionServiceImpl implements IQuestionService {
 			questionToAnswerService.deleteByQuestion(question);
 
 		}
-		List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.questionQTAList(question);
-		questionToAnswerService.saveAll(questionToAnswers);
+
+		if (question.getAnswers() != null) {
+
+			for (Answer answer : question.getAnswers()) {
+				answerService.save(answer);
+			}
+
+			List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.questionQTAList(question);
+			questionToAnswerService.saveAll(questionToAnswers);
+		}
 
 		return question.getId();
 	}
 
-	@Transactional
 	@Override
-	public void saveAll(List<Question> questions) {
+	public List<Long> saveAll(List<Question> questions) {
+
+		List<Long> idList = new ArrayList<Long>();
+
 		for (Question question : questions) {
-			save(question);
+			idList.add(save(question));
 		}
+		return idList;
 	}
 
-	@Transactional
 	@Override
 	public void delete(Long id) {
 

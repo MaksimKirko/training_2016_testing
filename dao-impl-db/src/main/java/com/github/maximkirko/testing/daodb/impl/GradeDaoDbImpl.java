@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IGradeDao;
+import com.github.maximkirko.testing.daodb.entitytomap.GradeToMap;
 import com.github.maximkirko.testing.daodb.mapper.GradeMapper;
 import com.github.maximkirko.testing.daodb.mapper.GradeWithStudentAndQuizMapper;
 import com.github.maximkirko.testing.datamodel.annotations.anylizer.DBTableNameAware;
@@ -19,7 +20,7 @@ public class GradeDaoDbImpl extends GenericDaoDbImpl<Grade, Long> implements IGr
 	private String quizTableName;
 
 	public GradeDaoDbImpl() {
-		super(Grade.class, new GradeMapper());
+		super(Grade.class, new GradeMapper(), new GradeToMap());
 		studentTableName = DBTableNameAware.getTableNameByClass(Student.class);
 		quizTableName = DBTableNameAware.getTableNameByClass(Quiz.class);
 	}

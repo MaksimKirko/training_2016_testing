@@ -90,7 +90,7 @@ CREATE TABLE "question_2_answer" (
 
 CREATE TABLE "role" (
 	"id" serial NOT NULL,
-	"type" serial(256) NOT NULL,
+	"type" character varying(256) NOT NULL,
 	CONSTRAINT role_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

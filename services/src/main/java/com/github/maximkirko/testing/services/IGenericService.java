@@ -2,7 +2,7 @@ package com.github.maximkirko.testing.services;
 
 import java.util.List;
 
-import com.github.maximkirko.testing.datamodel.models.Answer;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface IGenericService<T, PK> {
 
@@ -10,10 +10,13 @@ public interface IGenericService<T, PK> {
 
 	List<T> getAll();
 
+	@Transactional
 	PK save(T entity);
 
-	void saveAll(List<T> entity);
+	@Transactional
+	List<PK> saveAll(List<T> entities);
 
+	@Transactional
 	void delete(PK id);
-	
+
 }

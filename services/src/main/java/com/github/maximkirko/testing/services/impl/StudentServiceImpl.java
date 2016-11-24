@@ -1,5 +1,6 @@
 package com.github.maximkirko.testing.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daoapi.IStudentDao;
 import com.github.maximkirko.testing.datamodel.models.Grade;
+import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.Role;
 import com.github.maximkirko.testing.datamodel.models.Student;
 import com.github.maximkirko.testing.services.IGradeService;
@@ -81,11 +83,15 @@ public class StudentServiceImpl implements IStudentService {
 
 	@Transactional
 	@Override
-	public void saveAll(List<Student> students) {
+	public List<Long> saveAll(List<Student> students) {
+
+		List<Long> idList = new ArrayList<Long>();
 
 		for (Student student : students) {
-			save(student);
+			idList.add(save(student));
 		}
+
+		return idList;
 
 	}
 

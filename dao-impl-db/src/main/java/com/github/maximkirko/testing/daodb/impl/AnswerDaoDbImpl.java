@@ -11,8 +11,7 @@ import com.github.maximkirko.testing.datamodel.models.Answer;
 public class AnswerDaoDbImpl extends GenericDaoDbImpl<Answer, Long> implements IAnswerDao {
 	
 	public AnswerDaoDbImpl() {
-		super(Answer.class, new AnswerMapper());
-		super.entityToMap = new AnswerToMap();
+		super(Answer.class, new AnswerMapper(), new AnswerToMap());
 	}
 
 }

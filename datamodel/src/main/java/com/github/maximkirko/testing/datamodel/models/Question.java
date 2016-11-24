@@ -51,6 +51,49 @@ public class Question extends AbstractModel {
 	public String toString() {
 		return "Question [text=" + text + ", hint=" + hint + "]";
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((answers == null) ? 0 : answers.hashCode());
+		result = prime * result + ((hint == null) ? 0 : hint.hashCode());
+		result = prime * result + ((quizzes == null) ? 0 : quizzes.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Question other = (Question) obj;
+		if (answers == null) {
+			if (other.answers != null)
+				return false;
+		} else if (!answers.equals(other.answers))
+			return false;
+		if (hint == null) {
+			if (other.hint != null)
+				return false;
+		} else if (!hint.equals(other.hint))
+			return false;
+		if (quizzes == null) {
+			if (other.quizzes != null)
+				return false;
+		} else if (!quizzes.equals(other.quizzes))
+			return false;
+		if (text == null) {
+			if (other.text != null)
+				return false;
+		} else if (!text.equals(other.text))
+			return false;
+		return true;
+	}
 
 	public Question() {
 		answers = new ArrayList<Answer>();

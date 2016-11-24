@@ -72,6 +72,11 @@ public class AnswerServiceImpl implements IAnswerService {
 		}
 
 		if (answer.getQuestions() != null) {
+			
+			for (Question question : answer.getQuestions()) {
+				questionService.save(question);
+			}
+			
 			List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.answerQTAList(answer);
 			questionToAnswerService.saveAll(questionToAnswers);
 		}
@@ -80,11 +85,15 @@ public class AnswerServiceImpl implements IAnswerService {
 	}
 
 	@Override
-	public void saveAll(List<Answer> answers) {
+	public List<Long> saveAll(List<Answer> answers) {
 
+		List<Long> idList = new ArrayList<Long>();
+		
 		for (Answer answer : answers) {
-			save(answer);
+			idList.add(save(answer));
 		}
+		
+		return idList;
 	}
 
 	@Override

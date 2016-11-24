@@ -93,11 +93,15 @@ public class QuizServiceImpl implements IQuizService {
 
 	@Transactional
 	@Override
-	public void saveAll(List<Quiz> quizzes) {
+	public List<Long> saveAll(List<Quiz> quizzes) {
+
+		List<Long> idList = new ArrayList<Long>();
 
 		for (Quiz quiz : quizzes) {
-			save(quiz);
+			idList.add(save(quiz));
 		}
+		
+		return idList;
 	}
 
 	@Transactional

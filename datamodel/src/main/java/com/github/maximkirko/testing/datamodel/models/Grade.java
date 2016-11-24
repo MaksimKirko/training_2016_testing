@@ -39,6 +39,40 @@ public class Grade extends AbstractModel {
 	public String toString() {
 		return "Grade [mark=" + mark + ", student=" + student + ", quiz=" + quiz + "]";
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(mark);
+		result = prime * result + ((quiz == null) ? 0 : quiz.hashCode());
+		result = prime * result + ((student == null) ? 0 : student.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Grade other = (Grade) obj;
+		if (Float.floatToIntBits(mark) != Float.floatToIntBits(other.mark))
+			return false;
+		if (quiz == null) {
+			if (other.quiz != null)
+				return false;
+		} else if (!quiz.equals(other.quiz))
+			return false;
+		if (student == null) {
+			if (other.student != null)
+				return false;
+		} else if (!student.equals(other.student))
+			return false;
+		return true;
+	}
 
 	public Grade() {
 

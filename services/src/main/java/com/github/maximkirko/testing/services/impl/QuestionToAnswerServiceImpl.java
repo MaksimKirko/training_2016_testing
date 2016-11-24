@@ -39,6 +39,11 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 
 	@Override
 	public void save(QuestionToAnswer questionToAnswer) {
+		
+		if(questionToAnswer.getAnswer().getId().equals(null)) {
+			
+		}
+		
 		questionToAnswerDao.insert(questionToAnswer);
 	}
 

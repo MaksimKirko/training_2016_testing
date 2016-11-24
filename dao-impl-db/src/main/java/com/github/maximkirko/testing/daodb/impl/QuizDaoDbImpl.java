@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IQuizDao;
+import com.github.maximkirko.testing.daodb.entitytomap.QuizToMap;
 import com.github.maximkirko.testing.daodb.mapper.QuizMapper;
 import com.github.maximkirko.testing.daodb.mapper.QuizWithSubjectMapper;
 import com.github.maximkirko.testing.datamodel.annotations.anylizer.DBTableNameAware;
@@ -17,7 +18,7 @@ public class QuizDaoDbImpl extends GenericDaoDbImpl<Quiz, Long> implements IQuiz
 	private String subjectTableName;
 
 	public QuizDaoDbImpl() {
-		super(Quiz.class, new QuizMapper());
+		super(Quiz.class, new QuizMapper(), new QuizToMap());
 		subjectTableName = DBTableNameAware.getTableNameByClass(Subject.class);
 	}
 

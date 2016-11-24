@@ -1,5 +1,6 @@
 package com.github.maximkirko.testing.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,20 +57,27 @@ public class SubjectServiceImpl implements ISubjectService {
 	}
 
 	@Override
-	public void saveAll(List<Subject> subjects) {
+	public List<Long> saveAll(List<Subject> subjects) {
+
+		List<Long> idList = new ArrayList<Long>();
 
 		for (Subject subject : subjects) {
-			save(subject);
+			idList.add(save(subject));
 		}
+
+		return idList;
 	}
 
 	@Override
 	public void delete(Long id) {
 
 		Subject subject = subjectDao.get(id);
-		for (Quiz quiz : subject.getQuizzes()) {
 
-			quizService.delete(quiz.getId());
+		if (subject.getQuizzes() != null) {
+			for (Quiz quiz : subject.getQuizzes()) {
+
+				quizService.delete(quiz.getId());
+			}
 		}
 
 		subjectDao.delete(id);

@@ -16,8 +16,8 @@
 
 	<context:annotation-config />
 
-	<!-- <import resource="classpath:db-dao-beans.xml" /> -->
-	<import resource="classpath:xml-dao-beans.xml" />
+	<import resource="classpath:db-dao-beans.xml" />
+	<!-- <import resource="classpath:xml-dao-beans.xml" /> -->
 
 	<context:property-placeholder
 		ignore-unresolvable="true" location="classpath:db.properties" />

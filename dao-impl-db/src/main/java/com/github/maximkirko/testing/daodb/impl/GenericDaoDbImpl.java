@@ -37,16 +37,11 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 
 	}
 
-	public GenericDaoDbImpl(Class<T> entityClass) {
-		this.entityClass = entityClass;
-		tableName = DBTableNameAware.getTableNameByClass(entityClass);
-		this.mapper = new BeanPropertyRowMapper<T>(entityClass);
-	}
-
-	public GenericDaoDbImpl(Class<T> entityClass, RowMapper<T> mapper) {
+	public GenericDaoDbImpl(Class<T> entityClass, RowMapper<T> mapper, EntityToMap<T> entityToMap) {
 		this.entityClass = entityClass;
 		tableName = DBTableNameAware.getTableNameByClass(entityClass);
 		this.mapper = mapper;
+		this.entityToMap = entityToMap;
 	}
 
 	@Override
