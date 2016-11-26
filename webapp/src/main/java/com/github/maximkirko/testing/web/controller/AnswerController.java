@@ -37,7 +37,7 @@ public class AnswerController {
 
 		List<AnswerModel> converted = new ArrayList<>();
 		for (Answer answer : all) {
-			converted.add(answerConverter.convert(answer));
+			converted.add(entity2model(answer));//answerConverter.convert(answer));
 		}
 
 		return new ResponseEntity<List<AnswerModel>>(converted, HttpStatus.OK);
@@ -53,7 +53,7 @@ public class AnswerController {
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> createNewAnswer(@RequestBody AnswerModel answerModel) {
 
-		service.save(modelConverter.convert(answerModel));
+		service.save(model2entity(answerModel));//modelConverter.convert(answerModel));
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 
 	}
@@ -61,7 +61,7 @@ public class AnswerController {
 	@RequestMapping(value = "/{answerId}", method = RequestMethod.POST)
 	public ResponseEntity<Void> updateAnswer(@RequestBody AnswerModel answerModel, @PathVariable Long answerId) {
 
-		Answer answer = modelConverter.convert(answerModel);
+		Answer answer = model2entity(answerModel);//modelConverter.convert(answerModel);
 		answer.setId(answerId);
 		service.save(answer);
 		return new ResponseEntity<Void>(HttpStatus.OK);
@@ -75,5 +75,19 @@ public class AnswerController {
 		return new ResponseEntity<Void>(HttpStatus.OK);
 
 	}
+	
+	private AnswerModel entity2model(Answer answer) {
+        AnswerModel model = new AnswerModel();
+        model.setText(answer.getText());
+        model.setId(answer.getId());
+        return model;
+    }
+
+    private Answer model2entity(AnswerModel answerModel) {
+        Answer answer = new Answer();
+        answer.setText(answerModel.getText());
+        answer.setId(answerModel.getId());
+        return answer;
+    }
 
 }
