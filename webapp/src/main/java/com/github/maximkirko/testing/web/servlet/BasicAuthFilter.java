@@ -13,15 +13,15 @@ import javax.servlet.ServletResponse;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.github.maximkirko.testing.services.AuthenticationService;
+import com.github.maximkirko.testing.services.IAuthenticationService;
 
 public class BasicAuthFilter implements Filter {
-	private AuthenticationService authService;
+	private IAuthenticationService authService;
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		authService = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext())
-				.getBean(AuthenticationService.class);
+				.getBean(IAuthenticationService.class);
 	}
 
 	@Override

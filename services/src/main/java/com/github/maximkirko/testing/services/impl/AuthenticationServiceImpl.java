@@ -2,12 +2,12 @@ package com.github.maximkirko.testing.services.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.github.maximkirko.testing.services.AuthenticationService;
+import com.github.maximkirko.testing.services.IAuthenticationService;
 
 
 @Service
 public class AuthenticationServiceImpl implements
-        AuthenticationService {
+        IAuthenticationService {
 
     @Override
     public boolean validateUserPassword(String username,

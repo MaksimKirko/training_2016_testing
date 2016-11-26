@@ -24,8 +24,9 @@ public class AnswerServiceTest {
 	private IAnswerService answerService;
 	
 	private Long id;
-
-	public void prepare() {
+	private List<Long> idList;
+	
+	public void prepareOne() {
 
 		Answer answer = new Answer();
 		answer.setText("test answer " + new Random().nextInt());
@@ -44,12 +45,25 @@ public class AnswerServiceTest {
 			System.out.println(e.getStackTrace());
 		}
 	}
+	
+	public void prepareMany() {
+		
+		List<Answer> answers = new ArrayList<Answer>();
+
+		for (int i = 0; i < 10; i++) {
+			Answer answer = new Answer();
+			answer.setText("multi-test answer " + i);
+			answers.add(answer);
+		}
+
+		idList = answerService.saveAll(answers);
+	}
 
 	@Test
 	public void getByIdTest() {
 
-		prepare();
-
+		prepareOne();
+		
 		Answer answer = answerService.get(id);
 
 		Assert.assertNotNull(String.format("answer for id=%s should not be null", id), answer);
@@ -61,7 +75,7 @@ public class AnswerServiceTest {
 	@Test
 	public void getWithQuestions() {
 		
-		prepare();
+		prepareOne();
 
 		Answer answer = answerService.getWithQuestions(id);
 
@@ -71,6 +85,24 @@ public class AnswerServiceTest {
 
 		answerService.delete(id);
 		
+	}
+	
+	@Test
+	public void getAllTest() {
+		
+		prepareMany();
+		
+		List<Answer> answers = answerService.getAll();
+
+		int i = 0;
+		for (Long id : idList) {
+			
+			Assert.assertNotNull(String.format("answer for id=%s should not be null", id), answers.get(i));
+			Assert.assertEquals(id, answers.get(i).getId());
+
+			answerService.delete(answers.get(i).getId());
+			i++;
+		}
 	}
 	
 	@Test
@@ -122,7 +154,7 @@ public class AnswerServiceTest {
 	@Test
 	public void deleteTest() {
 
-		prepare();
+		prepareOne();
 
 		answerService.delete(id);
 

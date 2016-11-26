@@ -99,7 +99,7 @@ public class AnswerServiceImpl implements IAnswerService {
 	@Override
 	public void delete(Long id) {
 
-		Answer answer = get(id);
+		Answer answer = getWithQuestions(id);
 		
 		if (answer.equals(null)) {
 			return;

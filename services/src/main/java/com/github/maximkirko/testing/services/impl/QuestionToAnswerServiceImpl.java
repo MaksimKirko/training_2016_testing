@@ -39,15 +39,14 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 
 	@Override
 	public void save(QuestionToAnswer questionToAnswer) {
-		
-		if(questionToAnswer.getAnswer().getId().equals(null)) {
-			
+
+		if (questionToAnswer.getAnswer().getId().equals(null)) {
+
 		}
-		
+
 		questionToAnswerDao.insert(questionToAnswer);
 	}
 
-	@Transactional
 	@Override
 	public void saveAll(List<QuestionToAnswer> questionToAnswers) {
 
@@ -57,7 +56,6 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 
 	}
 
-	@Transactional
 	@Override
 	public void deleteByQuestion(Question question) {
 
@@ -71,7 +69,6 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 
 	}
 
-	@Transactional
 	@Override
 	public void deleteByAnswer(Answer answer) {
 
@@ -82,7 +79,6 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 				questionService.delete(question.getId());
 			}
 		}
-
 	}
 
 }

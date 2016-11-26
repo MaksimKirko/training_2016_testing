@@ -1,6 +1,6 @@
 package com.github.maximkirko.testing.services;
 
-public interface AuthenticationService {
+public interface IAuthenticationService {
 
     boolean validateUserPassword(String username, String password);
 }
