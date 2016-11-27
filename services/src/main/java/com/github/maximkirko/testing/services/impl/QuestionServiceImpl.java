@@ -35,7 +35,7 @@ public class QuestionServiceImpl implements IQuestionService {
 	@Override
 	public Question getWithAnswers(Long id) {
 
-		Question question = questionDao.get(id);
+		Question question = get(id);
 
 		List<QuestionToAnswer> qta = questionToAnswerService.getByQuestion(question);
 		List<Answer> answers = new ArrayList<Answer>();
@@ -98,7 +98,11 @@ public class QuestionServiceImpl implements IQuestionService {
 	@Override
 	public void delete(Long id) {
 
-		Question question = get(id);
+		Question question = getWithAnswers(id);
+
+		if (question.equals(null)) {
+			return;
+		}
 
 		questionToAnswerService.deleteByQuestion(question);
 		questionDao.delete(id);

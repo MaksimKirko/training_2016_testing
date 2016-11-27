@@ -39,7 +39,7 @@ public class Subject extends AbstractModel {
 
 	@Override
 	public String toString() {
-		return "Subject [name=" + title + ", description=" + description + "]";
+		return "Subject [title=" + title + ", description=" + description + "]";
 	}
 
 	@Override

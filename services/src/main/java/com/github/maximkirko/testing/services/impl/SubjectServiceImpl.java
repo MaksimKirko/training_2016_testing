@@ -47,8 +47,8 @@ public class SubjectServiceImpl implements ISubjectService {
 		if (subject.getId() == null) {
 
 			Long id = subjectDao.insert(subject);
-
 			return id;
+			
 		} else {
 
 			subjectDao.update(subject);

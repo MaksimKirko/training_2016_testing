@@ -29,7 +29,6 @@ public class AnswerServiceImpl implements IAnswerService {
 
 	@Override
 	public Answer get(Long id) {
-
 		return answerDao.get(id);
 	}
 
@@ -72,11 +71,11 @@ public class AnswerServiceImpl implements IAnswerService {
 		}
 
 		if (answer.getQuestions() != null) {
-			
+
 			for (Question question : answer.getQuestions()) {
 				questionService.save(question);
 			}
-			
+
 			List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.answerQTAList(answer);
 			questionToAnswerService.saveAll(questionToAnswers);
 		}
@@ -88,11 +87,11 @@ public class AnswerServiceImpl implements IAnswerService {
 	public List<Long> saveAll(List<Answer> answers) {
 
 		List<Long> idList = new ArrayList<Long>();
-		
+
 		for (Answer answer : answers) {
 			idList.add(save(answer));
 		}
-		
+
 		return idList;
 	}
 
@@ -100,7 +99,7 @@ public class AnswerServiceImpl implements IAnswerService {
 	public void delete(Long id) {
 
 		Answer answer = getWithQuestions(id);
-		
+
 		if (answer.equals(null)) {
 			return;
 		}

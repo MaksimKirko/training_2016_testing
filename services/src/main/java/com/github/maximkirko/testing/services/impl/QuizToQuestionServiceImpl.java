@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daoapi.IQuizToQuestionDao;
+import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
@@ -42,7 +43,6 @@ public class QuizToQuestionServiceImpl implements IQuizToQuestionService {
 		quizToQuestionDao.insert(questionToQuiz);
 	}
 
-	@Transactional
 	@Override
 	public void saveAll(List<QuizToQuestion> questionToQuizs) {
 
@@ -52,7 +52,6 @@ public class QuizToQuestionServiceImpl implements IQuizToQuestionService {
 
 	}
 
-	@Transactional
 	@Override
 	public void deleteByQuiz(Quiz quiz) {
 
@@ -65,13 +64,12 @@ public class QuizToQuestionServiceImpl implements IQuizToQuestionService {
 		}
 	}
 
-	@Transactional
 	@Override
 	public void deleteByQuestion(Question question) {
 
 		quizToQuestionDao.deleteByQuestion(question);
 
-		if (!question.getQuizzes().equals(null)) {
+		if (question.getQuizzes() != null) {
 			for (Quiz quiz : question.getQuizzes()) {
 				quizService.delete(quiz.getId());
 			}

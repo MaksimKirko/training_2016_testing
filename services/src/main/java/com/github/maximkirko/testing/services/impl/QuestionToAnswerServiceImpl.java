@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daoapi.IQuestionToAnswerDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
@@ -39,11 +38,6 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 
 	@Override
 	public void save(QuestionToAnswer questionToAnswer) {
-
-		if (questionToAnswer.getAnswer().getId().equals(null)) {
-
-		}
-
 		questionToAnswerDao.insert(questionToAnswer);
 	}
 
@@ -61,7 +55,7 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 
 		questionToAnswerDao.deleteByQuestion(question);
 
-		if (!question.getAnswers().equals(null)) {
+		if (question.getAnswers() != null) {
 			for (Answer answer : question.getAnswers()) {
 				answerService.delete(answer.getId());
 			}

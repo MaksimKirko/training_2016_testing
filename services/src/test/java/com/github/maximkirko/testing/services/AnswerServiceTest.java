@@ -26,7 +26,7 @@ public class AnswerServiceTest {
 	private Long id;
 	private List<Long> idList;
 	
-	public void prepareOne() {
+	private void prepareOne() {
 
 		Answer answer = new Answer();
 		answer.setText("test answer " + new Random().nextInt());
@@ -46,7 +46,7 @@ public class AnswerServiceTest {
 		}
 	}
 	
-	public void prepareMany() {
+	private void prepareMany() {
 		
 		List<Answer> answers = new ArrayList<Answer>();
 
