@@ -5,9 +5,9 @@ import java.util.List;
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 import com.github.maximkirko.testing.datamodel.annotations.Filename;
 
-@DBTable("student")
-@Filename("student.xml")
-public class Student extends AbstractModel {
+@DBTable("table_user")
+@Filename("user.xml")
+public class User extends AbstractModel {
 
 	private String firstName;
 	private String lastName;
@@ -84,8 +84,8 @@ public class Student extends AbstractModel {
 
 	@Override
 	public String toString() {
-		return "Student [firstName=" + firstName + ", lastName=" + lastName + ", age=" + age + ", course=" + course
-				+ ", email=" + email + ", password=" + password + ", grades=" + grades + ", role=" + role + "]";
+		return "User [firstName=" + firstName + ", lastName=" + lastName + ", age=" + age + ", course=" + course
+				+ ", email=" + email + ", password=" + password + ", role=" + role + "]";
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class Student extends AbstractModel {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Student other = (Student) obj;
+		User other = (User) obj;
 		if (age == null) {
 			if (other.age != null)
 				return false;
@@ -131,11 +131,6 @@ public class Student extends AbstractModel {
 			if (other.firstName != null)
 				return false;
 		} else if (!firstName.equals(other.firstName))
-			return false;
-		if (grades == null) {
-			if (other.grades != null)
-				return false;
-		} else if (!grades.equals(other.grades))
 			return false;
 		if (lastName == null) {
 			if (other.lastName != null)

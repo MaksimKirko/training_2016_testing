@@ -5,10 +5,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daoapi.IQuizToQuestionDao;
-import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
@@ -49,7 +47,6 @@ public class QuizToQuestionServiceImpl implements IQuizToQuestionService {
 		for (QuizToQuestion questionToQuiz : questionToQuizs) {
 			save(questionToQuiz);
 		}
-
 	}
 
 	@Override

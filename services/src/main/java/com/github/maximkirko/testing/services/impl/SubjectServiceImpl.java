@@ -28,6 +28,11 @@ public class SubjectServiceImpl implements ISubjectService {
 	}
 
 	@Override
+	public Subject getByTitle(String title) {
+		return subjectDao.getByTitle(title);
+	}
+	
+	@Override
 	public Subject getWithQuizzes(Long id) {
 
 		Subject subject = subjectDao.get(id);
@@ -47,12 +52,12 @@ public class SubjectServiceImpl implements ISubjectService {
 		if (subject.getId() == null) {
 
 			Long id = subjectDao.insert(subject);
-			return id;
-			
+			subject.setId(id);
 		} else {
 
 			subjectDao.update(subject);
 		}
+
 		return subject.getId();
 	}
 
@@ -62,7 +67,9 @@ public class SubjectServiceImpl implements ISubjectService {
 		List<Long> idList = new ArrayList<Long>();
 
 		for (Subject subject : subjects) {
-			idList.add(save(subject));
+			Long id = save(subject);
+			subject.setId(id);
+			idList.add(id);
 		}
 
 		return idList;
@@ -71,7 +78,7 @@ public class SubjectServiceImpl implements ISubjectService {
 	@Override
 	public void delete(Long id) {
 
-		Subject subject = subjectDao.get(id);
+		Subject subject = getWithQuizzes(id);
 
 		if (subject.getQuizzes() != null) {
 			for (Quiz quiz : subject.getQuizzes()) {

@@ -3,15 +3,13 @@ package com.github.maximkirko.testing.daodb.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.jdbc.core.RowMapper;
-
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.Subject;
 
-public class QuizMapper implements RowMapper<Quiz> {
+public class QuizMapper implements IGenericMapper<Quiz> {
 	@Override
 	public Quiz mapRow(ResultSet rs, int rowNum) throws SQLException {
-		
+
 		Subject subject = new Subject();
 		subject.setId(rs.getLong("subject_id"));
 

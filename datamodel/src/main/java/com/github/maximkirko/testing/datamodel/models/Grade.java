@@ -8,7 +8,7 @@ import com.github.maximkirko.testing.datamodel.annotations.Filename;
 public class Grade extends AbstractModel {
 	
 	private float mark;
-	private Student student;
+	private User user;
 	private Quiz quiz;
 
 	public float getMark() {
@@ -19,12 +19,12 @@ public class Grade extends AbstractModel {
 		this.mark = mark;
 	}
 	
-	public Student getStudent() {
-		return student;
+	public User getUser() {
+		return user;
 	}
 
-	public void setStudent(Student student) {
-		this.student = student;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public Quiz getQuiz() {
@@ -37,16 +37,16 @@ public class Grade extends AbstractModel {
 
 	@Override
 	public String toString() {
-		return "Grade [mark=" + mark + ", student=" + student + ", quiz=" + quiz + "]";
+		return "Grade [mark=" + mark + ", user=" + user + ", quiz=" + quiz + "]";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Float.floatToIntBits(mark);
 		result = prime * result + ((quiz == null) ? 0 : quiz.hashCode());
-		result = prime * result + ((student == null) ? 0 : student.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
 
@@ -60,16 +60,6 @@ public class Grade extends AbstractModel {
 			return false;
 		Grade other = (Grade) obj;
 		if (Float.floatToIntBits(mark) != Float.floatToIntBits(other.mark))
-			return false;
-		if (quiz == null) {
-			if (other.quiz != null)
-				return false;
-		} else if (!quiz.equals(other.quiz))
-			return false;
-		if (student == null) {
-			if (other.student != null)
-				return false;
-		} else if (!student.equals(other.student))
 			return false;
 		return true;
 	}

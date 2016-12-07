@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.github.maximkirko.testing.datamodel.models.Subject;
 
-public class SubjectToMap implements EntityToMap<Subject> {
+public class SubjectToMap implements IEntityToMap<Subject> {
 	
 	@Override
 	public Map<String, Object> convert(Subject entity) {

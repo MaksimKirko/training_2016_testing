@@ -9,9 +9,11 @@ import com.github.maximkirko.testing.datamodel.models.Answer;
 
 @Repository
 public class AnswerDaoDbImpl extends GenericDaoDbImpl<Answer, Long> implements IAnswerDao {
-	
+
 	public AnswerDaoDbImpl() {
-		super(Answer.class, new AnswerMapper(), new AnswerToMap());
+		super(Answer.class);
+		super.entityToMap = new AnswerToMap();
+		super.mapper = new AnswerMapper();
 	}
 
 }

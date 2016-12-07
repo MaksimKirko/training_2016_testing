@@ -90,7 +90,9 @@ public class QuestionServiceImpl implements IQuestionService {
 		List<Long> idList = new ArrayList<Long>();
 
 		for (Question question : questions) {
-			idList.add(save(question));
+			Long id = save(question);
+			question.setId(id);
+			idList.add(id);
 		}
 		return idList;
 	}

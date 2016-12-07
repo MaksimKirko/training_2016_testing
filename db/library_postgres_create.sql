@@ -51,16 +51,16 @@ CREATE TABLE "subject" (
 
 
 
-CREATE TABLE "student" (
+CREATE TABLE "table_user" (
 	"id" serial NOT NULL,
 	"first_name" character varying(256) NOT NULL,
 	"last_name" character varying(256) NOT NULL,
-	"age" int,
+	"age" integer,
 	"course" character varying(256),
 	"email" character varying(256) NOT NULL UNIQUE,
 	"password" character varying(128) NOT NULL,
 	"role_id" bigint NOT NULL,
-	CONSTRAINT student_pk PRIMARY KEY ("id")
+	CONSTRAINT table_user_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
@@ -69,7 +69,7 @@ CREATE TABLE "student" (
 
 CREATE TABLE "grade" (
 	"id" serial NOT NULL,
-	"student_id" bigint NOT NULL,
+	"user_id" bigint NOT NULL,
 	"quiz_id" bigint NOT NULL,
 	"mark" float4 NOT NULL,
 	CONSTRAINT grade_pk PRIMARY KEY ("id")
@@ -106,11 +106,19 @@ ALTER TABLE "quiz_2_question" ADD CONSTRAINT "quiz_2_question_fk0" FOREIGN KEY (
 ALTER TABLE "quiz_2_question" ADD CONSTRAINT "quiz_2_question_fk1" FOREIGN KEY ("question_id") REFERENCES "question"("id");
 
 
-ALTER TABLE "student" ADD CONSTRAINT "student_fk0" FOREIGN KEY ("role_id") REFERENCES "role"("id");
+ALTER TABLE "table_user" ADD CONSTRAINT "table_user_fk0" FOREIGN KEY ("role_id") REFERENCES "role"("id");
 
-ALTER TABLE "grade" ADD CONSTRAINT "grade_fk0" FOREIGN KEY ("student_id") REFERENCES "student"("id");
+ALTER TABLE "grade" ADD CONSTRAINT "grade_fk0" FOREIGN KEY ("user_id") REFERENCES "table_user"("id");
 ALTER TABLE "grade" ADD CONSTRAINT "grade_fk1" FOREIGN KEY ("quiz_id") REFERENCES "quiz"("id");
 
 ALTER TABLE "question_2_answer" ADD CONSTRAINT "question_2_answer_fk0" FOREIGN KEY ("question_id") REFERENCES "question"("id");
 ALTER TABLE "question_2_answer" ADD CONSTRAINT "question_2_answer_fk1" FOREIGN KEY ("answer_id") REFERENCES "answer"("id");
+
+
+
+INSERT INTO role (type) VALUES ('ADMIN');
+INSERT INTO role (type) VALUES ('USER');
+
+INSERT INTO "table_user" (first_name, last_name, age, email, password, role_id) VALUES ('Maksim', 'Kirko', 19, 'kirko_ma_14@mf.grsu.by', 'qwerty', 1);
+INSERT INTO "table_user" (first_name, last_name, age, course, email, password, role_id) VALUES ('Ivan', 'Ivanov', 19, 'Java Web', 'ivanov@custommail.ru', '123', 2);
 

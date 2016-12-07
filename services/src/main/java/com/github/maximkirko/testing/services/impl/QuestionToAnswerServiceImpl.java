@@ -47,7 +47,6 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 		for (QuestionToAnswer questionToAnswer : questionToAnswers) {
 			save(questionToAnswer);
 		}
-
 	}
 
 	@Override
@@ -60,7 +59,6 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 				answerService.delete(answer.getId());
 			}
 		}
-
 	}
 
 	@Override

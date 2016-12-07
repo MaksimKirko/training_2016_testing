@@ -18,7 +18,9 @@ public class QuizDaoDbImpl extends GenericDaoDbImpl<Quiz, Long> implements IQuiz
 	private String subjectTableName;
 
 	public QuizDaoDbImpl() {
-		super(Quiz.class, new QuizMapper(), new QuizToMap());
+		super(Quiz.class);
+		super.entityToMap = new QuizToMap();
+		super.mapper = new QuizMapper();
 		subjectTableName = DBTableNameAware.getTableNameByClass(Subject.class);
 	}
 
@@ -32,9 +34,8 @@ public class QuizDaoDbImpl extends GenericDaoDbImpl<Quiz, Long> implements IQuiz
 
 	@Override
 	public List<Quiz> getBySubject(Subject subject) {
-		
-		return jdbcTemplate
-				.query(String.format("SELECT * FROM %s WHERE subject_id = ?",
-						super.tableName), new Object[] { subject.getId() }, super.mapper);
+
+		return jdbcTemplate.query(String.format("SELECT * FROM %s WHERE subject_id = ?", super.tableName),
+				new Object[] { subject.getId() }, super.mapper);
 	}
 }

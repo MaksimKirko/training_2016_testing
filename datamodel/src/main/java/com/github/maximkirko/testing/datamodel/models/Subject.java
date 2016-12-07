@@ -66,11 +66,6 @@ public class Subject extends AbstractModel {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (quizzes == null) {
-			if (other.quizzes != null)
-				return false;
-		} else if (!quizzes.equals(other.quizzes))
-			return false;
 		if (title == null) {
 			if (other.title != null)
 				return false;

@@ -74,9 +74,9 @@ public class QuizServiceImpl implements IQuizService {
 	public Long save(Quiz quiz) {
 
 		Subject subject = quiz.getSubject();
-		
-		Long subjId = subjectService.save(subject);
-		subject.setId(subjId);
+		if(subject.getId() == null) {
+			subject.setId(subjectService.save(subject));
+		}
 		quiz.setSubject(subject);
 		
 		if (quiz.getId() == null) {
@@ -109,7 +109,9 @@ public class QuizServiceImpl implements IQuizService {
 		List<Long> idList = new ArrayList<Long>();
 
 		for (Quiz quiz : quizzes) {
-			idList.add(save(quiz));
+			Long id = save(quiz);
+			quiz.setId(id);
+			idList.add(id);
 		}
 
 		return idList;

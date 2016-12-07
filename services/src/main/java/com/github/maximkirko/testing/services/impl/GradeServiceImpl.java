@@ -9,10 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daoapi.IGradeDao;
-import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Grade;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.datamodel.models.Student;
+import com.github.maximkirko.testing.datamodel.models.User;
 import com.github.maximkirko.testing.services.IGradeService;
 
 @Service
@@ -25,33 +24,30 @@ public class GradeServiceImpl implements IGradeService {
 	public Grade get(Long id) {
 
 		return gradeDao.get(id);
-
 	}
 
 	@Override
-	public Grade getWithStudentAndQuiz(Long id) {
+	public Grade getWithUserAndQuiz(Long id) {
 
-		return gradeDao.getWithStudentAndQuiz(id);
-
+		return gradeDao.getWithUserAndQuiz(id);
 	}
 
 	@Override
-	public List<Grade> getByStudent(Student student) {
+	public List<Grade> getByUser(User user) {
 
-		return gradeDao.getByStudent(student);
-
+		return gradeDao.getByUser(user);
 	}
 
 	@Override
 	public List<Grade> getByQuiz(Quiz quiz) {
 
 		return gradeDao.getByQuiz(quiz);
-
 	}
 
 	@Transactional
 	@Override
 	public List<Grade> getAll() {
+
 		return gradeDao.getAll();
 	}
 
@@ -60,14 +56,12 @@ public class GradeServiceImpl implements IGradeService {
 	public Long save(Grade grade) {
 
 		if (grade.getId() == null) {
+
 			Long id = gradeDao.insert(grade);
-
-			return id;
-
+			grade.setId(id);
 		} else {
 
 			gradeDao.update(grade);
-
 		}
 
 		return grade.getId();
@@ -80,11 +74,12 @@ public class GradeServiceImpl implements IGradeService {
 		List<Long> idList = new ArrayList<Long>();
 
 		for (Grade grade : grades) {
-			idList.add(save(grade));
+			Long id = save(grade);
+			grade.setId(id);
+			idList.add(id);
 		}
 
 		return idList;
-
 	}
 
 	@Transactional

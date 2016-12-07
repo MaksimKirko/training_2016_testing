@@ -89,7 +89,9 @@ public class AnswerServiceImpl implements IAnswerService {
 		List<Long> idList = new ArrayList<Long>();
 
 		for (Answer answer : answers) {
-			idList.add(save(answer));
+			Long id = save(answer);
+			answer.setId(id);
+			idList.add(id);
 		}
 
 		return idList;

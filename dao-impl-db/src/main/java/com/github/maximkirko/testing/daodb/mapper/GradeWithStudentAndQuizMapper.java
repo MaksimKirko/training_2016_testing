@@ -5,13 +5,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.jdbc.core.RowMapper;
-
 import com.github.maximkirko.testing.datamodel.models.Grade;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.datamodel.models.Student;
+import com.github.maximkirko.testing.datamodel.models.Role;
+import com.github.maximkirko.testing.datamodel.models.Subject;
+import com.github.maximkirko.testing.datamodel.models.User;
 
-public class GradeWithStudentAndQuizMapper implements RowMapper<Grade> {
+public class GradeWithStudentAndQuizMapper implements IGenericMapper<Grade> {
 
 	@Override
 	public Grade mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -20,16 +20,36 @@ public class GradeWithStudentAndQuizMapper implements RowMapper<Grade> {
 		grade.setMark(rs.getFloat("mark"));
 		grade.setId(rs.getLong("id"));
 
-		Student student = new StudentMapper().mapRow(rs, rowNum);
-		Quiz quiz = new QuizMapper().mapRow(rs, rowNum);
+		User user = new User();
+		user.setFirstName(rs.getString("first_name"));
+		user.setLastName(rs.getString("last_name"));
+		user.setAge(rs.getInt("age"));
+		user.setCourse(rs.getString("course"));
+		user.setEmail(rs.getString("email"));
+		user.setPassword(rs.getString("password"));
+
+		Role role = new Role();
+		role.setId(rs.getLong("role_id"));
+		user.setRole(role);
+
+		user.setId(rs.getLong(4));	
+				
+		Subject subject = new Subject();
+		subject.setId(rs.getLong("subject_id"));
+
+		Quiz quiz = new Quiz();
+		quiz.setTitle(rs.getString("title"));
+		quiz.setDescription(rs.getString("description"));
+		quiz.setSubject(subject);
+		quiz.setId(rs.getLong(12));
 
 		List<Grade> grades = new ArrayList<Grade>();
 		grades.add(grade);
-		
-		student.setGrades(grades);
+
+		user.setGrades(grades);
 		quiz.setGrades(grades);
 
-		grade.setStudent(student);
+		grade.setUser(user);
 		grade.setQuiz(quiz);
 
 		return grade;

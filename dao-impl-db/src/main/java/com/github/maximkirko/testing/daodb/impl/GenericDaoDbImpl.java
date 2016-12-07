@@ -7,15 +7,13 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IGenericDao;
-import com.github.maximkirko.testing.daodb.entitytomap.EntityToMap;
-import com.github.maximkirko.testing.daodb.util.GenericTypeFieldsAware;
+import com.github.maximkirko.testing.daodb.entitytomap.IEntityToMap;
+import com.github.maximkirko.testing.daodb.mapper.IGenericMapper;
 import com.github.maximkirko.testing.datamodel.annotations.anylizer.DBTableNameAware;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
@@ -24,45 +22,39 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 
 	@Inject
 	protected JdbcTemplate jdbcTemplate;
-
 	protected Class<T> entityClass;
-
 	protected String tableName;
-
-	protected RowMapper<T> mapper;
-	
-	protected EntityToMap<T> entityToMap;
+	protected IGenericMapper<T> mapper;
+	protected IEntityToMap<T> entityToMap;
 
 	public GenericDaoDbImpl() {
 
 	}
 
-	public GenericDaoDbImpl(Class<T> entityClass, RowMapper<T> mapper, EntityToMap<T> entityToMap) {
+	public GenericDaoDbImpl(Class<T> entityClass) {
 		this.entityClass = entityClass;
-		tableName = DBTableNameAware.getTableNameByClass(entityClass);
-		this.mapper = mapper;
-		this.entityToMap = entityToMap;
+		this.tableName = DBTableNameAware.getTableNameByClass(entityClass);
 	}
 
 	@Override
 	public T get(PK id) {
-		
+
 		T entity;
-		
+
 		try {
 			entity = jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE id = ?", tableName),
 					new Object[] { id }, mapper);
-			
-		}
-		catch(EmptyResultDataAccessException e) {
+
+		} catch (EmptyResultDataAccessException e) {
 			return null;
 		}
-		
+
 		return entity;
 	}
 
 	@Override
 	public List<T> getAll() {
+
 		return jdbcTemplate.query(String.format("SELECT * FROM %s", tableName), mapper);
 	}
 
@@ -84,15 +76,36 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 	@Override
 	public void update(T entity) {
 
-		final String sql = String.format("UPDATE %s SET %s WHERE id=?", tableName,
-				GenericTypeFieldsAware.getStringForUpdate(entityClass, entity));
+		Map<String, Object> params = entityToMap.convert(entity);
+		String values = getValuesForUpdate(params);
+
+		String sql = String.format("UPDATE %s SET %s WHERE id=?", tableName, values);
 
 		jdbcTemplate.update(sql, entity.getId());
 	}
 
 	@Override
 	public void delete(PK id) {
+
 		jdbcTemplate.update(String.format("DELETE FROM %s WHERE id = ?", tableName), id);
+	}
+
+	private String getValuesForUpdate(Map<String, Object> params) {
+
+		String values = "";
+
+		int i = 0;
+		for (Map.Entry<String, Object> entry : params.entrySet()) {
+
+			values += entry.getKey() + "=" + entry.getValue();
+			if (i < params.size() - 1) {
+				values += ", ";
+			}
+			i++;
+		}
+
+		return values;
+
 	}
 
 }

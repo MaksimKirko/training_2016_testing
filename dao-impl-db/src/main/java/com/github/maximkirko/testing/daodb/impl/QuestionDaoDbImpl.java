@@ -11,7 +11,9 @@ import com.github.maximkirko.testing.datamodel.models.Question;
 public class QuestionDaoDbImpl extends GenericDaoDbImpl<Question, Long> implements IQuestionDao {
 	
 	public QuestionDaoDbImpl() {
-		super(Question.class, new QuestionMapper(), new QuestionToMap());
+		super(Question.class);
+		super.entityToMap = new QuestionToMap();
+		super.mapper = new QuestionMapper();
 	}
 
 }

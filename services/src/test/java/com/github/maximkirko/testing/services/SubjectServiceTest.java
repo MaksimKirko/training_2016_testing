@@ -13,6 +13,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.Subject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -21,13 +22,28 @@ public class SubjectServiceTest {
 
 	@Inject
 	private ISubjectService subjectService;
+	
+	@Inject
+	private IQuizService quizService;
 
 	private Long id;
+	private List<Long> idList;
 
-	public void prepare() {
+	public void prepareOne() {
 
 		Subject subject = new Subject();
 		subject.setTitle("test subject " + new Random().nextInt());
+
+		Quiz quiz = new Quiz();
+		quiz.setTitle("subjectTest quiz " + new Random().nextInt());
+		quiz.setDescription("subjectTest quiz " + new Random().nextInt());
+		quiz.setSubject(subject);
+
+		List<Quiz> quizzes = new ArrayList<>();
+		quizzes.add(quiz);
+		quizService.saveAll(quizzes);
+		
+		subject.setQuizzes(quizzes);
 
 		try {
 			id = subjectService.save(subject);
@@ -36,10 +52,23 @@ public class SubjectServiceTest {
 		}
 	}
 
+	public void prepareMany() {
+
+		List<Subject> subjects = new ArrayList<Subject>();
+
+		for (int i = 0; i < 10; i++) {
+			Subject subject = new Subject();
+			subject.setTitle("multi-test subject " + i);
+			subjects.add(subject);
+		}
+
+		idList = subjectService.saveAll(subjects);
+	}
+
 	@Test
 	public void getByIdTest() {
 
-		prepare();
+		prepareOne();
 
 		Subject subject = subjectService.get(id);
 
@@ -50,22 +79,54 @@ public class SubjectServiceTest {
 	}
 
 	@Test
+	public void getWithQuizzes() {
+
+		prepareOne();
+
+		Subject subject = subjectService.getWithQuizzes(id);
+
+		Assert.assertNotNull(String.format("subject for id=%s should not be null", id), subject);
+		Assert.assertNotNull(String.format("quizzes for answer id=%s should not be null", id), subject.getQuizzes());
+		Assert.assertEquals(id, subject.getId());
+
+		subjectService.delete(id);
+
+	}
+
+	@Test
+	public void getAllTest() {
+
+		prepareMany();
+
+		List<Subject> subjects = subjectService.getAll();
+
+		int i = 0;
+		for (Long id : idList) {
+
+			Assert.assertNotNull(String.format("subject for id=%s should not be null", id), subjects.get(i));
+			Assert.assertEquals(id, subjects.get(i).getId());
+
+			subjectService.delete(subjects.get(i).getId());
+			i++;
+		}
+	}
+
+	@Test
 	public void saveTest() {
 
-		Subject answer = new Subject();
-		answer.setTitle("insertTest subject " + new Random().nextInt());
+		Subject subject = new Subject();
+		subject.setTitle("insertTest subject " + new Random().nextInt());
 
 		Long id = null;
 
 		try {
-			id = subjectService.save(answer);
+			id = subjectService.save(subject);
 		} catch (DuplicateKeyException e) {
 			System.out.println(e.getStackTrace());
 			return;
 		}
 
 		Assert.assertNotNull(String.format("subject for id=%s should not be null", id), id);
-		Assert.assertEquals(answer, subjectService.get(id));
 
 		subjectService.delete(id);
 
@@ -83,11 +144,10 @@ public class SubjectServiceTest {
 		}
 
 		List<Long> idList = subjectService.saveAll(subjects);
-		
 
 		int i = 0;
 		for (Long id : idList) {
-			
+
 			Assert.assertNotNull(String.format("subject for id=%s should not be null", id), id);
 			Assert.assertEquals(subjects.get(i), subjectService.get(id));
 
@@ -99,7 +159,7 @@ public class SubjectServiceTest {
 	@Test
 	public void deleteTest() {
 
-		prepare();
+		prepareOne();
 
 		subjectService.delete(id);
 

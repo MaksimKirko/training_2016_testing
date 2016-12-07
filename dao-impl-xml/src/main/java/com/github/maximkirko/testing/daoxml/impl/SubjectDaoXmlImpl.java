@@ -14,4 +14,10 @@ public class SubjectDaoXmlImpl extends GenericDaoXmlImpl<Subject, Long> implemen
 		super(Subject.class);
 	}
 
+	@Override
+	public Subject getByTitle(String title) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 
-public class QuizToMap implements EntityToMap<Quiz> {
+public class QuizToMap implements IEntityToMap<Quiz> {
 
 	@Override
 	public Map<String, Object> convert(Quiz entity) {

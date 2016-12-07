@@ -22,32 +22,32 @@ public class AnswerServiceTest {
 
 	@Inject
 	private IAnswerService answerService;
-	
+
 	private Long id;
 	private List<Long> idList;
-	
+
 	private void prepareOne() {
 
 		Answer answer = new Answer();
 		answer.setText("test answer " + new Random().nextInt());
-		
+
 		List<Question> questions = new ArrayList<Question>();
 		Question question = new Question();
 		question.setText("answerTest question");
 		question.setHint("answerTest hint");
 		questions.add(question);
-		
+
 		answer.setQuestions(questions);
-		
+
 		try {
 			id = answerService.save(answer);
 		} catch (DuplicateKeyException e) {
 			System.out.println(e.getStackTrace());
 		}
 	}
-	
+
 	private void prepareMany() {
-		
+
 		List<Answer> answers = new ArrayList<Answer>();
 
 		for (int i = 0; i < 10; i++) {
@@ -63,7 +63,7 @@ public class AnswerServiceTest {
 	public void getByIdTest() {
 
 		prepareOne();
-		
+
 		Answer answer = answerService.get(id);
 
 		Assert.assertNotNull(String.format("answer for id=%s should not be null", id), answer);
@@ -74,7 +74,7 @@ public class AnswerServiceTest {
 
 	@Test
 	public void getWithQuestions() {
-		
+
 		prepareOne();
 
 		Answer answer = answerService.getWithQuestions(id);
@@ -84,19 +84,19 @@ public class AnswerServiceTest {
 		Assert.assertEquals(id, answer.getId());
 
 		answerService.delete(id);
-		
+
 	}
-	
+
 	@Test
 	public void getAllTest() {
-		
+
 		prepareMany();
-		
+
 		List<Answer> answers = answerService.getAll();
 
 		int i = 0;
 		for (Long id : idList) {
-			
+
 			Assert.assertNotNull(String.format("answer for id=%s should not be null", id), answers.get(i));
 			Assert.assertEquals(id, answers.get(i).getId());
 
@@ -104,7 +104,7 @@ public class AnswerServiceTest {
 			i++;
 		}
 	}
-	
+
 	@Test
 	public void saveTest() {
 
@@ -139,13 +139,13 @@ public class AnswerServiceTest {
 		}
 
 		List<Long> idList = answerService.saveAll(answers);
-		
+
 		int i = 0;
 		for (Long id : idList) {
-			
+
 			Assert.assertNotNull(String.format("answer for id=%s should not be null", id), id);
 			Assert.assertEquals(answers.get(i), answerService.get(id));
-			
+
 			answerService.delete(id);
 			i++;
 		}

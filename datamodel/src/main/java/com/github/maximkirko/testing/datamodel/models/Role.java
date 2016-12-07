@@ -10,11 +10,11 @@ import com.github.maximkirko.testing.datamodel.annotations.Filename;
 public class Role extends AbstractModel {
 
 	public enum RoleEnum {
-		ADMIN, STUDENT, GUEST;
+		ADMIN, USER;
 	}
 
 	private RoleEnum type;
-	private List<Student> students;
+	private List<User> users;
 
 	public RoleEnum getType() {
 		return type;
@@ -24,24 +24,24 @@ public class Role extends AbstractModel {
 		this.type = type;
 	}
 
-	public List<Student> getStudents() {
-		return students;
+	public List<User> getUsers() {
+		return users;
 	}
 
-	public void setStudents(List<Student> students) {
-		this.students = students;
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 
 	@Override
 	public String toString() {
-		return "Role [type=" + type + ", students=" + students + "]";
+		return "Role [type=" + type + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((students == null) ? 0 : students.hashCode());
+		result = prime * result + ((users == null) ? 0 : users.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -55,11 +55,6 @@ public class Role extends AbstractModel {
 		if (getClass() != obj.getClass())
 			return false;
 		Role other = (Role) obj;
-		if (students == null) {
-			if (other.students != null)
-				return false;
-		} else if (!students.equals(other.students))
-			return false;
 		if (type != other.type)
 			return false;
 		return true;
