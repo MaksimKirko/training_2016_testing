@@ -38,6 +38,11 @@ public class AnswerServiceImpl implements IAnswerService {
 		Answer answer = get(id);
 
 		List<QuestionToAnswer> qta = questionToAnswerService.getByAnswer(answer);
+		
+		if(qta == null) {
+			return answer;
+		}
+		
 		List<Question> questions = new ArrayList<Question>();
 
 		for (QuestionToAnswer questionToAnswer : qta) {

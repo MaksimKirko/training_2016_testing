@@ -14,7 +14,19 @@
 
 
 	<mvc:annotation-driven />
-	
+
 	<context:component-scan base-package="com.github.maximkirko.testing.web.controller" />
+
+	<bean id="conversionService"
+		class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean class="com.github.maximkirko.testing.web.converter.AnswerToModel" />
+				<bean class="com.github.maximkirko.testing.web.converter.ModelToAnswer" />
+				<bean class="com.github.maximkirko.testing.web.converter.QuestionToModel" />
+				<bean class="com.github.maximkirko.testing.web.converter.ModelToQuestion" />
+			</list>
+		</property>
+	</bean>
 
 </beans>

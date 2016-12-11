@@ -8,12 +8,12 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.github.maximkirko.testing.daoapi.IQuestionDao;
+import com.github.maximkirko.testing.daoapi.IQuestionToAnswerDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.services.IAnswerService;
 import com.github.maximkirko.testing.services.IQuestionService;
-import com.github.maximkirko.testing.services.IQuestionToAnswerService;
 
 @Service
 public class QuestionServiceImpl implements IQuestionService {
@@ -25,7 +25,7 @@ public class QuestionServiceImpl implements IQuestionService {
 	private IAnswerService answerService;
 
 	@Inject
-	private IQuestionToAnswerService questionToAnswerService;
+	private IQuestionToAnswerDao questionToAnswerDao;
 
 	@Override
 	public Question get(Long id) {
@@ -40,12 +40,7 @@ public class QuestionServiceImpl implements IQuestionService {
 		List<QuestionToAnswer> qta = questionToAnswerService.getByQuestion(question);
 		List<Answer> answers = new ArrayList<Answer>();
 
-		for (QuestionToAnswer questionToAnswer : qta) {
-
-			Answer answer = answerService.get(questionToAnswer.getAnswer().getId());
-			answers.add(answer);
-
-		}
+		
 		question.setAnswers(answers);
 
 		return question;

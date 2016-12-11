@@ -1,5 +1,6 @@
 package com.github.maximkirko.testing.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,7 +34,17 @@ public class QuestionToAnswerServiceImpl implements IQuestionToAnswerService {
 
 	@Override
 	public List<QuestionToAnswer> getByAnswer(Answer answer) {
-		return questionToAnswerDao.getByAnswer(answer);
+
+		List<QuestionToAnswer> q2a = new ArrayList<>();
+
+		try {
+			q2a = questionToAnswerDao.getByAnswer(answer);
+		} catch (NullPointerException e) {
+			System.out.println(e.getStackTrace());
+			return null;
+		}
+
+		return q2a;
 	}
 
 	@Override

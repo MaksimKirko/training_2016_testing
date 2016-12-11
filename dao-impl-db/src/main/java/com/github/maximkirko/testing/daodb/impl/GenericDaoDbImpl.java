@@ -94,16 +94,20 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 
 		String values = "";
 
-		int i = 0;
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
 
-			values += entry.getKey() + "=" + entry.getValue();
-			if (i < params.size() - 1) {
+			if (!entry.getKey().equals("id") && entry.getValue() != null) {
+				if (entry.getValue().getClass().equals(String.class)) {
+					values += entry.getKey() + "='" + entry.getValue() + "'";
+				} else {
+					values += entry.getKey() + "=" + entry.getValue();
+				}
 				values += ", ";
 			}
-			i++;
 		}
 
+		values = values.substring(0, values.length() - 2);
+		
 		return values;
 
 	}

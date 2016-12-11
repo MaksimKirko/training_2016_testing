@@ -1,6 +1,6 @@
 package com.github.maximkirko.testing.web.model;
 
-public class AnswerModel extends WebModel {
+public class AnswerModel implements WebModel {
 
 	private Long id;
 	private String text;
