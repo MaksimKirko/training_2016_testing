@@ -33,14 +33,14 @@ public class GradeDaoDbImpl extends GenericDaoDbImpl<Grade, Long> implements IGr
 	}
 
 	@Override
-	public Grade get(Long id) {
+	public Grade getWithUserAndQuiz(Long id) {
 
 		Grade grade;
 
 		try {
 			grade = getJdbcTemplate().queryForObject(
 					String.format(
-							"SELECT * FROM %s g LEFT JOIN %s s ON g.user_id=s.id LEFT JOIN %s q ON g.quiz_id=q.id WHERE g.id = ?",
+							"SELECT * FROM %s g LEFT JOIN %s u ON g.user_id=u.id LEFT JOIN %s q ON g.quiz_id=q.id WHERE g.id = ?",
 							getTableName(), studentTableName, quizTableName),
 					new Object[] { id }, gradeWithStudentAndQuizMapper);
 		} catch (EmptyResultDataAccessException e) {
@@ -51,15 +51,52 @@ public class GradeDaoDbImpl extends GenericDaoDbImpl<Grade, Long> implements IGr
 	}
 
 	@Override
+	public List<Grade> getAll() {
+
+		List<Grade> grades;
+
+		try {
+			grades = getJdbcTemplate().query(String.format(
+					"SELECT * FROM %s g LEFT JOIN %s s ON g.user_id=s.id LEFT JOIN %s q ON g.quiz_id=q.id",
+					getTableName(), studentTableName, quizTableName), gradeWithStudentAndQuizMapper);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+
+		return grades;
+	}
+
+	@Override
 	public List<Grade> getByUserId(Long id) {
-		return getJdbcTemplate().query(String.format("SELECT * FROM %s WHERE user_id = ?", getTableName()),
-				new Object[] { id }, getMapper());
+
+		List<Grade> grades;
+		try {
+			grades = getJdbcTemplate().query(
+					String.format(
+							"SELECT * FROM %s g LEFT JOIN %s u ON g.user_id=u.id LEFT JOIN %s q ON g.quiz_id=q.id WHERE g.user_id = ?",
+							getTableName(), studentTableName, quizTableName),
+					new Object[] { id }, gradeWithStudentAndQuizMapper);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+
+		return grades;
 	}
 
 	@Override
 	public List<Grade> getByQuizId(Long id) {
-		return getJdbcTemplate().query(String.format("SELECT * FROM %s WHERE quiz_id = ?", getTableName()),
-				new Object[] { id }, getMapper());
+		List<Grade> grades;
+		try {
+			grades = getJdbcTemplate().query(
+					String.format(
+							"SELECT * FROM %s g LEFT JOIN %s u ON g.user_id=u.id LEFT JOIN %s q ON g.quiz_id=q.id WHERE g.quiz_id = ?",
+							getTableName(), studentTableName, quizTableName),
+					new Object[] { id }, gradeWithStudentAndQuizMapper);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+
+		return grades;
 	}
 
 }

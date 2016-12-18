@@ -22,7 +22,7 @@ public class UserDaoDbImpl extends GenericDaoDbImpl<User, Long> implements IUser
 	private String gradeTableName;
 	private UserWithRoleMapper userWithRoleMapper;
 	private UserWithGradesMapper userWithGradesMapper;
-	
+
 	public UserDaoDbImpl() {
 		super();
 		setTableName(DBTableNameAware.getTableNameByClass(User.class));
@@ -37,16 +37,14 @@ public class UserDaoDbImpl extends GenericDaoDbImpl<User, Long> implements IUser
 
 	@Override
 	public User getWithGrades(Long id) {
-		
+
 		User user;
 		List<User> users;
 
 		try {
-			users = getJdbcTemplate().query(
-					String.format(
-							"SELECT * FROM %s u LEFT JOIN %s g ON u.id=g.user_id WHERE u.id = ?",
-							getTableName(), gradeTableName),
-					new Object[] { id }, userWithGradesMapper);
+			users = getJdbcTemplate()
+					.query(String.format("SELECT * FROM %s u LEFT JOIN %s g ON u.id=g.user_id WHERE u.id = ?",
+							getTableName(), gradeTableName), new Object[] { id }, userWithGradesMapper);
 
 		} catch (EmptyResultDataAccessException e) {
 			return null;
@@ -56,6 +54,7 @@ public class UserDaoDbImpl extends GenericDaoDbImpl<User, Long> implements IUser
 			return null;
 		}
 		user = users.get(0);
+		users.remove(0);
 		List<Grade> grades = user.getGrades();
 		for (User q : users) {
 			grades.addAll(q.getGrades());
@@ -67,23 +66,40 @@ public class UserDaoDbImpl extends GenericDaoDbImpl<User, Long> implements IUser
 
 	@Override
 	public User getWithRole(Long id) {
-		return getJdbcTemplate()
-				.queryForObject(String.format("SELECT * FROM %s u LEFT JOIN %s r ON u.role_id=r.id WHERE u.id = ?",
-						getTableName(), roleTableName), new Object[] { id }, userWithRoleMapper);
+		User user;
+		try {
+			user = getJdbcTemplate()
+					.queryForObject(String.format("SELECT * FROM %s u LEFT JOIN %s r ON u.role_id=r.id WHERE u.id = ?",
+							getTableName(), roleTableName), new Object[] { id }, userWithRoleMapper);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return user;
 	}
 
 	@Override
 	public List<User> getByRole(Role role) {
 
-		return getJdbcTemplate().query(String.format("SELECT * FROM %s WHERE role_id = ?", getTableName()),
-				new Object[] { role.getId() }, getMapper());
+		List<User> users;
+		try {
+			users = getJdbcTemplate().query(String.format("SELECT * FROM %s WHERE role_id = ?", getTableName()),
+					new Object[] { role.getId() }, getMapper());
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return users;
 	}
 
 	@Override
 	public User getByEmail(String email) {
 
-		return getJdbcTemplate().queryForObject(String.format("SELECT * FROM %s WHERE email = ?", getTableName()),
-				new Object[] { email }, getMapper());
+		User user;
+		try {
+			user = getJdbcTemplate().queryForObject(String.format("SELECT * FROM %s WHERE email = '%s'", getTableName(), email), getMapper());
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return user;
 	}
 
 }

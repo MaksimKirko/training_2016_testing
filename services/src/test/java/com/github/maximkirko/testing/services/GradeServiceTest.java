@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DuplicateKeyException;
@@ -123,11 +124,28 @@ public class GradeServiceTest {
 	}
 
 	@Test
+	@Ignore
+	public void fullfillDB() {
+		prepareOne();
+	}
+
+	@Test
 	public void getByIdTest() {
 
 		prepareOne();
 
 		Grade grade = gradeService.get(id);
+
+		Assert.assertNotNull(String.format("grade for id=%s should not be null", id), grade);
+		Assert.assertEquals(id, grade.getId());
+	}
+
+	@Test
+	public void getBWithUserAndQuizTest() {
+
+		prepareOne();
+
+		Grade grade = gradeService.getWithUserAndQuiz(id);
 
 		Assert.assertNotNull(String.format("grade for id=%s should not be null", id), grade);
 		Assert.assertNotNull(String.format("user for grade id=%s should not be null", id), grade.getUser());

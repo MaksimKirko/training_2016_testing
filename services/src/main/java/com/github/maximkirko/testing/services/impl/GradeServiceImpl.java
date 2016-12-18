@@ -24,6 +24,12 @@ public class GradeServiceImpl implements IGradeService {
 	}
 
 	@Override
+	public Grade getWithUserAndQuiz(Long id) {
+
+		return gradeDao.getWithUserAndQuiz(id);
+	}
+
+	@Override
 	public List<Grade> getByUserId(Long id) {
 
 		return gradeDao.getByUserId(id);

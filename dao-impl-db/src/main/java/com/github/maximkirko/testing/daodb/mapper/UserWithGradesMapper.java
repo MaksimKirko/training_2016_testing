@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.github.maximkirko.testing.datamodel.models.Grade;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.Role;
 import com.github.maximkirko.testing.datamodel.models.User;
 
 public class UserWithGradesMapper implements IGenericMapper<User> {
@@ -23,6 +24,10 @@ public class UserWithGradesMapper implements IGenericMapper<User> {
 		user.setPassword(rs.getString("password"));
 		user.setId(rs.getLong("id"));
 
+		Role role = new Role();
+		role.setId(rs.getLong("role_id"));
+		user.setRole(role);
+		
 		Grade grade = new Grade();
 		grade.setMark(rs.getFloat("mark"));
 		Quiz quiz = new Quiz();

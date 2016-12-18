@@ -16,7 +16,7 @@ public class GradeDaoXmlImpl extends GenericDaoXmlImpl<Grade, Long> implements I
 	}
 
 	@Override
-	public Grade get(Long id) {
+	public Grade getWithUserAndQuiz(Long id) {
 
 		// TODO
 		throw new UnsupportedOperationException();

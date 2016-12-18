@@ -27,6 +27,11 @@ public class AnswerServiceImpl implements IAnswerService {
 	}
 
 	@Override
+	public List<Answer> getByQuestionId(Long id) {
+		return answerDao.getByQuestionId(id);
+	}
+
+	@Override
 	public List<Answer> getAll() {
 		return answerDao.getAll();
 	}
@@ -65,11 +70,8 @@ public class AnswerServiceImpl implements IAnswerService {
 	@Override
 	public void delete(Long id) {
 
-		Answer answer = get(id);
-		Long questionId = answer.getQuestion().getId();
-		answerDao.delete(id);
-		if (questionId != null) {
-			questionService.delete(questionId);
+		if (id != null) {
+			answerDao.delete(id);
 		}
 	}
 

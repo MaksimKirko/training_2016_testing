@@ -8,12 +8,14 @@ import javax.inject.Inject;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.Subject;
 
@@ -37,6 +39,13 @@ public class QuizServiceTest {
 		quiz.setTitle("test quiz " + new Random().nextInt());
 		quiz.setDescription("test quiz " + new Random().nextInt());
 
+		Question question = new Question();
+		question.setText("quizTest question " + new Random().nextInt());
+		question.setHint("quizTest hint " + new Random().nextInt());
+		
+		List<Question> questions = new ArrayList<>();
+		questions.add(question);
+		
 		Subject subject = new Subject();
 		subject.setTitle("quizTest subject");
 		subject.setDescription("quizTest description");
@@ -48,6 +57,7 @@ public class QuizServiceTest {
 		}
 
 		quiz.setSubject(subject);
+		quiz.setQuestions(questions);
 		id = quizService.save(quiz);
 	}
 
@@ -76,6 +86,12 @@ public class QuizServiceTest {
 		}
 
 		idList = quizService.saveAll(quizzes);
+	}
+
+	@Test
+	@Ignore
+	public void populateDB() {
+		prepareOne();
 	}
 
 	@After

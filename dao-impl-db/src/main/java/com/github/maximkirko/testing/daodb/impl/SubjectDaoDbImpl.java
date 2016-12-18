@@ -29,9 +29,17 @@ public class SubjectDaoDbImpl extends GenericDaoDbImpl<Subject, Long> implements
 
 	@Override
 	public Subject getByTitle(String title) {
+		
+		Subject subject;
+		try {
+			subject = getJdbcTemplate().queryForObject(
+					String.format("SELECT * FROM %s WHERE title = ?", getTableName()), new Object[] { title },
+					getMapper());
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 
-		return getJdbcTemplate().queryForObject(String.format("SELECT * FROM %s WHERE title = ?", getTableName()),
-				new Object[] { title }, getMapper());
+		return subject;
 	}
 
 	@Override

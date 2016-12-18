@@ -7,12 +7,12 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import com.github.maximkirko.testing.daoapi.IAnswerDao;
 import com.github.maximkirko.testing.daoapi.IQuestionDao;
-import com.github.maximkirko.testing.daoapi.IQuizToQuestionDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
+import com.github.maximkirko.testing.services.IAnswerService;
 import com.github.maximkirko.testing.services.IQuestionService;
+import com.github.maximkirko.testing.services.IQuizToQuestionService;
 
 @Service
 public class QuestionServiceImpl implements IQuestionService {
@@ -21,10 +21,10 @@ public class QuestionServiceImpl implements IQuestionService {
 	private IQuestionDao questionDao;
 
 	@Inject
-	private IAnswerDao answerDao;
+	private IAnswerService answerService;
 
 	@Inject
-	private IQuizToQuestionDao quizToQuestionDao;
+	private IQuizToQuestionService quizToQuestionService;
 
 	@Override
 	public Question get(Long id) {
@@ -60,7 +60,7 @@ public class QuestionServiceImpl implements IQuestionService {
 		List<Answer> answers = question.getAnswers();
 		if (answers != null) {
 			for (Answer answer : answers) {
-				Long id = answerDao.insert(answer);
+				Long id = answerService.save(answer);
 				answer.setId(id);
 			}
 			question.setAnswers(answers);
@@ -89,14 +89,15 @@ public class QuestionServiceImpl implements IQuestionService {
 		if (question == null) {
 			return;
 		}
-		List<Answer> answers = question.getAnswers();
+		List<Answer> answers = answerService.getByQuestionId(id);
 
 		if (answers != null) {
 			for (Answer a : answers) {
-				answerDao.delete(a.getId());
+				a.setQuestion(null);
+				answerService.delete(a.getId());
 			}
 		}
-		quizToQuestionDao.deleteByQuestionId(id);
+		quizToQuestionService.deleteByQuestionId(id);
 		questionDao.delete(id);
 	}
 

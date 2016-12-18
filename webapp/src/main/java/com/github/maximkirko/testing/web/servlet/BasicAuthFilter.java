@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Enumeration;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,6 +17,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.github.maximkirko.testing.services.IAuthenticationService;
 
 public class BasicAuthFilter implements Filter {
+	
+	@Inject
 	private IAuthenticationService authService;
 
 	@Override

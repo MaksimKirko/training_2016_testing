@@ -73,6 +73,7 @@ public class QuizDaoDbImpl extends GenericDaoDbImpl<Quiz, Long> implements IQuiz
 			return null;
 		}
 		quiz = quizzes.get(0);
+		quizzes.remove(0);
 		List<Question> questions = quiz.getQuestions();
 		for (Quiz q : quizzes) {
 			questions.addAll(q.getQuestions());

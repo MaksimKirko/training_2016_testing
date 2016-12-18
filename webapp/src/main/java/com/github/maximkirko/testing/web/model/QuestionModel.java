@@ -2,14 +2,12 @@ package com.github.maximkirko.testing.web.model;
 
 import java.util.List;
 
-import com.github.maximkirko.testing.datamodel.models.Answer;
-
 public class QuestionModel implements WebModel {
 	
 	private Long id;
 	private String text;
 	private String hint;
-	private List<Answer> answers;
+	private List<AnswerModel> answers;
 	
 	public Long getId() {
 		return id;
@@ -35,11 +33,11 @@ public class QuestionModel implements WebModel {
 		this.hint = hint;
 	}
 	
-	public List<Answer> getAnswers() {
+	public List<AnswerModel> getAnswers() {
 		return answers;
 	}
 
-	public void setAnswers(List<Answer> answers) {
+	public void setAnswers(List<AnswerModel> answers) {
 		this.answers = answers;
 	}
 

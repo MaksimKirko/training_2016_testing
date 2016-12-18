@@ -49,6 +49,7 @@ public class QuestionDaoDbImpl extends GenericDaoDbImpl<Question, Long> implemen
 			return null;
 		}
 		question = questions.get(0);
+		questions.remove(0);
 		List<Answer> answers = question.getAnswers();
 		for (Question q : questions) {
 			answers.addAll(q.getAnswers());

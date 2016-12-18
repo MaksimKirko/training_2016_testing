@@ -27,7 +27,7 @@ public class QuestionController extends GenericController<Question, QuestionMode
 		super.modelClass = QuestionModel.class;
 	}
 	
-	@RequestMapping(value = "/full/{entityId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/withAnswers/{entityId}", method = RequestMethod.GET)
 	public ResponseEntity<QuestionModel> getWithAnswers(@PathVariable Long entityId) {
 
 		Question question = questionService.getWithAnswers(entityId);
