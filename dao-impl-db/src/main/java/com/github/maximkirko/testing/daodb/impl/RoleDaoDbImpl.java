@@ -1,5 +1,6 @@
 package com.github.maximkirko.testing.daodb.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IRoleDao;
@@ -22,8 +23,14 @@ public class RoleDaoDbImpl extends GenericDaoDbImpl<Role, Long> implements IRole
 	@Override
 	public Role getByType(RoleEnum type) {
 
-		return getJdbcTemplate().queryForObject(
-				String.format("SELECT * FROM %s WHERE type='%s'", getTableName(), type.toString()), getMapper());
+		Role role;
+		try {
+			role = getJdbcTemplate().queryForObject(
+					String.format("SELECT * FROM %s WHERE type='%s'", getTableName(), type.toString()), getMapper());
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return role;
 	}
 
 }

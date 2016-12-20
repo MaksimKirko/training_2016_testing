@@ -95,7 +95,10 @@ public class UserDaoDbImpl extends GenericDaoDbImpl<User, Long> implements IUser
 
 		User user;
 		try {
-			user = getJdbcTemplate().queryForObject(String.format("SELECT * FROM %s WHERE email = '%s'", getTableName(), email), getMapper());
+			user = getJdbcTemplate().queryForObject(
+					String.format("SELECT * FROM %s u LEFT JOIN %s r ON u.role_id=r.id WHERE email = '%s'",
+							getTableName(), roleTableName, email),
+					userWithRoleMapper);
 		} catch (EmptyResultDataAccessException e) {
 			return null;
 		}

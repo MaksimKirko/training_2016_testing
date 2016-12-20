@@ -15,7 +15,7 @@ import com.github.maximkirko.testing.services.IRoleService;
 import com.github.maximkirko.testing.web.model.RoleModel;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/admin/roles")
 public class RoleController extends GenericController<Role, RoleModel> {
 
 	@Inject
@@ -32,6 +32,11 @@ public class RoleController extends GenericController<Role, RoleModel> {
 	public ResponseEntity<RoleModel> getBySubjectId(@PathVariable RoleEnum entityType) {
 
 		Role role = roleService.getByType(entityType);
+
+		if (role == null) {
+			return new ResponseEntity<RoleModel>(HttpStatus.NOT_FOUND);
+		}
+
 		return new ResponseEntity<RoleModel>(conversionService.convert(role, modelClass), HttpStatus.OK);
 	}
 

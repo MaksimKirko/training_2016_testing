@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -35,15 +36,27 @@ public class QuizToQuestionDaoDbImpl implements IQuizToQuestionDao {
 	@Override
 	public List<QuizToQuestion> getByQuizId(Long id) {
 
-		return jdbcTemplate.query(String.format("SELECT * FROM %s WHERE quiz_id = ?", tableName), new Object[] { id },
-				mapper);
+		List<QuizToQuestion> q2qList;
+		try {
+			q2qList = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE quiz_id = ?", tableName),
+					new Object[] { id }, mapper);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return q2qList;
 	}
 
 	@Override
 	public List<QuizToQuestion> getByQuestionId(Long id) {
 
-		return jdbcTemplate.query(String.format("SELECT * FROM %s WHERE  question_id = ?", tableName),
-				new Object[] { id }, mapper);
+		List<QuizToQuestion> q2qList;
+		try {
+			q2qList = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE  question_id = ?", tableName),
+					new Object[] { id }, mapper);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return q2qList;
 	}
 
 	@Override

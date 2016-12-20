@@ -40,16 +40,31 @@ public class QuizDaoDbImpl extends GenericDaoDbImpl<Quiz, Long> implements IQuiz
 	@Override
 	public Quiz getWithSubject(Long id) {
 
-		return getJdbcTemplate()
-				.queryForObject(String.format("SELECT * FROM %s q LEFT JOIN %s s ON q.subject_id=s.id WHERE q.id = ?",
-						getTableName(), subjectTableName), new Object[] { id }, quizWithSubjectMapper);
+		Quiz quiz;
+
+		try {
+			quiz = getJdbcTemplate().queryForObject(
+					String.format("SELECT * FROM %s q LEFT JOIN %s s ON q.subject_id=s.id WHERE q.id = ?",
+							getTableName(), subjectTableName),
+					new Object[] { id }, quizWithSubjectMapper);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return quiz;
 	}
 
 	@Override
 	public List<Quiz> getBySubjectId(Long id) {
 
-		return getJdbcTemplate().query(String.format("SELECT * FROM %s WHERE subject_id = ?", getTableName()),
-				new Object[] { id }, getMapper());
+		List<Quiz> quizzes;
+
+		try {
+			quizzes = getJdbcTemplate().query(String.format("SELECT * FROM %s WHERE subject_id = ?", getTableName()),
+					new Object[] { id }, getMapper());
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return quizzes;
 	}
 
 	@Override

@@ -21,8 +21,8 @@ import com.github.maximkirko.testing.web.model.GradeModel;
 import com.github.maximkirko.testing.web.model.UserModel;
 
 @RestController
-@RequestMapping("/users")
-public class UserController extends GenericController<User, UserModel> {
+@RequestMapping("/admin/users")
+public class AdminController extends GenericController<User, UserModel> {
 
 	@Inject
 	private IUserService userService;
@@ -30,24 +30,22 @@ public class UserController extends GenericController<User, UserModel> {
 	@Inject
 	private IRoleService roleService;
 
-	public UserController() {
+	public AdminController() {
 
 		super.service = userService;
 		super.entityClass = User.class;
 		super.modelClass = UserModel.class;
 	}
 
-//	@RequestMapping(value = "/byEmail/{entityEmail}", method = RequestMethod.GET)
-//	public ResponseEntity<UserModel> getByEmail(@PathVariable String entityEmail) {
-//
-//		User user = userService.getByEmail(entityEmail);
-//		return new ResponseEntity<UserModel>(conversionService.convert(user, modelClass), HttpStatus.OK);
-//	}
-
 	@RequestMapping(value = "/withGrades/{entityId}", method = RequestMethod.GET)
 	public ResponseEntity<UserModel> getWithGrades(@PathVariable Long entityId) {
 
 		User user = userService.getWithGrades(entityId);
+
+		if (user == null) {
+			return new ResponseEntity<UserModel>(HttpStatus.NOT_FOUND);
+		}
+
 		UserModel model = conversionService.convert(user, UserModel.class);
 
 		List<Grade> grades = user.getGrades();
@@ -69,6 +67,10 @@ public class UserController extends GenericController<User, UserModel> {
 		Role role = roleService.get(entityId);
 		List<User> users = userService.getByRole(role);
 
+		if (users == null) {
+			return new ResponseEntity<List<UserModel>>(HttpStatus.NOT_FOUND);
+		}
+
 		List<UserModel> converted = new ArrayList<>();
 		for (User user : users) {
 			converted.add(conversionService.convert(user, modelClass));
@@ -81,6 +83,10 @@ public class UserController extends GenericController<User, UserModel> {
 	public ResponseEntity<UserModel> getWithRole(@PathVariable Long entityId) {
 
 		User user = userService.getWithRole(entityId);
+		if (user == null) {
+			return new ResponseEntity<UserModel>(HttpStatus.NOT_FOUND);
+		}
+
 		return new ResponseEntity<UserModel>(conversionService.convert(user, modelClass), HttpStatus.OK);
 	}
 

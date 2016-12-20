@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,10 +35,38 @@ public class QuizController extends GenericController<Quiz, QuizModel> {
 		super.modelClass = QuizModel.class;
 	}
 
+	@Override
+	@RequestMapping(value = "/admin/create", method = RequestMethod.POST)
+	public ResponseEntity<Void> createNewEntity(@RequestBody QuizModel entityModel) {
+
+		return super.createNewEntity(entityModel);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/admin/{entityId}", method = RequestMethod.POST)
+	public ResponseEntity<Void> updateEntity(@RequestBody QuizModel entityModel, @PathVariable Long entityId) {
+
+		return super.updateEntity(entityModel, entityId);
+	}
+
+	@Override
+	@RequestMapping(value = "/admin/{entityId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Long entityId) {
+
+		service.delete(entityId);
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/bySubjectId/{entityId}", method = RequestMethod.GET)
 	public ResponseEntity<List<QuizModel>> getBySubjectId(@PathVariable Long entityId) {
 
 		List<Quiz> quizzes = quizService.getBySubjectId(entityId);
+
+		if (quizzes == null) {
+			return new ResponseEntity<List<QuizModel>>(HttpStatus.NOT_FOUND);
+		}
+
 		List<QuizModel> converted = new ArrayList<>();
 		for (Quiz quiz : quizzes) {
 			converted.add(conversionService.convert(quiz, modelClass));
@@ -50,6 +79,10 @@ public class QuizController extends GenericController<Quiz, QuizModel> {
 	public ResponseEntity<QuizModel> getWithSubjects(@PathVariable Long entityId) {
 
 		Quiz quiz = quizService.getWithSubject(entityId);
+		if (quiz == null) {
+			return new ResponseEntity<QuizModel>(HttpStatus.NOT_FOUND);
+		}
+
 		QuizModel model = conversionService.convert(quiz, QuizModel.class);
 
 		Subject subject = quiz.getSubject();
@@ -64,6 +97,10 @@ public class QuizController extends GenericController<Quiz, QuizModel> {
 	public ResponseEntity<QuizModel> getWithQuestions(@PathVariable Long entityId) {
 
 		Quiz quiz = quizService.getWithQuestions(entityId);
+		if (quiz == null) {
+			return new ResponseEntity<QuizModel>(HttpStatus.NOT_FOUND);
+		}
+
 		QuizModel model = conversionService.convert(quiz, QuizModel.class);
 
 		List<Question> questions = quiz.getQuestions();

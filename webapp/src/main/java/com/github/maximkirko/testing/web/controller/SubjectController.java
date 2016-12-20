@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,10 +33,37 @@ public class SubjectController extends GenericController<Subject, SubjectModel> 
 		super.modelClass = SubjectModel.class;
 	}
 
+	@Override
+	@RequestMapping(value = "/admin/create", method = RequestMethod.POST)
+	public ResponseEntity<Void> createNewEntity(@RequestBody SubjectModel entityModel) {
+
+		return super.createNewEntity(entityModel);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/admin/{entityId}", method = RequestMethod.POST)
+	public ResponseEntity<Void> updateEntity(@RequestBody SubjectModel entityModel, @PathVariable Long entityId) {
+
+		return super.updateEntity(entityModel, entityId);
+	}
+
+	@Override
+	@RequestMapping(value = "/admin/{entityId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Long entityId) {
+
+		service.delete(entityId);
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/byTitle/{entityTitle}", method = RequestMethod.GET)
 	public ResponseEntity<SubjectModel> getByTitle(@PathVariable String entityTitle) {
 
 		Subject subject = subjectService.getByTitle(entityTitle);
+		if (subject == null) {
+			return new ResponseEntity<SubjectModel>(HttpStatus.NOT_FOUND);
+		}
+
 		return new ResponseEntity<SubjectModel>(conversionService.convert(subject, modelClass), HttpStatus.OK);
 	}
 
@@ -43,6 +71,11 @@ public class SubjectController extends GenericController<Subject, SubjectModel> 
 	public ResponseEntity<SubjectModel> getWithQuizs(@PathVariable Long entityId) {
 
 		Subject subject = subjectService.getWithQuizzes(entityId);
+
+		if (subject == null) {
+			return new ResponseEntity<SubjectModel>(HttpStatus.NOT_FOUND);
+		}
+
 		SubjectModel model = conversionService.convert(subject, SubjectModel.class);
 
 		List<Quiz> quizzes = subject.getQuizzes();

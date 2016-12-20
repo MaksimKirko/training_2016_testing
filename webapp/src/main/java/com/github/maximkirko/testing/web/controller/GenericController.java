@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,9 +32,13 @@ public abstract class GenericController<Entity extends AbstractModel, Model exte
 	protected Class<Model> modelClass;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<Model>> getAll() {
+	public ResponseEntity<List<Model>> getAll(@RequestHeader(value = "Authorization") String authHeader) {
 
 		List<Entity> all = service.getAll();
+
+		if (all == null) {
+			return new ResponseEntity<List<Model>>(HttpStatus.NOT_FOUND);
+		}
 
 		List<Model> converted = new ArrayList<>();
 		for (Entity entity : all) {
@@ -44,9 +49,14 @@ public abstract class GenericController<Entity extends AbstractModel, Model exte
 	}
 
 	@RequestMapping(value = "/{entityId}", method = RequestMethod.GET)
-	public ResponseEntity<Model> getById(@PathVariable Long entityId) {
+	public ResponseEntity<Model> getById(@PathVariable Long entityId,
+			@RequestHeader(value = "Authorization") String authHeader) {
 
 		Entity entity = service.get(entityId);
+		if (entity == null) {
+			return new ResponseEntity<Model>(HttpStatus.NOT_FOUND);
+		}
+
 		return new ResponseEntity<Model>(conversionService.convert(entity, modelClass), HttpStatus.OK);
 	}
 
