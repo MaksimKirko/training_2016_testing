@@ -1,6 +1,7 @@
 package com.github.maximkirko.testing.daoxml.impl;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,12 @@ public class AnswerDaoXmlImpl extends GenericDaoXmlImpl<Answer, Long> implements
 	
 	public AnswerDaoXmlImpl() throws IOException {
 		super(Answer.class);
+	}
+
+	@Override
+	public List<Answer> getByQuestionId(Long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

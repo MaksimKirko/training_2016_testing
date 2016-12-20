@@ -6,7 +6,7 @@ import com.github.maximkirko.testing.datamodel.annotations.Filename;
 @DBTable("grade")
 @Filename("grade.xml")
 public class Grade extends AbstractModel {
-	
+
 	private float mark;
 	private User user;
 	private Quiz quiz;
@@ -18,7 +18,7 @@ public class Grade extends AbstractModel {
 	public void setMark(float mark) {
 		this.mark = mark;
 	}
-	
+
 	public User getUser() {
 		return user;
 	}
@@ -45,8 +45,6 @@ public class Grade extends AbstractModel {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Float.floatToIntBits(mark);
-		result = prime * result + ((quiz == null) ? 0 : quiz.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
 

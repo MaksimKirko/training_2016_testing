@@ -14,7 +14,45 @@
 
 
 	<mvc:annotation-driven />
-	
+
+	<context:component-scan base-package="com.github.maximkirko.testing.web.converter" />
 	<context:component-scan base-package="com.github.maximkirko.testing.web.controller" />
+	<context:component-scan base-package="com.github.maximkirko.testing.web.servlet" />
+
+	<bean id="conversionService"
+		class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean
+					class="com.github.maximkirko.testing.web.converter.entitytomodel.AnswerToModel" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.modeltoentity.ModelToAnswer" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.entitytomodel.QuestionToModel" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.modeltoentity.ModelToQuestion" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.entitytomodel.QuizToModel" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.modeltoentity.ModelToQuiz" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.entitytomodel.SubjectToModel" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.modeltoentity.ModelToSubject" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.entitytomodel.GradeToModel" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.modeltoentity.ModelToGrade" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.entitytomodel.UserToModel" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.modeltoentity.ModelToUser" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.entitytomodel.RoleToModel" />
+				<bean
+					class="com.github.maximkirko.testing.web.converter.modeltoentity.ModelToRole" />
+			</list>
+		</property>
+	</bean>
 
 </beans>

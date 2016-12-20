@@ -1,16 +1,15 @@
 package com.github.maximkirko.testing.datamodel.models;
 
-import java.util.List;
-
 import com.github.maximkirko.testing.datamodel.annotations.DBTable;
 import com.github.maximkirko.testing.datamodel.annotations.Filename;
 
 @DBTable("answer")
 @Filename("answer.xml")
 public class Answer extends AbstractModel {
-	
+
 	private String text;
-	private List<Question> questions;
+	private boolean correctness;
+	private Question question;
 
 	public String getText() {
 		return text;
@@ -19,26 +18,34 @@ public class Answer extends AbstractModel {
 	public void setText(String text) {
 		this.text = text;
 	}
-	
-	public List<Question> getQuestions() {
-		return questions;
+
+	public boolean isCorrectness() {
+		return correctness;
 	}
 
-	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
+	public void setCorrectness(boolean correctness) {
+		this.correctness = correctness;
 	}
-	
+
+	public Question getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
+
 	@Override
 	public String toString() {
-		return "Answer [text=" + text + "]";
+		return "Answer [text=" + text + ", correctness=" + correctness + "]";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((questions == null) ? 0 : questions.hashCode());
-		result = prime * result + ((text == null) ? 0 : text.hashCode()) ;
+		result = prime * result + (correctness ? 1231 : 1237);
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
 		return result;
 	}
 
@@ -51,10 +58,7 @@ public class Answer extends AbstractModel {
 		if (getClass() != obj.getClass())
 			return false;
 		Answer other = (Answer) obj;
-		if (questions == null) {
-			if (other.questions != null)
-				return false;
-		} else if (!questions.equals(other.questions))
+		if (correctness != other.correctness)
 			return false;
 		if (text == null) {
 			if (other.text != null)
@@ -65,6 +69,6 @@ public class Answer extends AbstractModel {
 	}
 
 	public Answer() {
-		
+
 	}
 }

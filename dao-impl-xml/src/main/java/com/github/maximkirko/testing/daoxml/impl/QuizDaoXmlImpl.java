@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IQuizDao;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.datamodel.models.Subject;
 
 @Repository
 public class QuizDaoXmlImpl extends GenericDaoXmlImpl<Quiz, Long> implements IQuizDao {
@@ -24,8 +23,14 @@ public class QuizDaoXmlImpl extends GenericDaoXmlImpl<Quiz, Long> implements IQu
 	}
 
 	@Override
-	public List<Quiz> getBySubject(Subject subject) {
+	public List<Quiz> getBySubjectId(Long id) {
 
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Quiz getWithQuestions(Long id) {
 		// TODO
 		throw new UnsupportedOperationException();
 	}

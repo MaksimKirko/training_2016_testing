@@ -2,20 +2,18 @@ package com.github.maximkirko.testing.daoapi;
 
 import java.util.List;
 
-import com.github.maximkirko.testing.datamodel.models.Question;
-import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
 
 public interface IQuizToQuestionDao {
 
-	List<QuizToQuestion> getByQuiz(Quiz quiz);
+	List<QuizToQuestion> getByQuizId(Long id);
 
-	List<QuizToQuestion> getByQuestion(Question question);
+	List<QuizToQuestion> getByQuestionId(Long id);
 
 	void insert(QuizToQuestion entity);
 
-	void deleteByQuiz(Quiz quiz);
+	void deleteByQuizId(Long id);
 
-	void deleteByQuestion(Question question);
+	void deleteByQuestionId(Long id);
 
 }

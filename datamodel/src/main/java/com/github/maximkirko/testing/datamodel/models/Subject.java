@@ -47,7 +47,6 @@ public class Subject extends AbstractModel {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((quizzes == null) ? 0 : quizzes.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
@@ -72,6 +71,10 @@ public class Subject extends AbstractModel {
 		} else if (!title.equals(other.title))
 			return false;
 		return true;
+	}
+
+	public Subject() {
+
 	}
 
 }

@@ -1,10 +1,12 @@
 package com.github.maximkirko.testing.daodb.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IRoleDao;
 import com.github.maximkirko.testing.daodb.entitytomap.RoleToMap;
 import com.github.maximkirko.testing.daodb.mapper.RoleMapper;
+import com.github.maximkirko.testing.datamodel.annotations.anylizer.DBTableNameAware;
 import com.github.maximkirko.testing.datamodel.models.Role;
 import com.github.maximkirko.testing.datamodel.models.Role.RoleEnum;
 
@@ -12,15 +14,23 @@ import com.github.maximkirko.testing.datamodel.models.Role.RoleEnum;
 public class RoleDaoDbImpl extends GenericDaoDbImpl<Role, Long> implements IRoleDao {
 
 	public RoleDaoDbImpl() {
-		super(Role.class);
-		super.entityToMap = new RoleToMap();
-		super.mapper = new RoleMapper();
+		super();
+		setTableName(DBTableNameAware.getTableNameByClass(Role.class));
+		setEntityToMap(new RoleToMap());
+		setMapper(new RoleMapper());
 	}
 
 	@Override
 	public Role getByType(RoleEnum type) {
-		
-		return jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE type = '%s'", super.tableName, type.toString()), super.mapper);
+
+		Role role;
+		try {
+			role = getJdbcTemplate().queryForObject(
+					String.format("SELECT * FROM %s WHERE type='%s'", getTableName(), type.toString()), getMapper());
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		return role;
 	}
 
 }

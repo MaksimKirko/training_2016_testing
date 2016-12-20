@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IQuizToQuestionDao;
-import com.github.maximkirko.testing.datamodel.models.Question;
-import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
 
 @Repository
@@ -17,35 +15,31 @@ public class QuizToQuestionDaoXmlImpl implements IQuizToQuestionDao {
 	}
 
 	@Override
-	public List<QuizToQuestion> getByQuiz(Quiz quiz) {
-
+	public List<QuizToQuestion> getByQuizId(Long id) {
 		// TODO
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public List<QuizToQuestion> getByQuestion(Question question) {
-
+	public List<QuizToQuestion> getByQuestionId(Long id) {
 		// TODO
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void insert(QuizToQuestion entity) {
-
-		// TODO
-		throw new UnsupportedOperationException();
-
-	}
-
-	@Override
-	public void deleteByQuiz(Quiz quiz) {
 		// TODO
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void deleteByQuestion(Question question) {
+	public void deleteByQuizId(Long id) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deleteByQuestionId(Long id) {
 		// TODO
 		throw new UnsupportedOperationException();
 	}

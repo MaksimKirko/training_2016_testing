@@ -10,7 +10,7 @@ import com.github.maximkirko.testing.datamodel.annotations.Filename;
 public class Role extends AbstractModel {
 
 	public enum RoleEnum {
-		ADMIN, USER;
+		TUTOR, STUDENT;
 	}
 
 	private RoleEnum type;
@@ -41,7 +41,6 @@ public class Role extends AbstractModel {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((users == null) ? 0 : users.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -58,6 +57,10 @@ public class Role extends AbstractModel {
 		if (type != other.type)
 			return false;
 		return true;
+	}
+
+	public Role() {
+
 	}
 
 }

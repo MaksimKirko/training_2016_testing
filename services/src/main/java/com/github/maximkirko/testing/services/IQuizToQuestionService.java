@@ -4,25 +4,19 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.maximkirko.testing.datamodel.models.Question;
-import com.github.maximkirko.testing.datamodel.models.Quiz;
 import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
 
+@Transactional
 public interface IQuizToQuestionService {
 
-	List<QuizToQuestion> getByQuiz(Quiz quiz);
+	List<QuizToQuestion> getByQuizId(Long id);
 
-	List<QuizToQuestion> getByQuestion(Question question);
+	List<QuizToQuestion> getByQuestionId(Long id);
 
-	void save(QuizToQuestion quizToQuestion);
+	void insert(QuizToQuestion entity);
 
-	@Transactional
-	void saveAll(List<QuizToQuestion> quizToQuestions);
+	void deleteByQuizId(Long id);
 
-	@Transactional
-	void deleteByQuiz(Quiz quiz);
-
-	@Transactional
-	void deleteByQuestion(Question question);
+	void deleteByQuestionId(Long id);
 
 }

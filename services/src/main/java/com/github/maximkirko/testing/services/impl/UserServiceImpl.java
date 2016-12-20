@@ -6,7 +6,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daoapi.IUserDao;
 import com.github.maximkirko.testing.datamodel.models.Grade;
@@ -26,9 +25,7 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public User get(Long id) {
-
 		return userDao.get(id);
-
 	}
 
 	@Override
@@ -49,42 +46,31 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public User getWithGrades(Long id) {
 
-		User student = userDao.get(id);
-		student.setGrades(gradeService.getByUser(student));
-
+		User student = userDao.getWithGrades(id);
 		return student;
 	}
 
-	@Transactional
 	@Override
 	public List<User> getAll() {
 		return userDao.getAll();
 	}
 
-	@Transactional
 	@Override
 	public Long save(User user) {
 
-		if (user.getGrades() != null) {
-
-			for (Grade grade : user.getGrades()) {
-				gradeService.save(grade);
-			}
+		if (user == null) {
+			return null;
 		}
 
 		if (user.getId() == null) {
-
 			Long id = userDao.insert(user);
 			user.setId(id);
-
 		} else {
 			userDao.update(user);
 		}
-
 		return user.getId();
 	}
 
-	@Transactional
 	@Override
 	public List<Long> saveAll(List<User> users) {
 
@@ -95,23 +81,24 @@ public class UserServiceImpl implements IUserService {
 			user.setId(id);
 			idList.add(id);
 		}
-
 		return idList;
 
 	}
 
-	@Transactional
 	@Override
 	public void delete(Long id) {
 
 		User user = getWithGrades(id);
+		if(user == null) {
+			return;
+		}
 
-		if (user.getGrades() != null) {
-			for (Grade grade : user.getGrades()) {
+		List<Grade> grades = user.getGrades();
+		if (grades != null) {
+			for (Grade grade : grades) {
 				gradeService.delete(grade.getId());
 			}
 		}
-
 		userDao.delete(id);
 	}
 

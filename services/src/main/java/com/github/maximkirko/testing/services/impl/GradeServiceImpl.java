@@ -6,12 +6,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.maximkirko.testing.daoapi.IGradeDao;
 import com.github.maximkirko.testing.datamodel.models.Grade;
-import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.datamodel.models.User;
 import com.github.maximkirko.testing.services.IGradeService;
 
 @Service
@@ -33,41 +30,39 @@ public class GradeServiceImpl implements IGradeService {
 	}
 
 	@Override
-	public List<Grade> getByUser(User user) {
+	public List<Grade> getByUserId(Long id) {
 
-		return gradeDao.getByUser(user);
+		return gradeDao.getByUserId(id);
 	}
 
 	@Override
-	public List<Grade> getByQuiz(Quiz quiz) {
+	public List<Grade> getByQuizId(Long id) {
 
-		return gradeDao.getByQuiz(quiz);
+		return gradeDao.getByQuizId(id);
 	}
 
-	@Transactional
 	@Override
 	public List<Grade> getAll() {
 
 		return gradeDao.getAll();
 	}
 
-	@Transactional
 	@Override
 	public Long save(Grade grade) {
 
-		if (grade.getId() == null) {
+		if (grade == null) {
+			return null;
+		}
 
+		if (grade.getId() == null) {
 			Long id = gradeDao.insert(grade);
 			grade.setId(id);
 		} else {
-
 			gradeDao.update(grade);
 		}
-
 		return grade.getId();
 	}
 
-	@Transactional
 	@Override
 	public List<Long> saveAll(List<Grade> grades) {
 
@@ -78,16 +73,12 @@ public class GradeServiceImpl implements IGradeService {
 			grade.setId(id);
 			idList.add(id);
 		}
-
 		return idList;
 	}
 
-	@Transactional
 	@Override
 	public void delete(Long id) {
-
 		gradeDao.delete(id);
-
 	}
 
 }

@@ -4,4 +4,6 @@ import com.github.maximkirko.testing.datamodel.models.Question;
 
 public interface IQuestionDao extends IGenericDao<Question, Long> {
 
+	Question getWithAnswers(Long id);
+
 }

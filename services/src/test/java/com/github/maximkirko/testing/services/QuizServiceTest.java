@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DuplicateKeyException;
@@ -24,13 +25,13 @@ public class QuizServiceTest {
 
 	@Inject
 	private IQuizService quizService;
-	
+
 	@Inject
 	private ISubjectService subjectService;
 
 	private Long id;
+	private Long subjectId;
 	private List<Long> idList;
-	private Subject testSubject;
 
 	private void prepareOne() {
 
@@ -38,26 +39,26 @@ public class QuizServiceTest {
 		quiz.setTitle("test quiz " + new Random().nextInt());
 		quiz.setDescription("test quiz " + new Random().nextInt());
 
+		Question question = new Question();
+		question.setText("quizTest question " + new Random().nextInt());
+		question.setHint("quizTest hint " + new Random().nextInt());
+		
+		List<Question> questions = new ArrayList<>();
+		questions.add(question);
+		
 		Subject subject = new Subject();
 		subject.setTitle("quizTest subject");
 		subject.setDescription("quizTest description");
-		
-		quiz.setSubject(subject);
-		testSubject = subject;
-		
-		List<Question> questions = new ArrayList<Question>();
-		Question question = new Question();
-		question.setText("quizTest question");
-		question.setHint("quizTest hint");
-		questions.add(question);
-
-		quiz.setQuestions(questions);
 
 		try {
-			id = quizService.save(quiz);
+			subjectId = subjectService.save(subject);
 		} catch (DuplicateKeyException e) {
-			System.out.println(e.getStackTrace());
+			e.printStackTrace();
 		}
+
+		quiz.setSubject(subject);
+		quiz.setQuestions(questions);
+		id = quizService.save(quiz);
 	}
 
 	private void prepareMany() {
@@ -68,25 +69,34 @@ public class QuizServiceTest {
 		subject.setTitle("quizTest subject");
 		subject.setDescription("quizTest description");
 
-		testSubject = subject;
-		
+		try {
+			subjectId = subjectService.save(subject);
+		} catch (DuplicateKeyException e) {
+			e.printStackTrace();
+		}
+
 		for (int i = 0; i < 10; i++) {
 			Quiz quiz = new Quiz();
 			quiz.setTitle("test quiz " + i);
 			quiz.setDescription("test quiz " + i);
-			
+
 			quiz.setSubject(subject);
-			
+
 			quizzes.add(quiz);
 		}
 
 		idList = quizService.saveAll(quizzes);
 	}
-	
+
+	@Test
+	@Ignore
+	public void populateDB() {
+		prepareOne();
+	}
+
 	@After
-	public void deleteSubject() {
-		Subject subject = subjectService.getByTitle(testSubject.getTitle());
-		subjectService.delete(subject.getId());
+	public void clear() {
+		subjectService.delete(subjectId);
 	}
 
 	@Test
@@ -98,41 +108,33 @@ public class QuizServiceTest {
 
 		Assert.assertNotNull(String.format("quiz for id=%s should not be null", id), quiz);
 		Assert.assertEquals(id, quiz.getId());
-
-		quizService.delete(id);
 	}
-	
+
 	@Test
 	public void getWithSubject() {
-		
+
 		prepareOne();
-		
+
 		Quiz quiz = quizService.getWithSubject(id);
 
 		Assert.assertNotNull(String.format("quiz for id=%s should not be null", id), quiz);
-		Assert.assertNotNull(String.format("subject for quiz id=%s should not be null", id), quiz.getSubject());
+		Assert.assertNotNull(String.format("subject for quiz id=%s should not be null", subjectId), quiz.getSubject());
 		Assert.assertEquals(id, quiz.getId());
 
-		quizService.delete(id);
-		
 	}
-	
+
 	@Test
 	public void getBySubject() {
 
 		prepareMany();
 
-		List<Quiz> quizzes = quizService.getBySubject(testSubject);
+		List<Quiz> quizzes = quizService.getBySubjectId(subjectId);
 
 		int i = 0;
-		for(Long id : idList) {
+		for (Long id : idList) {
 			Assert.assertNotNull(String.format("quiz for id=%s should not be null", id), quizzes.get(i));
-			Assert.assertEquals(id, quizzes.get(i).getId());
-			
-			quizService.delete(quizzes.get(i).getId());
 			i++;
 		}
-		
 	}
 
 	@Test
@@ -145,8 +147,6 @@ public class QuizServiceTest {
 		Assert.assertNotNull(String.format("quiz for id=%s should not be null", id), quiz);
 		Assert.assertNotNull(String.format("questions for quiz id=%s should not be null", id), quiz.getQuestions());
 		Assert.assertEquals(id, quiz.getId());
-
-		quizService.delete(id);
 
 	}
 
@@ -166,7 +166,7 @@ public class QuizServiceTest {
 			quizService.delete(quizzes.get(i).getId());
 			i++;
 		}
-		
+
 	}
 
 	@Test
@@ -179,11 +179,9 @@ public class QuizServiceTest {
 		Subject subject = new Subject();
 		subject.setTitle("insertQuizTest subject");
 		subject.setDescription("insertQuizTest description");
-		
-		testSubject = subject;
-		
+		subjectId = subjectService.save(subject);
+
 		quiz.setSubject(subject);
-		
 		Long id = null;
 
 		try {
@@ -196,7 +194,6 @@ public class QuizServiceTest {
 		Assert.assertNotNull(String.format("quiz for id=%s should not be null", id), id);
 		Assert.assertEquals(quiz, quizService.getWithSubject(id));
 
-
 	}
 
 	@Test
@@ -207,9 +204,8 @@ public class QuizServiceTest {
 		Subject subject = new Subject();
 		subject.setTitle("insertQuizTest subject");
 		subject.setDescription("insertQuizTest description");
-		
-		testSubject = subject;
-		
+		subjectId = subjectService.save(subject);
+
 		for (int i = 0; i < 10; i++) {
 			Quiz quiz = new Quiz();
 			quiz.setTitle("multiple test quiz " + i);

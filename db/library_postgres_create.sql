@@ -24,6 +24,8 @@ CREATE TABLE "question" (
 CREATE TABLE "answer" (
 	"id" serial NOT NULL,
 	"text" character varying(512) NOT NULL UNIQUE,
+	"correctness" BOOLEAN NOT NULL,
+	"question_id" bigint NOT NULL,
 	CONSTRAINT answer_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -79,15 +81,6 @@ CREATE TABLE "grade" (
 
 
 
-CREATE TABLE "question_2_answer" (
-	"question_id" bigint NOT NULL,
-	"answer_id" bigint NOT NULL
-) WITH (
-  OIDS=FALSE
-);
-
-
-
 CREATE TABLE "role" (
 	"id" serial NOT NULL,
 	"type" character varying(256) NOT NULL,
@@ -101,6 +94,7 @@ CREATE TABLE "role" (
 ALTER TABLE "quiz" ADD CONSTRAINT "quiz_fk0" FOREIGN KEY ("subject_id") REFERENCES "subject"("id");
 
 
+ALTER TABLE "answer" ADD CONSTRAINT "answer_fk0" FOREIGN KEY ("question_id") REFERENCES "question"("id");
 
 ALTER TABLE "quiz_2_question" ADD CONSTRAINT "quiz_2_question_fk0" FOREIGN KEY ("quiz_id") REFERENCES "quiz"("id");
 ALTER TABLE "quiz_2_question" ADD CONSTRAINT "quiz_2_question_fk1" FOREIGN KEY ("question_id") REFERENCES "question"("id");
@@ -111,13 +105,12 @@ ALTER TABLE "table_user" ADD CONSTRAINT "table_user_fk0" FOREIGN KEY ("role_id")
 ALTER TABLE "grade" ADD CONSTRAINT "grade_fk0" FOREIGN KEY ("user_id") REFERENCES "table_user"("id");
 ALTER TABLE "grade" ADD CONSTRAINT "grade_fk1" FOREIGN KEY ("quiz_id") REFERENCES "quiz"("id");
 
-ALTER TABLE "question_2_answer" ADD CONSTRAINT "question_2_answer_fk0" FOREIGN KEY ("question_id") REFERENCES "question"("id");
-ALTER TABLE "question_2_answer" ADD CONSTRAINT "question_2_answer_fk1" FOREIGN KEY ("answer_id") REFERENCES "answer"("id");
 
 
 
-INSERT INTO role (type) VALUES ('ADMIN');
-INSERT INTO role (type) VALUES ('USER');
+
+INSERT INTO role (type) VALUES ('TUTOR');
+INSERT INTO role (type) VALUES ('STUDENT');
 
 INSERT INTO "table_user" (first_name, last_name, age, email, password, role_id) VALUES ('Maksim', 'Kirko', 19, 'kirko_ma_14@mf.grsu.by', 'qwerty', 1);
 INSERT INTO "table_user" (first_name, last_name, age, course, email, password, role_id) VALUES ('Ivan', 'Ivanov', 19, 'Java Web', 'ivanov@custommail.ru', '123', 2);

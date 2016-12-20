@@ -15,17 +15,29 @@
 			</Policies>
 		</RollingFile>
 
+		<JDBC name="Database" tableName="testing_logger">
+            <ConnectionFactory class="com.github.maximkirko.testing.services.logger.LoggerConnectionFactory"
+                               method="getDatabaseConnection"/>
+            <Column name="level" pattern="%level"/>
+            <Column name="logger" pattern="%logger"/>
+            <Column name="data" pattern="%d{HH:mm:ss.SSS}"/>
+            <Column name="message" pattern="%message"/>
+        </JDBC>
+
 	</Appenders>
 
 	<Loggers>
 		<Root level="info">
 			<AppenderRef ref="Console" />
+			<!-- <AppenderRef ref="RollingFile" />
+			<AppenderRef ref="Database" /> -->
 		</Root>
 
 		<Logger level="info" name="com.github.maximkirko.testing"
 			additivity="false">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="RollingFile" />
+			<AppenderRef ref="Database" />
 		</Logger>
 
 	</Loggers>

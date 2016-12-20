@@ -37,19 +37,18 @@ public class SubjectServiceTest {
 		Quiz quiz = new Quiz();
 		quiz.setTitle("subjectTest quiz " + new Random().nextInt());
 		quiz.setDescription("subjectTest quiz " + new Random().nextInt());
-		quiz.setSubject(subject);
-
-		List<Quiz> quizzes = new ArrayList<>();
-		quizzes.add(quiz);
-		quizService.saveAll(quizzes);
-		
-		subject.setQuizzes(quizzes);
 
 		try {
 			id = subjectService.save(subject);
+			subject.setId(id);
 		} catch (DuplicateKeyException e) {
-			System.out.println(e.getStackTrace());
+			e.printStackTrace();
 		}
+		quiz.setSubject(subject);
+		quizService.save(quiz);
+		List<Quiz> quizzes = new ArrayList<>();
+		quizzes.add(quiz);
+		subject.setQuizzes(quizzes);
 	}
 
 	public void prepareMany() {
@@ -86,29 +85,11 @@ public class SubjectServiceTest {
 		Subject subject = subjectService.getWithQuizzes(id);
 
 		Assert.assertNotNull(String.format("subject for id=%s should not be null", id), subject);
-		Assert.assertNotNull(String.format("quizzes for answer id=%s should not be null", id), subject.getQuizzes());
+		Assert.assertNotNull(String.format("quizzes for subject id=%s should not be null", id), subject.getQuizzes());
 		Assert.assertEquals(id, subject.getId());
 
 		subjectService.delete(id);
 
-	}
-
-	@Test
-	public void getAllTest() {
-
-		prepareMany();
-
-		List<Subject> subjects = subjectService.getAll();
-
-		int i = 0;
-		for (Long id : idList) {
-
-			Assert.assertNotNull(String.format("subject for id=%s should not be null", id), subjects.get(i));
-			Assert.assertEquals(id, subjects.get(i).getId());
-
-			subjectService.delete(subjects.get(i).getId());
-			i++;
-		}
 	}
 
 	@Test

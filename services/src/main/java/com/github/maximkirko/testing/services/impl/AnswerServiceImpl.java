@@ -9,11 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.github.maximkirko.testing.daoapi.IAnswerDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
-import com.github.maximkirko.testing.datamodel.models.Question;
-import com.github.maximkirko.testing.datamodel.models.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.services.IAnswerService;
 import com.github.maximkirko.testing.services.IQuestionService;
-import com.github.maximkirko.testing.services.IQuestionToAnswerService;
 
 @Service
 public class AnswerServiceImpl implements IAnswerService {
@@ -24,31 +21,14 @@ public class AnswerServiceImpl implements IAnswerService {
 	@Inject
 	private IQuestionService questionService;
 
-	@Inject
-	private IQuestionToAnswerService questionToAnswerService;
-
 	@Override
 	public Answer get(Long id) {
 		return answerDao.get(id);
 	}
 
 	@Override
-	public Answer getWithQuestions(Long id) {
-
-		Answer answer = get(id);
-
-		List<QuestionToAnswer> qta = questionToAnswerService.getByAnswer(answer);
-		List<Question> questions = new ArrayList<Question>();
-
-		for (QuestionToAnswer questionToAnswer : qta) {
-
-			Question question = questionService.get(questionToAnswer.getQuestion().getId());
-			questions.add(question);
-
-		}
-		answer.setQuestions(questions);
-
-		return answer;
+	public List<Answer> getByQuestionId(Long id) {
+		return answerDao.getByQuestionId(id);
 	}
 
 	@Override
@@ -59,25 +39,15 @@ public class AnswerServiceImpl implements IAnswerService {
 	@Override
 	public Long save(Answer answer) {
 
-		if (answer.getId() == null) {
-
-			Long id = answerDao.insert(answer);
-			answer.setId(id);
-
-		} else {
-
-			answerDao.update(answer);
-			questionToAnswerService.deleteByAnswer(answer);
+		if (answer == null) {
+			return null;
 		}
 
-		if (answer.getQuestions() != null) {
-
-			for (Question question : answer.getQuestions()) {
-				questionService.save(question);
-			}
-
-			List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.answerQTAList(answer);
-			questionToAnswerService.saveAll(questionToAnswers);
+		if (answer.getId() == null) {
+			Long id = answerDao.insert(answer);
+			answer.setId(id);
+		} else {
+			answerDao.update(answer);
 		}
 
 		return answer.getId();
@@ -100,14 +70,9 @@ public class AnswerServiceImpl implements IAnswerService {
 	@Override
 	public void delete(Long id) {
 
-		Answer answer = getWithQuestions(id);
-
-		if (answer.equals(null)) {
-			return;
+		if (id != null) {
+			answerDao.delete(id);
 		}
-
-		questionToAnswerService.deleteByAnswer(answer);
-		answerDao.delete(id);
 	}
 
 }

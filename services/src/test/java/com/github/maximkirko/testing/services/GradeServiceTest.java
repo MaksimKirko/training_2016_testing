@@ -1,7 +1,6 @@
 package com.github.maximkirko.testing.services;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -9,6 +8,7 @@ import javax.inject.Inject;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.maximkirko.testing.datamodel.models.Grade;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
+import com.github.maximkirko.testing.datamodel.models.Role.RoleEnum;
 import com.github.maximkirko.testing.datamodel.models.Subject;
 import com.github.maximkirko.testing.datamodel.models.User;
 
@@ -36,39 +37,46 @@ public class GradeServiceTest {
 	@Inject
 	private IUserService userService;
 
+	@Inject
+	private IRoleService roleService;
+
 	private Long id;
+	private Long userId;
+	private Long subjectId;
 	private List<Long> idList;
-	private Quiz testQuiz;
-	private Subject testSubject;
 
 	private void prepareOne() {
 
-		Grade grade = new Grade();
-		grade.setMark(9.0f);
-
-		Quiz quiz = new Quiz();
-		quiz.setTitle("gradeTest quiz " + new Random().nextInt());
-		quiz.setDescription("gradeTest quiz " + new Random().nextInt());
+		User user = new User();
+		user.setFirstName("gradeTest user");
+		user.setLastName("gradeTest user");
+		user.setAge(20);
+		user.setCourse("gradeTest course");
+		user.setEmail("gradeTest email " + new Random().nextInt());
+		user.setPassword("gradeTest password " + new Random().nextInt());
+		user.setRole(roleService.getByType(RoleEnum.STUDENT));
+		userId = userService.save(user);
 
 		Subject subject = new Subject();
 		subject.setTitle("gradeTest subject");
 		subject.setDescription("gradeTest description");
-		subject.setQuizzes(Arrays.asList(new Quiz[] { quiz }));
+		subjectId = subjectService.save(subject);
 
+		Quiz quiz = new Quiz();
+		quiz.setTitle("gradeTest quiz " + new Random().nextInt());
+		quiz.setDescription("gradeTest quiz " + new Random().nextInt());
 		quiz.setSubject(subject);
-		Long id = quizService.save(quiz);
-		testQuiz = quizService.get(id);
-		testSubject = subject;
+		quizService.save(quiz);
 
-		User user = userService.get(2l);
-
-		grade.setQuiz(testQuiz);
+		Grade grade = new Grade();
+		grade.setMark(9.0f);
+		grade.setQuiz(quiz);
 		grade.setUser(user);
 
 		try {
-			this.id = gradeService.save(grade);
+			id = gradeService.save(grade);
 		} catch (DuplicateKeyException e) {
-			System.out.println(e.getStackTrace());
+			e.printStackTrace();
 		}
 	}
 
@@ -76,6 +84,16 @@ public class GradeServiceTest {
 
 		List<Grade> grades = new ArrayList<Grade>();
 
+		User user = new User();
+		user.setFirstName("gradeTest user");
+		user.setLastName("gradeTest user");
+		user.setAge(20);
+		user.setCourse("gradeTest course");
+		user.setEmail("gradeTest email " + new Random().nextInt());
+		user.setPassword("gradeTest password " + new Random().nextInt());
+		user.setRole(roleService.getByType(RoleEnum.STUDENT));
+		userId = userService.save(user);
+
 		Quiz quiz = new Quiz();
 		quiz.setTitle("gradeTest quiz " + new Random().nextInt());
 		quiz.setDescription("gradeTest quiz " + new Random().nextInt());
@@ -83,20 +101,16 @@ public class GradeServiceTest {
 		Subject subject = new Subject();
 		subject.setTitle("gradeTest subject");
 		subject.setDescription("gradeTest description");
-		subject.setQuizzes(Arrays.asList(new Quiz[] { quiz }));
-		testSubject = subject;
+		subjectId = subjectService.save(subject);
 
 		quiz.setSubject(subject);
-		Long id = quizService.save(quiz);
-		testQuiz = quizService.get(id);
-
-		User user = userService.get(2l);
+		quizService.save(quiz);
 
 		for (int i = 0; i < 10; i++) {
 			Grade grade = new Grade();
 			grade.setMark(new Random().nextFloat());
 
-			grade.setQuiz(testQuiz);
+			grade.setQuiz(quiz);
 			grade.setUser(user);
 		}
 
@@ -104,9 +118,15 @@ public class GradeServiceTest {
 	}
 
 	@After
-	public void deleteSubject() {
-		Subject subject = subjectService.getByTitle(testSubject.getTitle());
-		subjectService.delete(subject.getId());
+	public void clear() {
+		subjectService.delete(subjectId);
+		userService.delete(userId);
+	}
+
+	@Test
+	@Ignore
+	public void fullfillDB() {
+		prepareOne();
 	}
 
 	@Test
@@ -118,12 +138,10 @@ public class GradeServiceTest {
 
 		Assert.assertNotNull(String.format("grade for id=%s should not be null", id), grade);
 		Assert.assertEquals(id, grade.getId());
-
-		gradeService.delete(id);
 	}
 
 	@Test
-	public void getWithUserAndQuizTest() {
+	public void getBWithUserAndQuizTest() {
 
 		prepareOne();
 
@@ -133,9 +151,6 @@ public class GradeServiceTest {
 		Assert.assertNotNull(String.format("user for grade id=%s should not be null", id), grade.getUser());
 		Assert.assertNotNull(String.format("quiz for grade id=%s should not be null", id), grade.getQuiz());
 		Assert.assertEquals(id, grade.getId());
-
-		gradeService.delete(id);
-
 	}
 
 	@Test
@@ -150,8 +165,6 @@ public class GradeServiceTest {
 
 			Assert.assertNotNull(String.format("grade for id=%s should not be null", id), grades.get(i));
 			Assert.assertEquals(id, grades.get(i).getId());
-
-			gradeService.delete(grades.get(i).getId());
 			i++;
 		}
 	}
@@ -159,39 +172,40 @@ public class GradeServiceTest {
 	@Test
 	public void saveTest() {
 
-		Grade grade = new Grade();
-		grade.setMark(9.0f);
-
-		Quiz quiz = new Quiz();
-		quiz.setTitle("insertGradeTest quiz " + new Random().nextInt());
-		quiz.setDescription("insertGradeTest quiz " + new Random().nextInt());
+		User user = new User();
+		user.setFirstName("gradeTest user");
+		user.setLastName("gradeTest user");
+		user.setAge(20);
+		user.setCourse("gradeTest course");
+		user.setEmail("gradeTest email " + new Random().nextInt());
+		user.setPassword("gradeTest password " + new Random().nextInt());
+		user.setRole(roleService.getByType(RoleEnum.STUDENT));
+		userId = userService.save(user);
 
 		Subject subject = new Subject();
-		subject.setTitle("insertGradeTest subject");
-		subject.setDescription("insertGradeTest description");
-		subject.setQuizzes(Arrays.asList(new Quiz[] { quiz }));
+		subject.setTitle("gradeTest subject");
+		subject.setDescription("gradeTest description");
+		subjectId = subjectService.save(subject);
 
+		Quiz quiz = new Quiz();
+		quiz.setTitle("gradeTest quiz " + new Random().nextInt());
+		quiz.setDescription("gradeTest quiz " + new Random().nextInt());
 		quiz.setSubject(subject);
-		Long id = quizService.save(quiz);
-		testQuiz = quizService.get(id);
-		testSubject = subject;
+		quizService.save(quiz);
 
-		User user = userService.get(2l);
-
-		grade.setQuiz(testQuiz);
+		Grade grade = new Grade();
+		grade.setMark(9.0f);
+		grade.setQuiz(quiz);
 		grade.setUser(user);
-
-		id = null;
 
 		try {
 			id = gradeService.save(grade);
 		} catch (DuplicateKeyException e) {
-			System.out.println(e.getStackTrace());
-			return;
+			e.printStackTrace();
 		}
 
 		Assert.assertNotNull(String.format("grade for id=%s should not be null", id), id);
-		Assert.assertEquals(grade, gradeService.getWithUserAndQuiz(id));
+		Assert.assertEquals(grade, gradeService.get(id));
 
 		gradeService.delete(id);
 
@@ -202,37 +216,43 @@ public class GradeServiceTest {
 
 		List<Grade> grades = new ArrayList<Grade>();
 
+		User user = new User();
+		user.setFirstName("gradeTest user");
+		user.setLastName("gradeTest user");
+		user.setAge(20);
+		user.setCourse("gradeTest course");
+		user.setEmail("gradeTest email " + new Random().nextInt());
+		user.setPassword("gradeTest password " + new Random().nextInt());
+		user.setRole(roleService.getByType(RoleEnum.STUDENT));
+		userId = userService.save(user);
+
 		Quiz quiz = new Quiz();
-		quiz.setTitle("insertGradeTest quiz " + new Random().nextInt());
-		quiz.setDescription("insertGradeTest quiz " + new Random().nextInt());
+		quiz.setTitle("gradeTest quiz " + new Random().nextInt());
+		quiz.setDescription("gradeTest quiz " + new Random().nextInt());
 
 		Subject subject = new Subject();
-		subject.setTitle("insertGradeTest subject");
-		subject.setDescription("insertGradeTest description");
-		subject.setQuizzes(Arrays.asList(new Quiz[] { quiz }));
+		subject.setTitle("gradeTest subject");
+		subject.setDescription("gradeTest description");
+		subjectId = subjectService.save(subject);
 
 		quiz.setSubject(subject);
-		Long id1 = quizService.save(quiz);
-		testQuiz = quizService.get(id1);
-		testSubject = subject;
-
-		User user = userService.get(2l);
+		quizService.save(quiz);
 
 		for (int i = 0; i < 10; i++) {
 			Grade grade = new Grade();
-			grade.setMark(9.0f);
-			grade.setQuiz(testQuiz);
-			grade.setUser(user);
+			grade.setMark(new Random().nextFloat());
 
+			grade.setQuiz(quiz);
+			grade.setUser(user);
 		}
 
-		List<Long> idList = gradeService.saveAll(grades);
+		idList = gradeService.saveAll(grades);
 
 		int i = 0;
 		for (Long id : idList) {
 
-			Assert.assertNotNull(String.format("grade for id=%s should not be null", id), id);
-			Assert.assertEquals(grades.get(i), gradeService.getWithUserAndQuiz(id));
+			Assert.assertNotNull(String.format("grade for id=%s should not be null", id), gradeService.get(id));
+			Assert.assertEquals(grades.get(i), gradeService.get(id));
 
 			gradeService.delete(id);
 			i++;

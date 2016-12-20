@@ -24,35 +24,42 @@ public class StartJetty {
 	 */
 	public static void main(String[] args) {
 
-		Server server = new Server();
+        startInstance(8081);
+        // startInstance(8082);
+        // startInstance(8083);
+        // startInstance(8084);
+    }
 
-		HttpConfiguration http_config = new HttpConfiguration();
-		http_config.setOutputBufferSize(32768);
+    private static void startInstance(int port) {
+        Server server = new Server();
 
-		ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(http_config));
-		http.setPort(8081);
-		http.setIdleTimeout(1000 * 60 * 60);
+        HttpConfiguration http_config = new HttpConfiguration();
+        http_config.setOutputBufferSize(32768);
 
-		server.addConnector(http);
+        ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(http_config));
+        http.setPort(port);
+        http.setIdleTimeout(1000 * 60 * 60);
 
-		WebAppContext bb = new WebAppContext();
-		bb.setServer(server);
-		bb.setContextPath("/");
-		bb.setWar("src/main/webapp");
+        server.addConnector(http);
 
-		server.setHandler(bb);
+        WebAppContext bb = new WebAppContext();
+        bb.setServer(server);
+        bb.setContextPath("/");
+        bb.setWar("src/main/webapp");
 
-		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
-		server.addEventListener(mBeanContainer);
-		server.addBean(mBeanContainer);
+        server.setHandler(bb);
 
-		try {
-			server.start();
-			server.join();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(100);
-		}
-	}
+        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
+        server.addEventListener(mBeanContainer);
+        server.addBean(mBeanContainer);
+
+        try {
+            server.start();
+            // server.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(100);
+        }
+    }
 }

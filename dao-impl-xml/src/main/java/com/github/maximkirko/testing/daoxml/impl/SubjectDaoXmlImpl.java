@@ -20,4 +20,10 @@ public class SubjectDaoXmlImpl extends GenericDaoXmlImpl<Subject, Long> implemen
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public Subject getWithQuizzes(Long id) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
 }

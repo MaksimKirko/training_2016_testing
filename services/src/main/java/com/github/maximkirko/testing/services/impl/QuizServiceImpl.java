@@ -8,14 +8,14 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.github.maximkirko.testing.daoapi.IQuizDao;
+import com.github.maximkirko.testing.daoapi.IQuizToQuestionDao;
+import com.github.maximkirko.testing.datamodel.models.Grade;
 import com.github.maximkirko.testing.datamodel.models.Question;
 import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.datamodel.models.Subject;
 import com.github.maximkirko.testing.datamodel.models.customentity.QuizToQuestion;
+import com.github.maximkirko.testing.services.IGradeService;
 import com.github.maximkirko.testing.services.IQuestionService;
 import com.github.maximkirko.testing.services.IQuizService;
-import com.github.maximkirko.testing.services.IQuizToQuestionService;
-import com.github.maximkirko.testing.services.ISubjectService;
 
 @Service
 public class QuizServiceImpl implements IQuizService {
@@ -24,14 +24,14 @@ public class QuizServiceImpl implements IQuizService {
 	private IQuizDao quizDao;
 
 	@Inject
-	private ISubjectService subjectService;
-	
-	@Inject
 	private IQuestionService questionService;
 
 	@Inject
-	private IQuizToQuestionService quizToQuestionService;
+	private IQuizToQuestionDao quizToQuestionDao;
 
+	@Inject
+	private IGradeService gradeService;
+	
 	@Override
 	public Quiz get(Long id) {
 		return quizDao.get(id);
@@ -43,26 +43,14 @@ public class QuizServiceImpl implements IQuizService {
 	}
 
 	@Override
-	public List<Quiz> getBySubject(Subject subject) {
-		return quizDao.getBySubject(subject);
+	public List<Quiz> getBySubjectId(Long id) {
+		return quizDao.getBySubjectId(id);
 	}
 
 	@Override
 	public Quiz getWithQuestions(Long id) {
 
-		Quiz quiz = get(id);
-
-		List<QuizToQuestion> qtq = quizToQuestionService.getByQuiz(quiz);
-		List<Question> questions = new ArrayList<Question>();
-
-		for (QuizToQuestion quizToQuestion : qtq) {
-
-			Question question = questionService.get(quizToQuestion.getQuestion().getId());
-			questions.add(question);
-		}
-		quiz.setQuestions(questions);
-
-		return quiz;
+		return quizDao.getWithQuestions(id);
 	}
 
 	@Override
@@ -73,31 +61,26 @@ public class QuizServiceImpl implements IQuizService {
 	@Override
 	public Long save(Quiz quiz) {
 
-		Subject subject = quiz.getSubject();
-		if(subject.getId() == null) {
-			subject.setId(subjectService.save(subject));
+		if (quiz == null) {
+			return null;
 		}
-		quiz.setSubject(subject);
-		
-		if (quiz.getId() == null) {
 
+		if (quiz.getId() == null) {
 			Long id = quizDao.insert(quiz);
 			quiz.setId(id);
-
 		} else {
-
+			quizToQuestionDao.deleteByQuizId(quiz.getId());
 			quizDao.update(quiz);
-			quizToQuestionService.deleteByQuiz(quiz);
 		}
 
-		if (quiz.getQuestions() != null) {
-
-			for (Question question : quiz.getQuestions()) {
-				questionService.save(question);
+		List<Question> questions = quiz.getQuestions();
+		if (questions != null) {
+			for (Question question : questions) {
+				Long id = questionService.save(question);
+				question.setId(id);
+				quizToQuestionDao.insert(new QuizToQuestion(quiz.getId(), question.getId()));
 			}
-
-			List<QuizToQuestion> quizToQuestions = QuizToQuestion.quizToQTQList(quiz);
-			quizToQuestionService.saveAll(quizToQuestions);
+			quiz.setQuestions(questions);
 		}
 
 		return quiz.getId();
@@ -122,13 +105,27 @@ public class QuizServiceImpl implements IQuizService {
 
 		Quiz quiz = getWithQuestions(id);
 
-		if (quiz.equals(null)) {
+		if (quiz == null) {
 			return;
 		}
 
-		quizToQuestionService.deleteByQuiz(quiz);
-		quizDao.delete(id);
+		List<QuizToQuestion> q2q = quizToQuestionDao.getByQuizId(id);
+		quizToQuestionDao.deleteByQuizId(id);
 
+		List<Grade> grades = gradeService.getByQuizId(id);
+		if(grades != null) {
+			for (Grade grade : grades) {
+				gradeService.delete(grade.getId());
+			}
+		}
+		
+		quizDao.delete(id);
+		
+		if (q2q != null) {
+			for (QuizToQuestion quizToQuestion : q2q) {
+				questionService.delete(quizToQuestion.getQuestionId());
+			}
+		}
 	}
 
 }

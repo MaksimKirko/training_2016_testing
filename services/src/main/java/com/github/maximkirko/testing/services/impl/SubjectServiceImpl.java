@@ -35,10 +35,7 @@ public class SubjectServiceImpl implements ISubjectService {
 	@Override
 	public Subject getWithQuizzes(Long id) {
 
-		Subject subject = subjectDao.get(id);
-		subject.setQuizzes(quizService.getBySubject(subject));
-
-		return subject;
+		return subjectDao.getWithQuizzes(id);
 	}
 
 	@Override
@@ -49,6 +46,10 @@ public class SubjectServiceImpl implements ISubjectService {
 	@Override
 	public Long save(Subject subject) {
 
+		if(subject == null) {
+			return null;
+		}
+		
 		if (subject.getId() == null) {
 
 			Long id = subjectDao.insert(subject);
@@ -78,10 +79,9 @@ public class SubjectServiceImpl implements ISubjectService {
 	@Override
 	public void delete(Long id) {
 
-		Subject subject = getWithQuizzes(id);
-
-		if (subject.getQuizzes() != null) {
-			for (Quiz quiz : subject.getQuizzes()) {
+		List<Quiz> quizzes = quizService.getBySubjectId(id);
+		if (quizzes != null) {
+			for (Quiz quiz : quizzes) {
 
 				quizService.delete(quiz.getId());
 			}

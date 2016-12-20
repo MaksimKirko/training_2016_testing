@@ -14,26 +14,47 @@ import org.springframework.stereotype.Repository;
 import com.github.maximkirko.testing.daoapi.IGenericDao;
 import com.github.maximkirko.testing.daodb.entitytomap.IEntityToMap;
 import com.github.maximkirko.testing.daodb.mapper.IGenericMapper;
-import com.github.maximkirko.testing.datamodel.annotations.anylizer.DBTableNameAware;
 import com.github.maximkirko.testing.datamodel.models.AbstractModel;
 
 @Repository
 public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Serializable> implements IGenericDao<T, PK> {
 
 	@Inject
-	protected JdbcTemplate jdbcTemplate;
-	protected Class<T> entityClass;
-	protected String tableName;
-	protected IGenericMapper<T> mapper;
-	protected IEntityToMap<T> entityToMap;
+	private JdbcTemplate jdbcTemplate;
+	private String tableName;
+	private IGenericMapper<T> mapper;
+	private IEntityToMap<T> entityToMap;
+
+	protected JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	protected String getTableName() {
+		return tableName;
+	}
+
+	protected void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+
+	protected IGenericMapper<T> getMapper() {
+		return mapper;
+	}
+
+	protected void setMapper(IGenericMapper<T> mapper) {
+		this.mapper = mapper;
+	}
+
+	protected IEntityToMap<T> getEntityToMap() {
+		return entityToMap;
+	}
+
+	protected void setEntityToMap(IEntityToMap<T> entityToMap) {
+		this.entityToMap = entityToMap;
+	}
 
 	public GenericDaoDbImpl() {
 
-	}
-
-	public GenericDaoDbImpl(Class<T> entityClass) {
-		this.entityClass = entityClass;
-		this.tableName = DBTableNameAware.getTableNameByClass(entityClass);
 	}
 
 	@Override
@@ -55,7 +76,16 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 	@Override
 	public List<T> getAll() {
 
-		return jdbcTemplate.query(String.format("SELECT * FROM %s", tableName), mapper);
+		List<T> entities;
+
+		try {
+			entities = jdbcTemplate.query(String.format("SELECT * FROM %s", tableName), mapper);
+
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+		
+		return entities;
 	}
 
 	@Override
@@ -84,28 +114,32 @@ public abstract class GenericDaoDbImpl<T extends AbstractModel, PK extends Seria
 		jdbcTemplate.update(sql, entity.getId());
 	}
 
-	@Override
-	public void delete(PK id) {
-
-		jdbcTemplate.update(String.format("DELETE FROM %s WHERE id = ?", tableName), id);
-	}
-
 	private String getValuesForUpdate(Map<String, Object> params) {
 
 		String values = "";
 
-		int i = 0;
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
 
-			values += entry.getKey() + "=" + entry.getValue();
-			if (i < params.size() - 1) {
+			if (!entry.getKey().equals("id") && entry.getValue() != null) {
+				if (entry.getValue().getClass().equals(String.class)) {
+					values += entry.getKey() + "='" + entry.getValue() + "'";
+				} else {
+					values += entry.getKey() + "=" + entry.getValue();
+				}
 				values += ", ";
 			}
-			i++;
 		}
+
+		values = values.substring(0, values.length() - 2);
 
 		return values;
 
+	}
+
+	@Override
+	public void delete(PK id) {
+
+		jdbcTemplate.update(String.format("DELETE FROM %s WHERE id = ?", tableName), id);
 	}
 
 }

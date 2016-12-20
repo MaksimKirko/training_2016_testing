@@ -1,4 +1,4 @@
-package com.github.maximkirko.testing.web.converter;
+package com.github.maximkirko.testing.web.converter.entitytomodel;
 
 import org.springframework.core.convert.converter.Converter;
 
@@ -13,7 +13,8 @@ public class AnswerToModel implements Converter<Answer, AnswerModel> {
 		AnswerModel model = new AnswerModel();
 		model.setId(answer.getId());
 		model.setText(answer.getText());
-
+		model.setCorrectness(answer.isCorrectness());
+		model.setQuestionId(answer.getQuestion().getId());
 		return model;
 	}
 }

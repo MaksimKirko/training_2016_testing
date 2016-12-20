@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.github.maximkirko.testing.daoapi.IGradeDao;
 import com.github.maximkirko.testing.datamodel.models.Grade;
-import com.github.maximkirko.testing.datamodel.models.Quiz;
-import com.github.maximkirko.testing.datamodel.models.User;
 
 @Repository
 public class GradeDaoXmlImpl extends GenericDaoXmlImpl<Grade, Long> implements IGradeDao {
@@ -25,13 +23,13 @@ public class GradeDaoXmlImpl extends GenericDaoXmlImpl<Grade, Long> implements I
 	}
 
 	@Override
-	public List<Grade> getByUser(User student) {
+	public List<Grade> getByUserId(Long id) {
 		// TODO
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public List<Grade> getByQuiz(Quiz quiz) {
+	public List<Grade> getByQuizId(Long id) {
 		// TODO
 		throw new UnsupportedOperationException();
 	}

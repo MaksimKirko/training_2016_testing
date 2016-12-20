@@ -9,85 +9,108 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.maximkirko.testing.datamodel.models.Answer;
+import com.github.maximkirko.testing.datamodel.models.User;
 import com.github.maximkirko.testing.services.IAnswerService;
-import com.github.maximkirko.testing.web.converter.AnswerToModel;
-import com.github.maximkirko.testing.web.converter.ModelToAnswer;
+import com.github.maximkirko.testing.services.IAuthenticationService;
+import com.github.maximkirko.testing.services.IUserService;
 import com.github.maximkirko.testing.web.model.AnswerModel;
+import com.github.maximkirko.testing.web.utils.WebUtils;
 
 @RestController
 @RequestMapping("/answers")
-public class AnswerController {
+public class AnswerController extends GenericController<Answer, AnswerModel> {
 
 	@Inject
-	private IAnswerService service;
+	private IAnswerService answerService;
 
-	private AnswerToModel answerConverter;
+	@Inject
+	private IUserService userService;
 
-	private ModelToAnswer modelConverter;
+	@Inject
+	private IAuthenticationService authenticationService;
 
+	public AnswerController() {
+
+		super.service = answerService;
+		super.entityClass = Answer.class;
+		super.modelClass = AnswerModel.class;
+
+	}
+
+	@Override
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<AnswerModel>> getAll() {
+	public ResponseEntity<List<AnswerModel>> getAll(@RequestHeader(value = "Authorization") String authHeader) {
 
-		List<Answer> all = service.getAll();
+		String username = WebUtils.getCurrentUserName(authHeader);
+		User currentUser = userService.getByEmail(username);
+
+		ResponseEntity<List<AnswerModel>> response = super.getAll(authHeader);
+
+		if (!authenticationService.validateUserRole(currentUser.getEmail())) {
+			for (AnswerModel model : response.getBody()) {
+				model.setCorrectness(false);
+			}
+		}
+		return response;
+	}
+
+	@Override
+	@RequestMapping(value = "/{entityId}", method = RequestMethod.GET)
+	public ResponseEntity<AnswerModel> getById(@PathVariable Long entityId,
+			@RequestHeader(value = "Authorization") String authHeader) {
+
+		String username = WebUtils.getCurrentUserName(authHeader);
+		User currentUser = userService.getByEmail(username);
+
+		ResponseEntity<AnswerModel> response = super.getById(entityId, authHeader);
+
+		if (!authenticationService.validateUserRole(currentUser.getEmail())) {
+			response.getBody().setCorrectness(false);
+		}
+		return response;
+	}
+
+	@Override
+	@RequestMapping(value = "/admin/create", method = RequestMethod.POST)
+	public ResponseEntity<Void> createNewEntity(@RequestBody AnswerModel entityModel) {
+
+		return super.createNewEntity(entityModel);
+	}
+
+	@Override
+	@RequestMapping(value = "/admin/{entityId}", method = RequestMethod.POST)
+	public ResponseEntity<Void> updateEntity(@RequestBody AnswerModel entityModel, @PathVariable Long entityId) {
+
+		return super.updateEntity(entityModel, entityId);
+	}
+
+	@Override
+	@RequestMapping(value = "/admin/{entityId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Long entityId) {
+
+		return super.delete(entityId);
+	}
+
+	@RequestMapping(value = "/byQuestion/{entityId}", method = RequestMethod.GET)
+	public ResponseEntity<List<AnswerModel>> getByQuestionId(@PathVariable Long entityId) {
+
+		List<Answer> answers = answerService.getByQuestionId(entityId);
+		if (answers == null) {
+			return new ResponseEntity<List<AnswerModel>>(HttpStatus.NOT_FOUND);
+		}
 
 		List<AnswerModel> converted = new ArrayList<>();
-		for (Answer answer : all) {
-			converted.add(entity2model(answer));//answerConverter.convert(answer));
+		for (Answer answer : answers) {
+			converted.add(conversionService.convert(answer, modelClass));
 		}
 
 		return new ResponseEntity<List<AnswerModel>>(converted, HttpStatus.OK);
 	}
-
-	@RequestMapping(value = "/{answerId}", method = RequestMethod.GET)
-	public ResponseEntity<AnswerModel> getById(@PathVariable Long answerId) {
-
-		Answer answer = service.get(answerId);
-		return new ResponseEntity<AnswerModel>(answerConverter.convert(answer), HttpStatus.OK);
-	}
-
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> createNewAnswer(@RequestBody AnswerModel answerModel) {
-
-		service.save(model2entity(answerModel));//modelConverter.convert(answerModel));
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
-
-	}
-
-	@RequestMapping(value = "/{answerId}", method = RequestMethod.POST)
-	public ResponseEntity<Void> updateAnswer(@RequestBody AnswerModel answerModel, @PathVariable Long answerId) {
-
-		Answer answer = model2entity(answerModel);//modelConverter.convert(answerModel);
-		answer.setId(answerId);
-		service.save(answer);
-		return new ResponseEntity<Void>(HttpStatus.OK);
-
-	}
-
-	@RequestMapping(value = "/{answerId}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> delete(@PathVariable Long answerId) {
-
-		service.delete(answerId);
-		return new ResponseEntity<Void>(HttpStatus.OK);
-
-	}
-	
-	private AnswerModel entity2model(Answer answer) {
-        AnswerModel model = new AnswerModel();
-        model.setText(answer.getText());
-        model.setId(answer.getId());
-        return model;
-    }
-
-    private Answer model2entity(AnswerModel answerModel) {
-        Answer answer = new Answer();
-        answer.setText(answerModel.getText());
-        answer.setId(answerModel.getId());
-        return answer;
-    }
 
 }

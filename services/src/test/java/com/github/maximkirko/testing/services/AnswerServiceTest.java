@@ -6,7 +6,9 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DuplicateKeyException;
@@ -23,84 +25,65 @@ public class AnswerServiceTest {
 	@Inject
 	private IAnswerService answerService;
 
+	@Inject
+	private IQuestionService questionService;
+
 	private Long id;
-	private List<Long> idList;
+	private Question question;
 
-	private void prepareOne() {
-
-		Answer answer = new Answer();
-		answer.setText("test answer " + new Random().nextInt());
-
-		List<Question> questions = new ArrayList<Question>();
-		Question question = new Question();
+	@Before
+	public void prepare() {
+		
+		question = new Question();
 		question.setText("answerTest question");
 		question.setHint("answerTest hint");
-		questions.add(question);
-
-		answer.setQuestions(questions);
 
 		try {
-			id = answerService.save(answer);
+			id = questionService.save(question);
+			question.setId(id);
 		} catch (DuplicateKeyException e) {
-			System.out.println(e.getStackTrace());
+			e.printStackTrace();
 		}
-	}
 
-	private void prepareMany() {
-
-		List<Answer> answers = new ArrayList<Answer>();
-
-		for (int i = 0; i < 10; i++) {
+		List<Answer> answers = new ArrayList<>();
+		for (int i = 0; i < 3; i++) {
 			Answer answer = new Answer();
-			answer.setText("multi-test answer " + i);
+			answer.setText("test answer " + i);
+			answer.setCorrectness(false);
+			answer.setQuestion(question);
 			answers.add(answer);
 		}
 
-		idList = answerService.saveAll(answers);
+		question.setAnswers(answers);
+		questionService.save(question);
+	}
+
+	@After
+	public void clear() {
+		questionService.delete(id);
 	}
 
 	@Test
 	public void getByIdTest() {
 
-		prepareOne();
+		Long id = question.getAnswers().get(0).getId();
 
 		Answer answer = answerService.get(id);
 
 		Assert.assertNotNull(String.format("answer for id=%s should not be null", id), answer);
 		Assert.assertEquals(id, answer.getId());
-
-		answerService.delete(id);
 	}
 
 	@Test
-	public void getWithQuestions() {
+	public void getByQuestionIdTest() {
 
-		prepareOne();
-
-		Answer answer = answerService.getWithQuestions(id);
-
-		Assert.assertNotNull(String.format("answer for id=%s should not be null", id), answer);
-		Assert.assertNotNull(String.format("questions for answer id=%s should not be null", id), answer.getQuestions());
-		Assert.assertEquals(id, answer.getId());
-
-		answerService.delete(id);
-
-	}
-
-	@Test
-	public void getAllTest() {
-
-		prepareMany();
-
-		List<Answer> answers = answerService.getAll();
-
+		List<Answer> qAnswers = question.getAnswers();
+		List<Answer> answers = answerService.getByQuestionId(id);
+		
 		int i = 0;
-		for (Long id : idList) {
-
-			Assert.assertNotNull(String.format("answer for id=%s should not be null", id), answers.get(i));
-			Assert.assertEquals(id, answers.get(i).getId());
-
-			answerService.delete(answers.get(i).getId());
+		for (Answer answer : answers) {
+			Assert.assertNotNull(String.format("answer for id=%s should not be null", qAnswers.get(i).getId()), answer);
+			Assert.assertEquals(qAnswers.get(i).getId(), answer.getId());
 			i++;
 		}
 	}
@@ -110,20 +93,19 @@ public class AnswerServiceTest {
 
 		Answer answer = new Answer();
 		answer.setText("insertTest answer " + new Random().nextInt());
+		answer.setCorrectness(true);
+		answer.setQuestion(question);
 
 		Long id = null;
 
 		try {
 			id = answerService.save(answer);
 		} catch (DuplicateKeyException e) {
-			System.out.println(e.getStackTrace());
-			return;
+			e.printStackTrace();
 		}
 
 		Assert.assertNotNull(String.format("answer for id=%s should not be null", id), id);
 		Assert.assertEquals(answer, answerService.get(id));
-
-		answerService.delete(id);
 
 	}
 
@@ -135,6 +117,8 @@ public class AnswerServiceTest {
 		for (int i = 0; i < 10; i++) {
 			Answer answer = new Answer();
 			answer.setText("multiple test answer " + i);
+			answer.setCorrectness(false);
+			answer.setQuestion(question);
 			answers.add(answer);
 		}
 
@@ -146,7 +130,6 @@ public class AnswerServiceTest {
 			Assert.assertNotNull(String.format("answer for id=%s should not be null", id), id);
 			Assert.assertEquals(answers.get(i), answerService.get(id));
 
-			answerService.delete(id);
 			i++;
 		}
 	}
@@ -154,8 +137,7 @@ public class AnswerServiceTest {
 	@Test
 	public void deleteTest() {
 
-		prepareOne();
-
+		Long id = question.getAnswers().get(0).getId();
 		answerService.delete(id);
 
 		Assert.assertNull(String.format("answer for id=%s should be null", id), answerService.get(id));

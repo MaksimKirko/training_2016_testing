@@ -11,6 +11,8 @@ public class AnswerToMap implements IEntityToMap<Answer> {
 	public Map<String, Object> convert(Answer entity) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("text", entity.getText());
+		params.put("correctness", entity.isCorrectness());
+		params.put("question_id", entity.getQuestion().getId());
 		params.put("id", entity.getId());
 
 		return params;

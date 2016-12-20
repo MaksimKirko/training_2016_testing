@@ -34,4 +34,10 @@ public class UserDaoXmlImpl extends GenericDaoXmlImpl<User, Long> implements IUs
 		// TODO
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public User getWithGrades(Long id) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
 }

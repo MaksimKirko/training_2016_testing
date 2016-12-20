@@ -10,10 +10,9 @@ import org.springframework.stereotype.Service;
 import com.github.maximkirko.testing.daoapi.IQuestionDao;
 import com.github.maximkirko.testing.datamodel.models.Answer;
 import com.github.maximkirko.testing.datamodel.models.Question;
-import com.github.maximkirko.testing.datamodel.models.customentity.QuestionToAnswer;
 import com.github.maximkirko.testing.services.IAnswerService;
 import com.github.maximkirko.testing.services.IQuestionService;
-import com.github.maximkirko.testing.services.IQuestionToAnswerService;
+import com.github.maximkirko.testing.services.IQuizToQuestionService;
 
 @Service
 public class QuestionServiceImpl implements IQuestionService {
@@ -25,7 +24,7 @@ public class QuestionServiceImpl implements IQuestionService {
 	private IAnswerService answerService;
 
 	@Inject
-	private IQuestionToAnswerService questionToAnswerService;
+	private IQuizToQuestionService quizToQuestionService;
 
 	@Override
 	public Question get(Long id) {
@@ -35,19 +34,7 @@ public class QuestionServiceImpl implements IQuestionService {
 	@Override
 	public Question getWithAnswers(Long id) {
 
-		Question question = get(id);
-
-		List<QuestionToAnswer> qta = questionToAnswerService.getByQuestion(question);
-		List<Answer> answers = new ArrayList<Answer>();
-
-		for (QuestionToAnswer questionToAnswer : qta) {
-
-			Answer answer = answerService.get(questionToAnswer.getAnswer().getId());
-			answers.add(answer);
-
-		}
-		question.setAnswers(answers);
-
+		Question question = questionDao.getWithAnswers(id);
 		return question;
 	}
 
@@ -59,26 +46,24 @@ public class QuestionServiceImpl implements IQuestionService {
 	@Override
 	public Long save(Question question) {
 
-		if (question.getId() == null) {
-
-			Long id = questionDao.insert(question);
-			question.setId(id);
-
-		} else {
-
-			questionDao.update(question);
-			questionToAnswerService.deleteByQuestion(question);
-
+		if (question == null) {
+			return null;
 		}
 
-		if (question.getAnswers() != null) {
+		if (question.getId() == null) {
+			Long id = questionDao.insert(question);
+			question.setId(id);
+		} else {
+			questionDao.update(question);
+		}
 
-			for (Answer answer : question.getAnswers()) {
-				answerService.save(answer);
+		List<Answer> answers = question.getAnswers();
+		if (answers != null) {
+			for (Answer answer : answers) {
+				Long id = answerService.save(answer);
+				answer.setId(id);
 			}
-
-			List<QuestionToAnswer> questionToAnswers = QuestionToAnswer.questionQTAList(question);
-			questionToAnswerService.saveAll(questionToAnswers);
+			question.setAnswers(answers);
 		}
 
 		return question.getId();
@@ -101,12 +86,18 @@ public class QuestionServiceImpl implements IQuestionService {
 	public void delete(Long id) {
 
 		Question question = getWithAnswers(id);
-
-		if (question.equals(null)) {
+		if (question == null) {
 			return;
 		}
+		List<Answer> answers = answerService.getByQuestionId(id);
 
-		questionToAnswerService.deleteByQuestion(question);
+		if (answers != null) {
+			for (Answer a : answers) {
+				a.setQuestion(null);
+				answerService.delete(a.getId());
+			}
+		}
+		quizToQuestionService.deleteByQuestionId(id);
 		questionDao.delete(id);
 	}
 

@@ -14,4 +14,10 @@ public class QuestionDaoXmlImpl extends GenericDaoXmlImpl<Question, Long> implem
 		super(Question.class);
 	}
 
+	@Override
+	public Question getWithAnswers(Long id) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
 }

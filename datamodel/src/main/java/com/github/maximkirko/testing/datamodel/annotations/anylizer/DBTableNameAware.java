@@ -7,5 +7,5 @@ public class DBTableNameAware {
 	public static String getTableNameByClass(Class<?> entityClass) {
 		return entityClass.getAnnotation(DBTable.class).value();
 	}
-	
+
 }

@@ -32,8 +32,8 @@ public class GradeWithStudentAndQuizMapper implements IGenericMapper<Grade> {
 		role.setId(rs.getLong("role_id"));
 		user.setRole(role);
 
-		user.setId(rs.getLong(4));	
-				
+		user.setId(rs.getLong("user_id"));
+
 		Subject subject = new Subject();
 		subject.setId(rs.getLong("subject_id"));
 
@@ -41,7 +41,7 @@ public class GradeWithStudentAndQuizMapper implements IGenericMapper<Grade> {
 		quiz.setTitle(rs.getString("title"));
 		quiz.setDescription(rs.getString("description"));
 		quiz.setSubject(subject);
-		quiz.setId(rs.getLong(12));
+		quiz.setId(rs.getLong("quiz_id"));
 
 		List<Grade> grades = new ArrayList<Grade>();
 		grades.add(grade);

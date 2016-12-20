@@ -15,8 +15,8 @@ public class User extends AbstractModel {
 	private String course;
 	private String email;
 	private String password;
-	private List<Grade> grades;
 	private Role role;
+	private List<Grade> grades;
 
 	public String getFirstName() {
 		return firstName;
@@ -66,20 +66,20 @@ public class User extends AbstractModel {
 		this.password = password;
 	}
 
-	public List<Grade> getGrades() {
-		return grades;
-	}
-
-	public void setGrades(List<Grade> grades) {
-		this.grades = grades;
-	}
-
 	public Role getRole() {
 		return role;
 	}
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public List<Grade> getGrades() {
+		return grades;
+	}
+
+	public void setGrades(List<Grade> grades) {
+		this.grades = grades;
 	}
 
 	@Override
@@ -96,10 +96,8 @@ public class User extends AbstractModel {
 		result = prime * result + ((course == null) ? 0 : course.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result + ((grades == null) ? 0 : grades.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((role == null) ? 0 : role.hashCode());
 		return result;
 	}
 
@@ -142,12 +140,11 @@ public class User extends AbstractModel {
 				return false;
 		} else if (!password.equals(other.password))
 			return false;
-		if (role == null) {
-			if (other.role != null)
-				return false;
-		} else if (!role.equals(other.role))
-			return false;
 		return true;
+	}
+
+	public User() {
+
 	}
 
 }
